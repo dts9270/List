@@ -11,17 +11,15 @@
 
     <style>
         :root {
-            --primary: #2563eb;       /* Modern Blue */
-            --primary-dark: #1e40af;
-            --secondary: #dc2626;     /* Modern Red */
-            --success: #10b981;       /* Modern Green */
-            --warning: #f59e0b;       /* Modern Yellow */
+            --primary: #2563eb;
+            --secondary: #dc2626;
+            --success: #10b981;
             --bg: #f3f4f6;
             --surface: #ffffff;
             --text-main: #1f2937;
             --text-light: #6b7280;
             --border: #e5e7eb;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
             --radius: 16px;
         }
 
@@ -40,37 +38,24 @@
             color: var(--text-main);
             margin: 0;
             padding-bottom: 100px;
-            transition: background-color 0.3s ease;
-            -webkit-tap-highlight-color: transparent;
+            transition: 0.3s;
         }
 
         * { box-sizing: border-box; outline: none; }
 
-        /* --- Stylish Header --- */
+        /* Header */
         .header {
             background: linear-gradient(135deg, #1e3a8a, #3b82f6);
             padding: 20px 20px 40px 20px;
             color: white;
             border-radius: 0 0 30px 30px;
             box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.4);
-            position: relative;
         }
 
         .top-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .app-title h2 { margin: 0; font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
-        .app-title small { opacity: 0.8; font-weight: 500; }
-        
-        .theme-toggle {
-            background: rgba(255,255,255,0.2);
-            border: none;
-            color: white;
-            width: 35px; height: 35px;
-            border-radius: 50%;
-            cursor: pointer;
-            backdrop-filter: blur(5px);
-        }
+        .theme-toggle { background: rgba(255,255,255,0.2); border: none; color: white; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; }
 
-        /* --- Floating Stats Card --- */
+        /* Stats */
         .stats-container {
             background: var(--surface);
             margin: -30px 20px 15px 20px;
@@ -78,14 +63,11 @@
             border-radius: var(--radius);
             box-shadow: var(--shadow);
             position: relative;
-            z-index: 10;
         }
+        .progress-track { background: var(--bg); height: 12px; border-radius: 10px; overflow: hidden; margin-top: 5px; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #10b981, #34d399); width: 0%; transition: width 1s ease-in-out; }
 
-        .target-header { display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; margin-bottom: 8px; color: var(--text-light); }
-        .progress-track { background: var(--bg); height: 12px; border-radius: 10px; overflow: hidden; }
-        .progress-fill { height: 100%; background: linear-gradient(90deg, #10b981, #34d399); width: 0%; transition: width 1s ease-in-out; border-radius: 10px; }
-
-        /* --- Controls --- */
+        /* Controls */
         .controls { padding: 0 20px 15px 20px; display: flex; gap: 10px; }
         .modern-input {
             width: 100%; padding: 12px 15px;
@@ -94,13 +76,10 @@
             background: var(--surface);
             color: var(--text-main);
             font-size: 14px;
-            transition: 0.2s;
         }
-        .modern-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
 
-        /* --- Professional Cards --- */
+        /* Cards */
         .card-list { padding: 0 20px; }
-        
         .pro-card {
             background: var(--surface);
             border-radius: var(--radius);
@@ -108,122 +87,84 @@
             margin-bottom: 15px;
             box-shadow: var(--shadow);
             border: 1px solid var(--border);
-            transition: transform 0.2s;
             position: relative;
             overflow: hidden;
         }
-        .pro-card:active { transform: scale(0.98); }
-
-        .pro-card::before {
-            content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
-            background: var(--text-light);
-        }
-        .pro-card.hot::before { background: var(--secondary); }
-        .pro-card.warm::before { background: var(--warning); }
-        .pro-card.joined::before { background: var(--success); }
+        .pro-card.joined { border-left: 5px solid var(--success); }
+        .pro-card.hot { border-left: 5px solid var(--secondary); }
 
         .card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
         .p-name { font-size: 16px; font-weight: 700; color: var(--text-main); }
-        .p-ref { font-size: 11px; color: var(--primary); background: rgba(37, 99, 235, 0.1); padding: 2px 8px; border-radius: 6px; font-weight: 600; margin-top: 4px; display: inline-block; }
-
-        .status-pill { font-size: 11px; padding: 4px 10px; border-radius: 20px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-        .pill-new { background: #e0f2fe; color: #0284c7; }
-        .pill-joined { background: #dcfce7; color: #16a34a; }
-        .pill-follow { background: #fef3c7; color: #d97706; }
-
-        .card-details { font-size: 13px; color: var(--text-light); margin-bottom: 15px; display: flex; flex-direction: column; gap: 4px; }
-        .detail-row { display: flex; align-items: center; gap: 6px; }
-
-        .card-actions { display: flex; justify-content: flex-end; gap: 8px; border-top: 1px solid var(--border); padding-top: 12px; }
+        .p-date { font-size: 11px; color: var(--text-light); font-weight: 400; display: block; margin-top: 2px; }
         
-        .icon-btn {
-            width: 36px; height: 36px;
-            border-radius: 10px;
-            border: none;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 16px; cursor: pointer;
-            transition: 0.2s;
-        }
+        .status-pill { font-size: 10px; padding: 4px 8px; border-radius: 20px; font-weight: 600; text-transform: uppercase; }
+        .pill-joined { background: #dcfce7; color: #16a34a; }
+        .pill-new { background: #e0f2fe; color: #0284c7; }
+
+        .card-actions { display: flex; justify-content: flex-end; gap: 8px; border-top: 1px solid var(--border); padding-top: 12px; margin-top: 10px; }
+        .icon-btn { width: 36px; height: 36px; border-radius: 10px; border: none; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .btn-wa { background: #dcfce7; color: #16a34a; }
         .btn-edit { background: #eff6ff; color: #2563eb; }
         .btn-del { background: #fee2e2; color: #dc2626; }
 
-        /* --- FAB --- */
-        .fab {
-            position: fixed; bottom: 25px; right: 25px;
-            width: 60px; height: 60px;
-            background: linear-gradient(135deg, var(--secondary), #ef4444);
-            border-radius: 20px;
-            box-shadow: 0 10px 20px rgba(220, 38, 38, 0.4);
-            color: white; border: none; font-size: 30px;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; z-index: 100;
-            transition: transform 0.2s;
-        }
-        .fab:hover { transform: translateY(-3px); }
-
-        /* --- Modal --- */
+        /* Modal */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 200; align-items: center; justify-content: center; }
-        .modal-content { background: var(--surface); width: 90%; max-width: 400px; border-radius: 20px; padding: 25px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .modal-content { background: var(--surface); width: 90%; max-width: 400px; border-radius: 20px; padding: 25px; animation: popIn 0.3s; }
         @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
         .full-btn { width: 100%; padding: 14px; border: none; border-radius: 12px; font-weight: 600; font-size: 15px; margin-top: 10px; cursor: pointer; }
-        .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.3); }
-        .btn-text { background: transparent; color: var(--text-light); }
+        .btn-primary { background: var(--primary); color: white; }
 
-        .loader { text-align: center; padding: 40px; color: var(--text-light); font-weight: 500; }
+        .fab { position: fixed; bottom: 25px; right: 25px; width: 60px; height: 60px; background: linear-gradient(135deg, var(--secondary), #ef4444); border-radius: 20px; color: white; font-size: 30px; border: none; box-shadow: 0 10px 20px rgba(220, 38, 38, 0.4); display: flex; align-items: center; justify-content: center; cursor: pointer; }
     </style>
 </head>
 <body>
 
     <div class="header">
         <div class="top-nav">
-            <div class="app-title">
-                <h2>Team Unique</h2>
-                <small>Professional Dashboard</small>
+            <div>
+                <h2 style="margin:0;">Team Unique</h2>
+                <small>Pro Dashboard</small>
             </div>
             <button class="theme-toggle" onclick="toggleTheme()">🌗</button>
         </div>
     </div>
 
     <div class="stats-container" onclick="setTarget()">
-        <div class="target-header">
-            <span>🎯 Monthly Target: <span id="targetVal">10</span></span>
-            <span style="color:var(--success)" id="achievedVal">0 Achieved</span>
+        <div style="display:flex; justify-content:space-between; font-weight:600; font-size:13px;">
+            <span>🎯 Target: <span id="targetVal">10</span></span>
+            <span style="color:var(--success)" id="achievedVal">0 Done</span>
         </div>
-        <div class="progress-track">
-            <div class="progress-fill" id="progressBar"></div>
-        </div>
-        <div style="margin-top:10px; font-size:12px; color:var(--text-light); text-align:right;">Tap to change target</div>
+        <div class="progress-track"><div class="progress-fill" id="progressBar"></div></div>
     </div>
 
     <div class="controls">
-        <input type="text" class="modern-input" id="search" placeholder="🔍 Search by Name, City..." oninput="renderList()" style="flex:2;">
+        <input type="text" class="modern-input" id="search" placeholder="🔍 Search..." oninput="renderList()" style="flex:2;">
         <select class="modern-input" id="filter" onchange="renderList()" style="flex:1;">
             <option value="All">All</option>
             <option value="Hot">🔥 Hot</option>
             <option value="Joined">✅ Joined</option>
-            <option value="New">New</option>
         </select>
     </div>
 
-    <div id="loading" class="loader">
-        Getting Data...
-    </div>
-
-    <div class="card-list" id="list">
-        </div>
+    <div id="loading" style="text-align:center; padding:30px; color:#999;">Loading Data...</div>
+    <div class="card-list" id="list"></div>
 
     <button class="fab" onclick="openModal()">+</button>
 
     <div class="modal" id="entryModal">
         <div class="modal-content">
-            <h3 style="margin-top:0; color:var(--text-main);">Manage Prospect</h3>
+            <h3 style="margin-top:0; color:var(--text-main);">Add Prospect</h3>
             <input type="hidden" id="docId">
 
             <div style="display:grid; gap:12px;">
-                <input type="text" class="modern-input" id="pName" placeholder="Full Name">
-                <input type="text" class="modern-input" id="pRef" placeholder="Reference By (e.g. Facebook)">
+                
+                <div style="display:grid; grid-template-columns: 2fr 1fr; gap:10px;">
+                    <input type="text" class="modern-input" id="pName" placeholder="Full Name">
+                    <input type="date" class="modern-input" id="pDate">
+                </div>
+
+                <input type="text" class="modern-input" id="pRef" placeholder="Reference By">
                 <input type="number" class="modern-input" id="pMobile" placeholder="Mobile Number">
                 
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
@@ -245,7 +186,7 @@
             </div>
 
             <button class="full-btn btn-primary" id="saveBtn" onclick="saveData()">Save Data</button>
-            <button class="full-btn btn-text" onclick="closeModal()">Cancel</button>
+            <button class="full-btn" style="background:transparent; color:var(--text-light)" onclick="closeModal()">Cancel</button>
         </div>
     </div>
 
@@ -254,14 +195,13 @@
     // 🔴 1. PASTE YOUR FIREBASE CONFIG HERE
     // -----------------------------------------------------------
     const firebaseConfig = {
-        apiKey: "AIzaSyB-AA1oAWceBEr6NCDbXATdpKdO8ks7jks", // तुमची KEY इथे बदला
+        apiKey: "AIzaSyB-AA1oAWceBEr6NCDbXATdpKdO8ks7jks", // तुमची Key इथे पेस्ट करा
         authDomain: "list-b182e.firebaseapp.com",
         projectId: "list-b182e",
         storageBucket: "list-b182e.firebasestorage.app",
         messagingSenderId: "996772285132",
         appId: "1:996772285132:web:cad03cafda172833f59069"
     };
-    // -----------------------------------------------------------
 
     const app = firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
@@ -270,7 +210,6 @@
     let prospectsData = [];
     let currentTarget = localStorage.getItem('rcmTarget') || 10;
 
-    // --- Logic ---
     document.addEventListener('DOMContentLoaded', () => {
         if(localStorage.getItem('rcmTheme') === 'dark') document.body.classList.add('dark-mode');
         updateTargetUI();
@@ -305,35 +244,24 @@
             return true;
         });
 
-        if(filtered.length === 0) {
-            listDiv.innerHTML = '<div style="text-align:center; padding:30px; color:var(--text-light)">No prospects found.</div>';
-            return;
-        }
-
         filtered.forEach(p => {
-            let pillClass = 'pill-new';
-            if(p.status === 'Joined') pillClass = 'pill-joined';
-            if(p.status === 'Follow Up') pillClass = 'pill-follow';
-
-            let cardClass = '';
-            if(p.status === 'Joined') cardClass = 'joined';
-            else if(p.category === 'Hot') cardClass = 'hot';
-            else if(p.category === 'Warm') cardClass = 'warm';
+            let pillClass = p.status === 'Joined' ? 'pill-joined' : 'pill-new';
+            let cardClass = p.status === 'Joined' ? 'joined' : (p.category === 'Hot' ? 'hot' : '');
 
             const html = `
                 <div class="pro-card ${cardClass}">
                     <div class="card-top">
                         <div>
                             <div class="p-name">${p.name}</div>
-                            ${p.ref ? `<div class="p-ref">From: ${p.ref}</div>` : ''}
+                            <span class="p-date">📅 ${p.date || 'No Date'} | ${p.ref ? 'Ref: '+p.ref : 'Direct'}</span>
                         </div>
                         <span class="status-pill ${pillClass}">${p.status}</span>
                     </div>
                     
-                    <div class="card-details">
-                        <div class="detail-row">📍 ${p.city || 'N/A'} &nbsp; • &nbsp; 📱 ${p.mobile}</div>
-                        ${p.interests ? `<div class="detail-row" style="color:var(--text-main); font-weight:500">📝 ${p.interests}</div>` : ''}
+                    <div style="font-size:13px; color:var(--text-light); margin-top:5px;">
+                        📍 ${p.city || 'N/A'} &nbsp; • &nbsp; 📱 ${p.mobile}
                     </div>
+                    ${p.interests ? `<div style="font-size:13px; margin-top:5px; color:var(--text-main);">📝 ${p.interests}</div>` : ''}
 
                     <div class="card-actions">
                         <a href="https://wa.me/91${p.mobile}" target="_blank" class="icon-btn btn-wa">💬</a>
@@ -344,14 +272,16 @@
             `;
             listDiv.innerHTML += html;
         });
+        
+        if(listDiv.innerHTML === '') listDiv.innerHTML = '<div style="text-align:center; padding:30px; color:#999">No data found</div>';
     }
 
-    // --- CRUD ---
     function saveData() {
         const id = document.getElementById('docId').value;
         const btn = document.getElementById('saveBtn');
         const data = {
             name: document.getElementById('pName').value,
+            date: document.getElementById('pDate').value, // NEW DATE FIELD
             ref: document.getElementById('pRef').value,
             mobile: document.getElementById('pMobile').value,
             city: document.getElementById('pCity').value,
@@ -365,22 +295,22 @@
         btn.innerText = "Saving..."; btn.disabled = true;
 
         const action = id ? db.collection(collectionName).doc(id).update(data) : db.collection(collectionName).add(data);
-        
-        action.then(() => { closeModal(); btn.innerText = "Save Data"; btn.disabled = false; })
-              .catch(e => alert(e));
+        action.then(() => { closeModal(); btn.innerText = "Save Data"; btn.disabled = false; }).catch(e => alert(e));
     }
 
     function deleteItem(id) {
-        if(confirm("Delete this prospect?")) db.collection(collectionName).doc(id).delete();
+        if(confirm("Delete this?")) db.collection(collectionName).doc(id).delete();
     }
 
-    // --- UI Helpers ---
     function openModal(id = null) {
         document.getElementById('entryModal').style.display = 'flex';
+        const today = new Date().toISOString().split('T')[0];
+        
         if(id) {
             const p = prospectsData.find(x => x.id === id);
             document.getElementById('docId').value = id;
             document.getElementById('pName').value = p.name;
+            document.getElementById('pDate').value = p.date || today;
             document.getElementById('pRef').value = p.ref || '';
             document.getElementById('pMobile').value = p.mobile;
             document.getElementById('pCity').value = p.city;
@@ -390,6 +320,7 @@
         } else {
             document.getElementById('docId').value = '';
             document.getElementById('pName').value = '';
+            document.getElementById('pDate').value = today; // Default to Today
             document.getElementById('pRef').value = '';
             document.getElementById('pMobile').value = '';
             document.getElementById('pCity').value = '';
@@ -408,10 +339,8 @@
     function updateTargetUI() {
         const joined = prospectsData.filter(p => p.status === 'Joined').length;
         document.getElementById('targetVal').innerText = currentTarget;
-        document.getElementById('achievedVal').innerText = joined + " Achieved";
-        let pct = (joined / currentTarget) * 100;
-        if(pct > 100) pct = 100;
-        document.getElementById('progressBar').style.width = pct + "%";
+        document.getElementById('achievedVal').innerText = joined + " Done";
+        document.getElementById('progressBar').style.width = Math.min((joined/currentTarget)*100, 100) + "%";
     }
 </script>
 
