@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>RCM Cloud Manager - Team Unique</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+    <style>
+        :root {
+            --primary: #0056b3;
+            --secondary: #e31e24;
+            --success: #28a745;
+            --bg: #f4f7f6;
+            --card-bg: #ffffff;
+            --text: #333;
+            --border: #ddd;
+        }
+        
+        body { font-family: 'Poppins', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding-bottom: 90px; }
+        * { box-sizing: border-box; outline: none; }
+
+        /* Header */
+        .header { background: linear-gradient(135deg, #004085, #0056b3); padding: 15px 20px; color: white; border-radius: 0 0 20px 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); position: sticky; top: 0; z-index: 99; }
+        .top-row { display: flex; justify-content: space-between; align-items: center; }
+        
+        .status-dot { height: 10px; width: 10px; background-color: #bbb; border-radius: 50%; display: inline-block; margin-right: 5px; }
+        .status-online { background-color: #00ff00; box-shadow: 0 0 5px #00ff00; }
+
+        /* Target Bar */
+        .target-box { margin-top: 15px; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px; }
+        .progress-container { background: rgba(255,255,255,0.2); height: 8px; border-radius: 5px; margin-top: 5px; overflow: hidden; }
+        .progress-bar { height: 100%; background: #28a745; width: 0%; transition: width 0.5s; }
+        .target-text { font-size: 12px; display: flex; justify-content: space-between; color: white; }
+
+        /* Controls */
+        .controls { padding: 15px; display: flex; gap: 10px; }
+        .search-box, .filter-box { padding: 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--card-bg); color: var(--text); }
+        .search-box { flex: 2; } .filter-box { flex: 1; }
+
+        /* Card Styles */
+        .card { background: var(--card-bg); padding: 15px; margin: 0 15px 15px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border-left: 5px solid gray; position: relative; }
+        .card.hot { border-left-color: #e31e24; }
+        .card.warm { border-left-color: #ffc107; }
+        .card.cold { border-left-color: #17a2b8; }
+
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .name { font-weight: 600; font-size: 16px; }
+        .category-badge { font-size: 10px; padding: 2px 6px; border-radius: 4px; background: #eee; color: #333; }
+        
+        .info-row { font-size: 13px; color: var(--text); opacity: 0.8; margin-bottom: 5px; display: flex; align-items: center; gap: 5px; }
+        .ref-row { font-size: 12px; color: var(--primary); font-weight: 500; margin-bottom: 5px; background: rgba(0, 86, 179, 0.1); padding: 2px 8px; border-radius: 4px; display: inline-block; }
+        
+        .actions { margin-top: 10px; border-top: 1px solid var(--border); padding-top: 10px; display: flex; justify-content: flex-end; gap: 15px; }
+        .act-btn { background: none; border: none; font-size: 18px; cursor: pointer; padding: 5px; }
+
+        /* FAB & Modals */
+        .fab { position: fixed; bottom: 25px; right: 25px; width: 60px; height: 60px; background: var(--secondary); border-radius: 50%; color: white; font-size: 30px; border: none; box-shadow: 0 4px 10px rgba(0,0,0,0.3); cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 100; }
+
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 200; align-items: flex-end; }
+        .modal-content { background: var(--card-bg); width: 100%; border-radius: 20px 20px 0 0; padding: 25px; max-height: 85vh; overflow-y: auto; animation: slideUp 0.3s; }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .full-width { grid-column: span 2; }
+        input, select, textarea { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--card-bg); color: var(--text); margin-bottom: 10px; }
+        label { font-size: 11px; font-weight: bold; display: block; margin-bottom: 2px; }
+
+        .btn-full { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: bold; margin-top: 10px; cursor: pointer; }
+        .loader { text-align: center; padding: 20px; color: #666; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="top-row">
+            <div>
+                <h2 style="margin:0;">Team Unique <span id="connStatus" class="status-dot"></span></h2>
+                <small style="opacity:0.8;">Deepak Shengule</small>
+            </div>
+            <div style="text-align:right">
+                <h3 style="margin:0" id="totalCount">0</h3>
+                <small>Prospects</small>
+            </div>
+        </div>
+
+        <div class="target-box" onclick="setTarget()">
+            <div class="target-text">
+                <span>Target: <span id="targetVal">10</span></span>
+                <span id="achievedVal">0 Joined</span>
+            </div>
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <input type="text" class="search-box" id="search" placeholder="🔍 नाव किंवा गाव शोधा..." oninput="renderList()">
+        <select class="filter-box" id="filter" onchange="renderList()">
+            <option value="All">All</option>
+            <option value="Hot">🔥 Hot</option>
+            <option value="Warm">⛅ Warm</option>
+            <option value="Joined">✅ Joined</option>
+            <option value="Reference">👤 Reference</option>
+        </select>
+    </div>
+
+    <div id="loading" class="loader">☁️ Cloud शी कनेक्ट होत आहे...</div>
+    <div id="list"></div>
+
+    <button class="fab" onclick="openModal()">+</button>
+
+    <div class="modal" id="entryModal">
+        <div class="modal-content">
+            <h3 id="modalTitle">नवीन प्रॉस्पेक्ट</h3>
+            <input type="hidden" id="docId"> <div class="form-grid">
+                <div class="full-width">
+                    <label>नाव (Name)</label>
+                    <input type="text" id="pName" placeholder="उदा. राहुल पाटील">
+                </div>
+                
+                <div class="full-width">
+                    <label>कोणाकडून रेफरन्स (Reference)</label>
+                    <input type="text" id="pRef" placeholder="उदा. सुरेश सर / Facebook">
+                </div>
+
+                <div>
+                    <label>मोबाईल</label>
+                    <input type="number" id="pMobile" placeholder="10 अंकी">
+                </div>
+                <div>
+                    <label>गाव/शहर</label>
+                    <input type="text" id="pCity">
+                </div>
+                
+                <div>
+                    <label>Category</label>
+                    <select id="pCategory">
+                        <option value="Cold">❄️ Cold</option>
+                        <option value="Warm">⛅ Warm</option>
+                        <option value="Hot">🔥 Hot</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Status</label>
+                    <select id="pStatus">
+                        <option value="New">New</option>
+                        <option value="Follow Up">Follow Up</option>
+                        <option value="Joined">Joined</option>
+                        <option value="Not Interested">Not Interested</option>
+                    </select>
+                </div>
+
+                <div class="full-width">
+                    <label>Interests / Note</label>
+                    <input type="text" id="pInterests" placeholder="उदा. Nutricharge, Good Dot">
+                </div>
+            </div>
+
+            <button class="btn-full" id="saveBtn" onclick="saveData()">Save Online</button>
+            <button class="btn-full" style="background:#666; margin-top:5px;" onclick="closeModal()">Cancel</button>
+        </div>
+    </div>
+
+<script>
+    // -----------------------------------------------------
+    // 🔥 YOUR FIREBASE CONFIGURATION (Added Successfully)
+    // -----------------------------------------------------
+    const firebaseConfig = {
+        apiKey: "AIzaSyB-AA1oAWceBEr6NCDbXATdpKdO8ks7jks",
+        authDomain: "list-b182e.firebaseapp.com",
+        projectId: "list-b182e",
+        storageBucket: "list-b182e.firebasestorage.app",
+        messagingSenderId: "996772285132",
+        appId: "1:996772285132:web:cad03cafda172833f59069"
+    };
+
+    // Initialize Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const collectionName = "rcm_prospects"; // डेटाबेसचे नाव
+
+    let prospectsData = [];
+    let currentTarget = localStorage.getItem('rcmTarget') || 10;
+
+    // --- Start App ---
+    document.addEventListener('DOMContentLoaded', () => {
+        updateTargetUI();
+        
+        // Realtime Listener
+        db.collection(collectionName).orderBy("createdAt", "desc")
+            .onSnapshot((snapshot) => {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('connStatus').classList.add('status-online');
+                
+                prospectsData = [];
+                snapshot.forEach((doc) => {
+                    let d = doc.data();
+                    d.id = doc.id; // Cloud ID
+                    prospectsData.push(d);
+                });
+
+                document.getElementById('totalCount').innerText = prospectsData.length;
+                updateTargetUI();
+                renderList();
+            }, (error) => {
+                console.error("Error:", error);
+                document.getElementById('loading').innerText = "Error loading data.";
+            });
+    });
+
+    // --- CRUD Functions ---
+    function saveData() {
+        const id = document.getElementById('docId').value;
+        const btn = document.getElementById('saveBtn');
+        
+        const data = {
+            name: document.getElementById('pName').value,
+            ref: document.getElementById('pRef').value,
+            mobile: document.getElementById('pMobile').value,
+            city: document.getElementById('pCity').value,
+            category: document.getElementById('pCategory').value,
+            status: document.getElementById('pStatus').value,
+            interests: document.getElementById('pInterests').value,
+            updatedAt: new Date().toISOString()
+        };
+
+        if(!data.name || !data.mobile) return alert("नाव आणि मोबाईल नंबर आवश्यक आहे.");
+
+        btn.innerText = "Saving...";
+        btn.disabled = true;
+
+        if (id) {
+            // Update Existing
+            db.collection(collectionName).doc(id).update(data)
+                .then(() => { closeModal(); btn.disabled=false; btn.innerText="Save Online"; })
+                .catch(e => alert(e));
+        } else {
+            // Add New
+            data.createdAt = new Date().toISOString();
+            db.collection(collectionName).add(data)
+                .then(() => { closeModal(); btn.disabled=false; btn.innerText="Save Online"; })
+                .catch(e => alert(e));
+        }
+    }
+
+    function deleteItem(id) {
+        if(confirm("हा डेटा कायमचा डिलीट करायचा का?")) {
+            db.collection(collectionName).doc(id).delete();
+        }
+    }
+
+    // --- UI Logic ---
+    function openModal(id = null) {
+        document.getElementById('entryModal').style.display = 'flex';
+        if (id) {
+            // Edit Mode
+            const p = prospectsData.find(x => x.id === id);
+            document.getElementById('docId').value = id;
+            document.getElementById('modalTitle').innerText = "माहिती बदला";
+            document.getElementById('pName').value = p.name;
+            document.getElementById('pRef').value = p.ref || '';
+            document.getElementById('pMobile').value = p.mobile;
+            document.getElementById('pCity').value = p.city;
+            document.getElementById('pCategory').value = p.category;
+            document.getElementById('pStatus').value = p.status;
+            document.getElementById('pInterests').value = p.interests || '';
+        } else {
+            // Add Mode
+            document.getElementById('docId').value = '';
+            document.getElementById('modalTitle').innerText = "नवीन प्रॉस्पेक्ट";
+            document.getElementById('pName').value = '';
+            document.getElementById('pRef').value = '';
+            document.getElementById('pMobile').value = '';
+            document.getElementById('pCity').value = '';
+            document.getElementById('pInterests').value = '';
+            document.getElementById('pStatus').value = 'New';
+        }
+    }
+
+    function closeModal() {
+        document.getElementById('entryModal').style.display = 'none';
+    }
+
+    function renderList() {
+        const listDiv = document.getElementById('list');
+        const search = document.getElementById('search').value.toLowerCase();
+        const filter = document.getElementById('filter').value;
+
+        listDiv.innerHTML = '';
+
+        prospectsData.forEach(p => {
+            // Filter Logic
+            if(filter !== 'All') {
+                if(filter === 'Reference' && (!p.ref || p.ref.trim() === '')) return;
+                if(filter !== 'Reference' && p.status !== filter && p.category !== filter) return;
+            }
+            // Search Logic
+            if(search && !p.name.toLowerCase().includes(search) && !p.city.toLowerCase().includes(search) && !(p.ref && p.ref.toLowerCase().includes(search))) return;
+
+            const card = document.createElement('div');
+            card.className = `card ${p.category ? p.category.toLowerCase() : ''}`;
+            
+            card.innerHTML = `
+                <div class="card-header">
+                    <div class="name">${p.name}</div>
+                    <span class="category-badge">${p.status}</span>
+                </div>
+                
+                <div class="info-row">📍 ${p.city} | 📞 ${p.mobile}</div>
+                ${p.ref ? `<div class="ref-row">👤 Ref: ${p.ref}</div>` : ''}
+                ${p.interests ? `<div class="info-row" style="font-size:11px; margin-top:5px;">📝 ${p.interests}</div>` : ''}
+                
+                <div class="actions">
+                    <a href="https://wa.me/91${p.mobile}" target="_blank" class="act-btn">💬</a>
+                    <button class="act-btn" onclick="openModal('${p.id}')">✏️</button>
+                    <button class="act-btn" style="color:red" onclick="deleteItem('${p.id}')">🗑️</button>
+                </div>
+            `;
+            listDiv.appendChild(card);
+        });
+
+        if(listDiv.innerHTML === '') listDiv.innerHTML = '<div style="text-align:center; padding:20px; color:#999;">डेटा सापडला नाही.</div>';
+    }
+
+    // --- Target Logic ---
+    function setTarget() {
+        let newT = prompt("या महिन्याचे टार्गेट किती?", currentTarget);
+        if(newT) { currentTarget = parseInt(newT); localStorage.setItem('rcmTarget', currentTarget); updateTargetUI(); }
+    }
+
+    function updateTargetUI() {
+        document.getElementById('targetVal').innerText = currentTarget;
+        const joined = prospectsData.filter(p => p.status === 'Joined').length;
+        document.getElementById('achievedVal').innerText = `${joined} Joined`;
+        const pct = Math.min((joined / currentTarget) * 100, 100);
+        document.getElementById('progressBar').style.width = `${pct}%`;
+    }
+
+</script>
+
+</body>
+</html>
