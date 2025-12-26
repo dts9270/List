@@ -15,7 +15,7 @@
 
     <style>
         :root {
-            --primary: #000080; /* Navy Blue (Ashoka Chakra Color) for Text */
+            --primary: #000080;
             --bg: #f3f4f6;
             --surface: #ffffff;
             --text-main: #111827;
@@ -33,9 +33,8 @@
 
         body { 
             font-family: 'Mukta', sans-serif; 
-            /* 🇮🇳 TRICOLOR BACKGROUND 🇮🇳 */
             background: linear-gradient(180deg, #FF9933 0%, #FFFFFF 45%, #FFFFFF 55%, #138808 100%);
-            background-attachment: fixed; /* Scroll करताना बॅकग्राउंड हलू नये */
+            background-attachment: fixed;
             color: var(--text-main); 
             margin: 0; 
             padding-bottom: 100px;
@@ -45,7 +44,6 @@
         * { box-sizing: border-box; outline: none; }
 
         .header {
-            /* Header Blue (Like Ashoka Chakra) */
             background: linear-gradient(135deg, #000080, #1e3a8a);
             padding: 20px 20px 80px 20px;
             color: white;
@@ -55,7 +53,6 @@
         .top-nav { display: flex; justify-content: space-between; align-items: center; }
         .theme-toggle { background: rgba(255,255,255,0.2); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; }
 
-        /* DASHBOARD GRID */
         .dash-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -65,7 +62,7 @@
             margin-bottom: 20px;
         }
         .stat-card {
-            background: rgba(255, 255, 255, 0.95); /* Slight transparency */
+            background: rgba(255, 255, 255, 0.95);
             padding: 15px;
             border-radius: 16px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
@@ -86,14 +83,14 @@
 
         .report-actions { padding: 0 20px 15px 20px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
         .btn-report { padding: 10px; border-radius: 10px; border: none; font-weight: 600; cursor: pointer; color: white; font-size: 12px; display: flex; flex-direction: column; align-items: center; gap: 4px; font-family: 'Mukta', sans-serif; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
-        .btn-excel { background: #138808; } /* Green */
-        .btn-pdf { background: #FF9933; } /* Saffron */
-        .btn-ai { background: #000080; } /* Blue */
+        .btn-excel { background: #138808; }
+        .btn-pdf { background: #FF9933; }
+        .btn-ai { background: #000080; }
 
         .card-list { padding: 0 20px; }
         
         .pro-card {
-            background: rgba(255, 255, 255, 0.95); /* High contrast against background */
+            background: rgba(255, 255, 255, 0.95);
             border-radius: 18px;
             padding: 20px;
             margin-bottom: 15px;
@@ -136,9 +133,34 @@
         .act-btn { width: 42px; height: 42px; border-radius: 12px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 19px; transition:0.2s; text-decoration: none; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .act-btn:hover { transform: scale(1.1); }
         
+        /* --- FIX: MODAL SCROLL & CLOSE BUTTON --- */
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 999; align-items: center; justify-content: center; }
-        .modal-content { background: var(--surface); width: 90%; max-width: 400px; border-radius: 24px; padding: 25px; animation: slideUp 0.3s ease; }
         
+        .modal-content { 
+            background: var(--surface); 
+            width: 90%; 
+            max-width: 400px; 
+            border-radius: 24px; 
+            padding: 25px; 
+            animation: slideUp 0.3s ease;
+            position: relative;
+            /* Scroll Logic */
+            max-height: 85vh; /* Maximum height 85% of screen */
+            overflow-y: auto; /* Enable scroll if content overflows */
+        }
+        
+        /* Top Close Button */
+        .close-icon {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 28px;
+            color: var(--text-light);
+            cursor: pointer;
+            font-weight: bold;
+            line-height: 1;
+        }
+
         .wa-options { display: grid; gap: 10px; margin-top: 15px; }
         .wa-btn { padding: 12px; border: 1px solid var(--border); background: var(--bg); border-radius: 10px; text-align: left; font-size: 15px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 10px; color: var(--text-main); }
         .wa-btn:hover { background: #dcfce7; border-color: #22c55e; }
@@ -201,6 +223,8 @@
 
     <div class="modal" id="entryModal">
         <div class="modal-content">
+            <span class="close-icon" onclick="closeModal()">&times;</span>
+            
             <h3 style="margin-top:0; color:#000080;">प्रॉस्पेक्ट डिटेल्स</h3>
             <input type="hidden" id="docId">
             
@@ -251,6 +275,7 @@
 
     <div class="modal" id="waModal">
         <div class="modal-content">
+            <span class="close-icon" onclick="document.getElementById('waModal').style.display='none'">&times;</span>
             <h3 style="margin-top:0;">📲 WhatsApp मेसेज निवडा</h3>
             <div class="wa-options">
                 <button class="wa-btn" onclick="sendWA('Intro')">👋 <b>परिचय (Intro)</b><br><small>नवीन लोकांसाठी</small></button>
@@ -278,6 +303,18 @@
 
     let prospectsData = [];
     let selectedContact = { mobile: '', name: '' };
+
+    // CLOSE MODAL ON OUTSIDE CLICK
+    window.onclick = function(event) {
+        const modal = document.getElementById('entryModal');
+        const waModal = document.getElementById('waModal');
+        if (event.target == modal) {
+            closeModal();
+        }
+        if (event.target == waModal) {
+            waModal.style.display = "none";
+        }
+    }
 
     document.addEventListener('DOMContentLoaded', () => {
         if(localStorage.getItem('rcmTheme') === 'dark') document.body.classList.add('dark-mode');
