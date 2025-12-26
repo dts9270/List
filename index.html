@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="mr">
 <head>
@@ -66,25 +65,21 @@
             overflow: hidden;
         }
         
-        /* ALERT ANIMATION FOR FOLLOW UP */
         .alert-pulse { animation: pulseRed 2s infinite; border: 1px solid #fecaca; background: #fef2f2; }
         @keyframes pulseRed { 0% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(220, 38, 38, 0); } 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); } }
 
         .stat-num { font-size: 26px; font-weight: 800; margin: 5px 0; color: var(--primary); font-family: 'Inter', sans-serif; }
         .stat-label { font-size: 13px; color: var(--text-light); font-weight: 600; }
 
-        /* CONTROLS */
         .controls { padding: 0 20px 10px 20px; display: flex; gap: 10px; }
         .modern-input { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); color: var(--text-main); font-size: 15px; font-family: 'Mukta', sans-serif; }
 
-        /* REPORT BUTTONS */
         .report-actions { padding: 0 20px 15px 20px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
         .btn-report { padding: 10px; border-radius: 10px; border: none; font-weight: 600; cursor: pointer; color: white; font-size: 12px; display: flex; flex-direction: column; align-items: center; gap: 4px; font-family: 'Mukta', sans-serif; }
         .btn-excel { background: #059669; }
         .btn-pdf { background: #dc2626; }
         .btn-ai { background: linear-gradient(135deg, #7c3aed, #4f46e5); }
 
-        /* LIST CARDS */
         .card-list { padding: 0 20px; }
         .pro-card {
             background: var(--surface);
@@ -97,7 +92,6 @@
             transition: 0.3s;
         }
 
-        /* DUE TODAY HIGHLIGHT */
         .due-today { border: 2px solid #ef4444; background: #fef2f2; }
         body.dark-mode .due-today { background: #371b1b; border-color: #7f1d1d; }
 
@@ -113,19 +107,30 @@
         .s-hot { background: #fee2e2; color: #991b1b; }
         .s-new { background: #e0f2fe; color: #075985; }
 
-        /* NEXT DATE INDICATOR */
         .next-date-pill { background: #eef2ff; color: #4338ca; padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
         .due-pill { background: #fee2e2; color: #b91c1c; animation: pulse 2s infinite; }
 
+        /* NOTE BOX STYLE (NEW) */
+        .note-box {
+            margin-top: 10px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 8px;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #334155;
+            display: flex;
+            gap: 6px;
+            align-items: flex-start;
+        }
+        body.dark-mode .note-box { background: #1e293b; border-color: #334155; color: #cbd5e1; }
+
         .card-actions { margin-top: 15px; display: flex; justify-content: flex-end; gap: 10px; border-top: 1px solid var(--border); padding-top: 12px; }
         .act-btn { width: 36px; height: 36px; border-radius: 10px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; transition:0.2s; }
-        .act-btn:active { transform: scale(0.9); }
-
-        /* MODALS */
+        
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 999; align-items: center; justify-content: center; }
         .modal-content { background: var(--surface); width: 90%; max-width: 400px; border-radius: 24px; padding: 25px; animation: slideUp 0.3s ease; }
         
-        /* WA TEMPLATE BUTTONS */
         .wa-options { display: grid; gap: 10px; margin-top: 15px; }
         .wa-btn { padding: 12px; border: 1px solid var(--border); background: var(--bg); border-radius: 10px; text-align: left; font-size: 15px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 10px; color: var(--text-main); }
         .wa-btn:hover { background: #dcfce7; border-color: #22c55e; }
@@ -237,8 +242,6 @@
     <div class="modal" id="waModal">
         <div class="modal-content">
             <h3 style="margin-top:0;">📲 WhatsApp मेसेज निवडा</h3>
-            <p style="font-size:13px; color:var(--text-light);">कोणता मेसेज पाठवायचा आहे?</p>
-            
             <div class="wa-options">
                 <button class="wa-btn" onclick="sendWA('Intro')">👋 <b>परिचय (Intro)</b><br><small>नवीन लोकांसाठी</small></button>
                 <button class="wa-btn" onclick="sendWA('Plan')">🎥 <b>प्लान व्हिडिओ</b><br><small>व्हिडिओ लिंक पाठवा</small></button>
@@ -250,9 +253,6 @@
     </div>
 
 <script>
-    // -----------------------------------------------------------
-    // 🔴 1. तुमची FIREBASE KEY इथे आहे
-    // -----------------------------------------------------------
     const firebaseConfig = {
         apiKey: "AIzaSyB-AA1oAWceBEr6NCDbXATdpKdO8ks7jks", 
         authDomain: "list-b182e.firebaseapp.com",
@@ -264,12 +264,10 @@
 
     const app = firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
-    
-    // 🔴 2. जुना डेटा परत मिळवण्यासाठी हे नाव "rcm_prospects" केले आहे
-    const collectionName = "rcm_prospects"; 
+    const collectionName = "rcm_prospects"; // Old Data
 
     let prospectsData = [];
-    let selectedContact = { mobile: '', name: '' }; // For WA Modal
+    let selectedContact = { mobile: '', name: '' };
 
     document.addEventListener('DOMContentLoaded', () => {
         if(localStorage.getItem('rcmTheme') === 'dark') document.body.classList.add('dark-mode');
@@ -292,15 +290,11 @@
         localStorage.setItem('rcmTheme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
     }
 
-    // --- DASHBOARD LOGIC ---
     function updateDashboard() {
         const today = new Date().toISOString().split('T')[0];
-        
         const total = prospectsData.length;
         const joined = prospectsData.filter(p => p.status === 'Joined').length;
         const hot = prospectsData.filter(p => p.category === 'Hot').length;
-        
-        // Due Today Logic
         const due = prospectsData.filter(p => p.nextDate && p.nextDate <= today && p.status !== 'Joined').length;
 
         document.getElementById("d-total").innerText = total;
@@ -313,19 +307,15 @@
         else dueCard.classList.remove('alert-pulse');
     }
 
-    // --- LIST RENDER ---
     function renderList() {
         const listDiv = document.getElementById('list');
         const search = document.getElementById('search').value.toLowerCase();
         const filter = document.getElementById('filter').value;
         const today = new Date().toISOString().split('T')[0];
-        
         listDiv.innerHTML = '';
 
         const filtered = prospectsData.filter(p => {
-            if(filter === 'Today') {
-                return p.nextDate && p.nextDate <= today && p.status !== 'Joined';
-            }
+            if(filter === 'Today') return p.nextDate && p.nextDate <= today && p.status !== 'Joined';
             if(filter !== 'All' && p.status !== filter && p.category !== filter) return false;
             if(search && !p.name.toLowerCase().includes(search) && !p.city.toLowerCase().includes(search)) return false;
             return true;
@@ -348,6 +338,12 @@
                 nextDateBadge = `<span class="next-date-pill ${dClass}">${icon} Next: ${p.nextDate}</span>`;
             }
 
+            // NOTE: Added Note Display Here
+            let noteHtml = '';
+            if(p.interests) {
+                noteHtml = `<div class="note-box">📝 <span>${p.interests}</span></div>`;
+            }
+
             const html = `
                 <div class="${cardClass}">
                     <div class="card-header">
@@ -367,6 +363,8 @@
                                 ${nextDateBadge}
                                 ${p.product ? `<span style="font-size:11px; background:#f3f4f6; padding:2px 6px; border-radius:4px; color:#4b5563;">🛍️ ${p.product}</span>` : ''}
                             </div>
+                            
+                            ${noteHtml}
                         </div>
                     </div>
 
@@ -381,7 +379,6 @@
         });
     }
 
-    // --- WHATSAPP LOGIC ---
     function openWA(mobile, name) {
         selectedContact = { mobile, name };
         document.getElementById('waModal').style.display = 'flex';
@@ -390,42 +387,24 @@
     function sendWA(type) {
         const { mobile, name } = selectedContact;
         let msg = "";
+        if(type === 'Intro') msg = `नमस्कार ${name}, मी दीपक. RCM बिजनेस बद्दल माहिती देण्यासाठी संपर्क केला होता.`;
+        else if(type === 'Plan') msg = `नमस्कार ${name}, RCM बिजनेसचा हा छोटा व्हिडिओ नक्की पहा. [Link]`;
+        else if(type === 'FollowUp') msg = `नमस्कार ${name}, आपली RCM बद्दल बोलणी झाली होती. पुढची स्टेप काय करायची?`;
 
-        if(type === 'Intro') {
-            msg = `नमस्कार ${name}, मी दीपक. RCM बिजनेस बद्दल माहिती देण्यासाठी तुम्हाला संपर्क केला होता. तुम्हाला अधिक माहिती हवी असल्यास सांगा.`;
-        } else if(type === 'Plan') {
-            msg = `नमस्कार ${name}, RCM बिजनेसचा हा छोटा व्हिडिओ नक्की पहा. यामुळे तुम्हाला बिजनेसची ताकद समजेल. [Link]`;
-        } else if(type === 'FollowUp') {
-            msg = `नमस्कार ${name}, आपली RCM बद्दल बोलणी झाली होती. पुढची स्टेप काय करायची? तुमची काही शंका असल्यास नक्की विचारा.`;
-        }
-
-        const url = `https://wa.me/91${mobile}?text=${encodeURIComponent(msg)}`;
-        window.open(url, '_blank');
+        window.open(`https://wa.me/91${mobile}?text=${encodeURIComponent(msg)}`, '_blank');
         document.getElementById('waModal').style.display = 'none';
     }
 
-    // --- AI & EXPORT ---
     function generateAIReport() {
         const joined = prospectsData.filter(p => p.status === 'Joined').length;
         const total = prospectsData.length;
         let rate = total > 0 ? Math.round((joined / total) * 100) : 0;
-        
-        let msg = `📊 **तुमचा रिपोर्ट:**\n`;
-        msg += `एकूण लिस्ट: ${total}\n`;
-        msg += `जॉईन झाले: ${joined} (${rate}%)\n\n`;
-        msg += `💡 **AI टीप:** `;
-        
-        if(rate < 10) msg += `फॉलो-अप वाढवा! 🔔 ज्यांची 'Next Date' आज आहे, त्यांना आधी कॉल करा.`;
-        else msg += `तुमचे काम उत्तम आहे! 🔥 'Hot' प्रॉस्पेक्ट्सना व्हिडीओ पाठवा.`;
-
-        alert(msg);
+        alert(`📊 रिपोर्ट: ${total} पैकी ${joined} जॉईन (${rate}%). \n💡 टीप: फॉलो-अपवर लक्ष द्या.`);
     }
 
     function exportToExcel() {
         if(prospectsData.length === 0) return alert("No Data");
-        const formatted = prospectsData.map((p, i) => ({
-            "Sr": i+1, "Name": p.name, "Mobile": p.mobile, "Next FollowUp": p.nextDate, "Status": p.status, "Product Interest": p.product
-        }));
+        const formatted = prospectsData.map((p, i) => ({ "Sr": i+1, "Name": p.name, "Mobile": p.mobile, "Next": p.nextDate, "Status": p.status, "Note": p.interests }));
         const ws = XLSX.utils.json_to_sheet(formatted);
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, "RCM Data");
@@ -436,13 +415,12 @@
         if(prospectsData.length === 0) return alert("No Data");
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
-        doc.text("Team Unique - Call List", 14, 20);
-        const rows = prospectsData.map((p, i) => [i+1, p.name, p.mobile, p.nextDate || '-', p.status]);
-        doc.autoTable({ head: [["#", "Name", "Mobile", "FollowUp", "Status"]], body: rows, startY: 30 });
-        doc.save("RCM_FollowUp_List.pdf");
+        doc.text("Team Unique List", 14, 20);
+        const rows = prospectsData.map((p, i) => [i+1, p.name, p.mobile, p.nextDate, p.interests]);
+        doc.autoTable({ head: [["#", "Name", "Mobile", "Date", "Note"]], body: rows, startY: 30 });
+        doc.save("RCM_List.pdf");
     }
 
-    // --- CRUD ---
     function saveData() {
         const id = document.getElementById('docId').value;
         const btn = document.getElementById('saveBtn');
@@ -452,11 +430,8 @@
             city: document.getElementById('pCity').value,
             category: document.getElementById('pCategory').value,
             status: document.getElementById('pStatus').value,
-            
-            // New Fields
             nextDate: document.getElementById('pNextDate').value, 
             product: document.getElementById('pProduct').value,
-
             ref: document.getElementById('pRef').value,
             interests: document.getElementById('pInterests').value,
             updatedAt: new Date().toISOString()
@@ -469,10 +444,8 @@
         action.then(() => { closeModal(); btn.innerText = "सेव्ह करा"; btn.disabled = false; }).catch(e => { alert(e); btn.disabled = false; });
     }
 
-    function deleteItem(id) {
-        if(confirm("डिलीट करायचे का?")) db.collection(collectionName).doc(id).delete();
-    }
-
+    function deleteItem(id) { if(confirm("डिलीट?")) db.collection(collectionName).doc(id).delete(); }
+    
     function openModal(id = null) {
         document.getElementById('entryModal').style.display = 'flex';
         const today = new Date().toISOString().split('T')[0];
@@ -484,14 +457,11 @@
             document.getElementById('pCity').value = p.city;
             document.getElementById('pCategory').value = p.category;
             document.getElementById('pStatus').value = p.status;
-            
             document.getElementById('pNextDate').value = p.nextDate || '';
             document.getElementById('pProduct').value = p.product || '';
-
             document.getElementById('pRef').value = p.ref || '';
             document.getElementById('pInterests').value = p.interests || '';
         } else {
-            // Reset Form
             document.getElementById('docId').value = '';
             document.getElementById('pName').value = '';
             document.getElementById('pMobile').value = '';
@@ -508,3 +478,4 @@
 
 </body>
 </html>
+
