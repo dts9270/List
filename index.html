@@ -33,6 +33,7 @@
 
         body { 
             font-family: 'Mukta', sans-serif; 
+            /* Tricolor Background */
             background: linear-gradient(180deg, #FF9933 0%, #FFFFFF 45%, #FFFFFF 55%, #138808 100%);
             background-attachment: fixed;
             color: var(--text-main); 
@@ -53,6 +54,7 @@
         .top-nav { display: flex; justify-content: space-between; align-items: center; }
         .theme-toggle { background: rgba(255,255,255,0.2); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; }
 
+        /* --- COLORFUL DASHBOARD CARDS --- */
         .dash-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -62,21 +64,27 @@
             margin-bottom: 20px;
         }
         .stat-card {
-            background: rgba(255, 255, 255, 0.95);
             padding: 15px;
             border-radius: 16px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
             text-align: center;
-            border: 1px solid var(--border);
+            border: 1px solid rgba(255,255,255,0.5);
             position: relative;
             overflow: hidden;
+            color: #1e293b;
         }
         
-        .alert-pulse { animation: pulseRed 2s infinite; border: 1px solid #fecaca; background: #fff1f2; }
+        /* Specific Colors for Cards */
+        .card-red { background: linear-gradient(135deg, #fee2e2, #fecaca); color: #7f1d1d; border-color: #fca5a5; }
+        .card-green { background: linear-gradient(135deg, #dcfce7, #bbf7d0); color: #14532d; border-color: #86efac; }
+        .card-blue { background: linear-gradient(135deg, #dbeafe, #bfdbfe); color: #1e3a8a; border-color: #93c5fd; }
+        .card-orange { background: linear-gradient(135deg, #ffedd5, #fed7aa); color: #7c2d12; border-color: #fdba74; }
+
+        .alert-pulse { animation: pulseRed 2s infinite; border: 2px solid #ef4444; }
         @keyframes pulseRed { 0% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(220, 38, 38, 0); } 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); } }
 
-        .stat-num { font-size: 26px; font-weight: 800; margin: 5px 0; color: var(--primary); font-family: 'Inter', sans-serif; }
-        .stat-label { font-size: 13px; color: var(--text-light); font-weight: 600; }
+        .stat-num { font-size: 26px; font-weight: 800; margin: 5px 0; font-family: 'Inter', sans-serif; }
+        .stat-label { font-size: 13px; font-weight: 700; opacity: 0.8; }
 
         .controls { padding: 0 20px 10px 20px; display: flex; gap: 10px; }
         .modern-input { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 12px; background: rgba(255,255,255,0.9); color: var(--text-main); font-size: 15px; font-family: 'Mukta', sans-serif; }
@@ -133,7 +141,7 @@
         .act-btn { width: 42px; height: 42px; border-radius: 12px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 19px; transition:0.2s; text-decoration: none; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .act-btn:hover { transform: scale(1.1); }
         
-        /* --- FIX: MODAL SCROLL & CLOSE BUTTON --- */
+        /* Modal Styles */
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 999; align-items: center; justify-content: center; }
         
         .modal-content { 
@@ -144,12 +152,10 @@
             padding: 25px; 
             animation: slideUp 0.3s ease;
             position: relative;
-            /* Scroll Logic */
-            max-height: 85vh; /* Maximum height 85% of screen */
-            overflow-y: auto; /* Enable scroll if content overflows */
+            max-height: 85vh; 
+            overflow-y: auto; 
         }
         
-        /* Top Close Button */
         .close-icon {
             position: absolute;
             top: 15px;
@@ -182,21 +188,21 @@
     </div>
 
     <div class="dash-grid">
-        <div class="stat-card alert-pulse" id="card-due">
-            <div class="stat-num" style="color:#dc2626;" id="d-due">0</div>
+        <div class="stat-card card-red alert-pulse" id="card-due">
+            <div class="stat-num" id="d-due">0</div>
             <div class="stat-label">🔔 आजचे कॉल्स (Today)</div>
         </div>
-        <div class="stat-card">
-            <div class="stat-num" style="color:#138808;" id="d-joined">0</div>
-            <div class="stat-label">जॉईन झाले</div>
+        <div class="stat-card card-green">
+            <div class="stat-num" id="d-joined">0</div>
+            <div class="stat-label">✅ जॉईन झाले</div>
         </div>
-        <div class="stat-card">
+        <div class="stat-card card-blue">
             <div class="stat-num" id="d-total">0</div>
-            <div class="stat-label">एकूण लिस्ट</div>
+            <div class="stat-label">📋 एकूण लिस्ट</div>
         </div>
-        <div class="stat-card">
-            <div class="stat-num" style="color:#FF9933;" id="d-hot">0</div>
-            <div class="stat-label">Hot प्रॉस्पेक्ट्स</div>
+        <div class="stat-card card-orange">
+            <div class="stat-num" id="d-hot">0</div>
+            <div class="stat-label">🔥 Hot प्रॉस्पेक्ट्स</div>
         </div>
     </div>
 
@@ -224,7 +230,6 @@
     <div class="modal" id="entryModal">
         <div class="modal-content">
             <span class="close-icon" onclick="closeModal()">&times;</span>
-            
             <h3 style="margin-top:0; color:#000080;">प्रॉस्पेक्ट डिटेल्स</h3>
             <input type="hidden" id="docId">
             
@@ -304,16 +309,11 @@
     let prospectsData = [];
     let selectedContact = { mobile: '', name: '' };
 
-    // CLOSE MODAL ON OUTSIDE CLICK
     window.onclick = function(event) {
         const modal = document.getElementById('entryModal');
         const waModal = document.getElementById('waModal');
-        if (event.target == modal) {
-            closeModal();
-        }
-        if (event.target == waModal) {
-            waModal.style.display = "none";
-        }
+        if (event.target == modal) closeModal();
+        if (event.target == waModal) waModal.style.display = "none";
     }
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -508,7 +508,21 @@
         action.then(() => { closeModal(); btn.innerText = "सेव्ह करा"; btn.disabled = false; }).catch(e => { alert(e); btn.disabled = false; });
     }
 
-    function deleteItem(id) { if(confirm("डिलीट?")) db.collection(collectionName).doc(id).delete(); }
+    // --- SECURE DELETE FUNCTION ---
+    function deleteItem(id) {
+        // Step 1: Normal Confirmation
+        if (confirm("ही माहिती कायमची डिलीट करायची का? (Are you sure?)")) {
+            // Step 2: Code Verification
+            let code = prompt("डिलीट करण्यासाठी सिक्युरिटी कोड टाका (Code: 2026):");
+            if (code === "2026") {
+                db.collection(collectionName).doc(id).delete()
+                    .then(() => alert("माहिती यशस्वीरित्या डिलीट केली."))
+                    .catch(e => alert("Error: " + e));
+            } else {
+                alert("❌ चुकीचा कोड! माहिती डिलीट केली नाही.");
+            }
+        }
+    }
     
     function openModal(id = null) {
         document.getElementById('entryModal').style.display = 'flex';
