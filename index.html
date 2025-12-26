@@ -16,7 +16,6 @@
     <style>
         :root {
             --primary: #4f46e5;
-            --danger: #dc2626;
             --bg: #f3f4f6;
             --surface: #ffffff;
             --text-main: #111827;
@@ -25,11 +24,11 @@
         }
 
         body.dark-mode {
-            --bg: #111827;
-            --surface: #1f2937;
-            --text-main: #f9fafb;
-            --text-light: #9ca3af;
-            --border: #374151;
+            --bg: #0f172a;
+            --surface: #1e293b;
+            --text-main: #f8fafc;
+            --text-light: #94a3b8;
+            --border: #334155;
         }
 
         body { font-family: 'Mukta', sans-serif; background: var(--bg); color: var(--text-main); margin: 0; padding-bottom: 100px; }
@@ -81,52 +80,81 @@
         .btn-ai { background: linear-gradient(135deg, #7c3aed, #4f46e5); }
 
         .card-list { padding: 0 20px; }
+        
+        /* --- NEW ATTRACTIVE CARD STYLE --- */
         .pro-card {
-            background: var(--surface);
-            border-radius: 16px;
-            padding: 18px;
-            margin-bottom: 12px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
-            border: 1px solid var(--border);
+            /* Subtle Gradient Background */
+            background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+            border-radius: 18px;
+            padding: 20px;
+            margin-bottom: 15px;
+            /* Soft Shadow */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            border: 1px solid rgba(255,255,255,0.8);
             position: relative;
-            transition: 0.3s;
+            transition: all 0.3s ease;
+            overflow: hidden;
         }
 
-        .due-today { border: 2px solid #ef4444; background: #fef2f2; }
-        body.dark-mode .due-today { background: #371b1b; border-color: #7f1d1d; }
+        /* Hover Animation: Lift up */
+        .pro-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.08);
+        }
+
+        /* Dark Mode Card */
+        body.dark-mode .pro-card {
+            background: linear-gradient(145deg, #1e293b 0%, #162032 100%);
+            border-color: #334155;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        /* Status Colors Borders */
+        .pro-card.status-joined { border-left: 5px solid #10b981; }
+        .pro-card.status-hot { border-left: 5px solid #ef4444; }
+        .pro-card.status-new { border-left: 5px solid #3b82f6; }
+
+        .due-today { border: 2px solid #ef4444 !important; background: #fff1f2 !important; }
+        body.dark-mode .due-today { background: #450a0a !important; }
 
         .card-header { display: flex; align-items: flex-start; gap: 12px; }
-        .num-badge { background: var(--bg); color: var(--text-main); width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; border: 2px solid var(--border); flex-shrink: 0; font-family: 'Inter', sans-serif; }
+        .num-badge { background: var(--bg); color: var(--text-main); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; border: 2px solid var(--border); flex-shrink: 0; font-family: 'Inter', sans-serif; }
 
         .info-area { flex-grow: 1; }
-        .p-name { font-weight: 700; font-size: 17px; margin-bottom: 4px; display:flex; justify-content:space-between; }
+        .p-name { font-weight: 700; font-size: 18px; margin-bottom: 5px; display:flex; justify-content:space-between; color: var(--primary); }
+        body.dark-mode .p-name { color: #60a5fa; }
+
         .p-details { font-size: 13px; color: var(--text-light); display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top:5px; }
         
-        .status-badge { font-size: 11px; padding: 2px 8px; border-radius: 20px; font-weight: 600; text-transform: uppercase; }
+        .status-badge { font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
         .s-joined { background: #d1fae5; color: #065f46; }
         .s-hot { background: #fee2e2; color: #991b1b; }
         .s-new { background: #e0f2fe; color: #075985; }
 
-        .next-date-pill { background: #eef2ff; color: #4338ca; padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
+        .next-date-pill { background: #eef2ff; color: #4338ca; padding: 3px 10px; border-radius: 8px; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 5px; }
         .due-pill { background: #fee2e2; color: #b91c1c; animation: pulse 2s infinite; }
 
-        /* NOTE BOX STYLE (NEW) */
         .note-box {
-            margin-top: 10px;
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            padding: 8px;
-            border-radius: 8px;
+            margin-top: 12px;
+            background: rgba(0,0,0,0.03);
+            border-left: 3px solid var(--text-light);
+            padding: 8px 12px;
+            border-radius: 0 8px 8px 0;
             font-size: 13px;
-            color: #334155;
+            color: var(--text-main);
             display: flex;
             gap: 6px;
-            align-items: flex-start;
+            align-items: center;
         }
-        body.dark-mode .note-box { background: #1e293b; border-color: #334155; color: #cbd5e1; }
 
-        .card-actions { margin-top: 15px; display: flex; justify-content: flex-end; gap: 10px; border-top: 1px solid var(--border); padding-top: 12px; }
-        .act-btn { width: 36px; height: 36px; border-radius: 10px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; transition:0.2s; }
+        .card-actions { margin-top: 15px; display: flex; justify-content: flex-end; gap: 8px; border-top: 1px solid var(--border); padding-top: 12px; }
+        
+        /* Attractive Buttons */
+        .act-btn { 
+            width: 42px; height: 42px; border-radius: 12px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 19px; transition:0.2s; text-decoration: none; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .act-btn:hover { transform: scale(1.1); }
         
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 999; align-items: center; justify-content: center; }
         .modal-content { background: var(--surface); width: 90%; max-width: 400px; border-radius: 24px; padding: 25px; animation: slideUp 0.3s ease; }
@@ -329,7 +357,14 @@
         filtered.forEach((p, index) => {
             let statusClass = p.status === 'Joined' ? 's-joined' : (p.category === 'Hot' ? 's-hot' : 's-new');
             let isDue = p.nextDate && p.nextDate <= today && p.status !== 'Joined';
-            let cardClass = isDue ? 'pro-card due-today' : 'pro-card';
+            
+            // Background Logic based on status
+            let statusBorderClass = '';
+            if(p.status === 'Joined') statusBorderClass = 'status-joined';
+            else if(p.category === 'Hot') statusBorderClass = 'status-hot';
+            else statusBorderClass = 'status-new';
+
+            let cardClass = isDue ? `pro-card ${statusBorderClass} due-today` : `pro-card ${statusBorderClass}`;
             
             let nextDateBadge = '';
             if(p.nextDate) {
@@ -338,7 +373,6 @@
                 nextDateBadge = `<span class="next-date-pill ${dClass}">${icon} Next: ${p.nextDate}</span>`;
             }
 
-            // NOTE: Added Note Display Here
             let noteHtml = '';
             if(p.interests) {
                 noteHtml = `<div class="note-box">📝 <span>${p.interests}</span></div>`;
@@ -369,9 +403,10 @@
                     </div>
 
                     <div class="card-actions">
-                        <button class="act-btn" style="background:#dcfce7; color:#166534;" onclick="openWA('${p.mobile}', '${p.name}')">💬</button>
-                        <button class="act-btn" style="background:#eff6ff; color:#1d4ed8;" onclick="openModal('${p.id}')">✏️</button>
-                        <button class="act-btn" style="background:#fee2e2; color:#b91c1c;" onclick="deleteItem('${p.id}')">🗑️</button>
+                        <a href="tel:${p.mobile}" class="act-btn" style="background:#e0e7ff; color:#3730a3;" title="Direct Call">📞</a>
+                        <button class="act-btn" style="background:#dcfce7; color:#166534;" onclick="openWA('${p.mobile}', '${p.name}')" title="WhatsApp">💬</button>
+                        <button class="act-btn" style="background:#f3f4f6; color:#4b5563;" onclick="openModal('${p.id}')" title="Edit">✏️</button>
+                        <button class="act-btn" style="background:#fee2e2; color:#b91c1c;" onclick="deleteItem('${p.id}')" title="Delete">🗑️</button>
                     </div>
                 </div>
             `;
