@@ -15,7 +15,7 @@
 
     <style>
         :root {
-            --primary: #4f46e5;
+            --primary: #000080; /* Navy Blue (Ashoka Chakra Color) for Text */
             --bg: #f3f4f6;
             --surface: #ffffff;
             --text-main: #111827;
@@ -31,15 +31,26 @@
             --border: #334155;
         }
 
-        body { font-family: 'Mukta', sans-serif; background: var(--bg); color: var(--text-main); margin: 0; padding-bottom: 100px; }
+        body { 
+            font-family: 'Mukta', sans-serif; 
+            /* 🇮🇳 TRICOLOR BACKGROUND 🇮🇳 */
+            background: linear-gradient(180deg, #FF9933 0%, #FFFFFF 45%, #FFFFFF 55%, #138808 100%);
+            background-attachment: fixed; /* Scroll करताना बॅकग्राउंड हलू नये */
+            color: var(--text-main); 
+            margin: 0; 
+            padding-bottom: 100px;
+            min-height: 100vh;
+        }
+        
         * { box-sizing: border-box; outline: none; }
 
         .header {
-            background: linear-gradient(135deg, #4338ca, #3b82f6);
+            /* Header Blue (Like Ashoka Chakra) */
+            background: linear-gradient(135deg, #000080, #1e3a8a);
             padding: 20px 20px 80px 20px;
             color: white;
             border-radius: 0 0 30px 30px;
-            box-shadow: 0 4px 20px rgba(67, 56, 202, 0.4);
+            box-shadow: 0 4px 20px rgba(0, 0, 128, 0.4);
         }
         .top-nav { display: flex; justify-content: space-between; align-items: center; }
         .theme-toggle { background: rgba(255,255,255,0.2); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; }
@@ -54,65 +65,50 @@
             margin-bottom: 20px;
         }
         .stat-card {
-            background: var(--surface);
+            background: rgba(255, 255, 255, 0.95); /* Slight transparency */
             padding: 15px;
             border-radius: 16px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             text-align: center;
             border: 1px solid var(--border);
             position: relative;
             overflow: hidden;
         }
         
-        .alert-pulse { animation: pulseRed 2s infinite; border: 1px solid #fecaca; background: #fef2f2; }
+        .alert-pulse { animation: pulseRed 2s infinite; border: 1px solid #fecaca; background: #fff1f2; }
         @keyframes pulseRed { 0% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(220, 38, 38, 0); } 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); } }
 
         .stat-num { font-size: 26px; font-weight: 800; margin: 5px 0; color: var(--primary); font-family: 'Inter', sans-serif; }
         .stat-label { font-size: 13px; color: var(--text-light); font-weight: 600; }
 
         .controls { padding: 0 20px 10px 20px; display: flex; gap: 10px; }
-        .modern-input { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); color: var(--text-main); font-size: 15px; font-family: 'Mukta', sans-serif; }
+        .modern-input { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 12px; background: rgba(255,255,255,0.9); color: var(--text-main); font-size: 15px; font-family: 'Mukta', sans-serif; }
 
         .report-actions { padding: 0 20px 15px 20px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
-        .btn-report { padding: 10px; border-radius: 10px; border: none; font-weight: 600; cursor: pointer; color: white; font-size: 12px; display: flex; flex-direction: column; align-items: center; gap: 4px; font-family: 'Mukta', sans-serif; }
-        .btn-excel { background: #059669; }
-        .btn-pdf { background: #dc2626; }
-        .btn-ai { background: linear-gradient(135deg, #7c3aed, #4f46e5); }
+        .btn-report { padding: 10px; border-radius: 10px; border: none; font-weight: 600; cursor: pointer; color: white; font-size: 12px; display: flex; flex-direction: column; align-items: center; gap: 4px; font-family: 'Mukta', sans-serif; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .btn-excel { background: #138808; } /* Green */
+        .btn-pdf { background: #FF9933; } /* Saffron */
+        .btn-ai { background: #000080; } /* Blue */
 
         .card-list { padding: 0 20px; }
         
-        /* --- NEW ATTRACTIVE CARD STYLE --- */
         .pro-card {
-            /* Subtle Gradient Background */
-            background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+            background: rgba(255, 255, 255, 0.95); /* High contrast against background */
             border-radius: 18px;
             padding: 20px;
             margin-bottom: 15px;
-            /* Soft Shadow */
-            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
             border: 1px solid rgba(255,255,255,0.8);
             position: relative;
             transition: all 0.3s ease;
             overflow: hidden;
         }
+        .pro-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.15); }
+        body.dark-mode .pro-card { background: linear-gradient(145deg, #1e293b 0%, #162032 100%); border-color: #334155; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
 
-        /* Hover Animation: Lift up */
-        .pro-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.08);
-        }
-
-        /* Dark Mode Card */
-        body.dark-mode .pro-card {
-            background: linear-gradient(145deg, #1e293b 0%, #162032 100%);
-            border-color: #334155;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-
-        /* Status Colors Borders */
-        .pro-card.status-joined { border-left: 5px solid #10b981; }
-        .pro-card.status-hot { border-left: 5px solid #ef4444; }
-        .pro-card.status-new { border-left: 5px solid #3b82f6; }
+        .pro-card.status-joined { border-left: 5px solid #138808; }
+        .pro-card.status-hot { border-left: 5px solid #FF9933; }
+        .pro-card.status-new { border-left: 5px solid #000080; }
 
         .due-today { border: 2px solid #ef4444 !important; background: #fff1f2 !important; }
         body.dark-mode .due-today { background: #450a0a !important; }
@@ -121,39 +117,23 @@
         .num-badge { background: var(--bg); color: var(--text-main); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; border: 2px solid var(--border); flex-shrink: 0; font-family: 'Inter', sans-serif; }
 
         .info-area { flex-grow: 1; }
-        .p-name { font-weight: 700; font-size: 18px; margin-bottom: 5px; display:flex; justify-content:space-between; color: var(--primary); }
+        .p-name { font-weight: 700; font-size: 18px; margin-bottom: 5px; display:flex; justify-content:space-between; color: #000080; }
         body.dark-mode .p-name { color: #60a5fa; }
 
         .p-details { font-size: 13px; color: var(--text-light); display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top:5px; }
         
         .status-badge { font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
         .s-joined { background: #d1fae5; color: #065f46; }
-        .s-hot { background: #fee2e2; color: #991b1b; }
+        .s-hot { background: #ffedd5; color: #c2410c; }
         .s-new { background: #e0f2fe; color: #075985; }
 
         .next-date-pill { background: #eef2ff; color: #4338ca; padding: 3px 10px; border-radius: 8px; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 5px; }
         .due-pill { background: #fee2e2; color: #b91c1c; animation: pulse 2s infinite; }
 
-        .note-box {
-            margin-top: 12px;
-            background: rgba(0,0,0,0.03);
-            border-left: 3px solid var(--text-light);
-            padding: 8px 12px;
-            border-radius: 0 8px 8px 0;
-            font-size: 13px;
-            color: var(--text-main);
-            display: flex;
-            gap: 6px;
-            align-items: center;
-        }
+        .note-box { margin-top: 12px; background: rgba(0,0,0,0.05); border-left: 3px solid var(--text-light); padding: 8px 12px; border-radius: 0 8px 8px 0; font-size: 13px; color: var(--text-main); display: flex; gap: 6px; align-items: center; }
 
         .card-actions { margin-top: 15px; display: flex; justify-content: flex-end; gap: 8px; border-top: 1px solid var(--border); padding-top: 12px; }
-        
-        /* Attractive Buttons */
-        .act-btn { 
-            width: 42px; height: 42px; border-radius: 12px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 19px; transition:0.2s; text-decoration: none; 
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
+        .act-btn { width: 42px; height: 42px; border-radius: 12px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 19px; transition:0.2s; text-decoration: none; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .act-btn:hover { transform: scale(1.1); }
         
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 999; align-items: center; justify-content: center; }
@@ -163,8 +143,8 @@
         .wa-btn { padding: 12px; border: 1px solid var(--border); background: var(--bg); border-radius: 10px; text-align: left; font-size: 15px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 10px; color: var(--text-main); }
         .wa-btn:hover { background: #dcfce7; border-color: #22c55e; }
 
-        .full-btn { width: 100%; padding: 14px; background: var(--primary); color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; margin-top: 15px; cursor: pointer; }
-        .fab { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; background: linear-gradient(135deg, #e11d48, #be123c); border-radius: 20px; color: white; font-size: 30px; border: none; box-shadow: 0 10px 20px rgba(225, 29, 72, 0.4); cursor: pointer; z-index: 100; }
+        .full-btn { width: 100%; padding: 14px; background: linear-gradient(135deg, #FF9933, #e68a00); color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; margin-top: 15px; cursor: pointer; }
+        .fab { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; background: linear-gradient(135deg, #000080, #1e3a8a); border-radius: 20px; color: white; font-size: 30px; border: none; box-shadow: 0 10px 20px rgba(0, 0, 128, 0.4); cursor: pointer; z-index: 100; }
         
         @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     </style>
@@ -173,7 +153,7 @@
 
     <div class="header">
         <div class="top-nav">
-            <h2 style="margin:0;">Team Unique</h2>
+            <h2 style="margin:0;">Team Unique 🇮🇳</h2>
             <button class="theme-toggle" onclick="toggleTheme()">🌗</button>
         </div>
         <p style="margin:5px 0 0 0; opacity:0.8; font-size:14px;">Next Level Business Tool</p>
@@ -185,7 +165,7 @@
             <div class="stat-label">🔔 आजचे कॉल्स (Today)</div>
         </div>
         <div class="stat-card">
-            <div class="stat-num" style="color:#059669;" id="d-joined">0</div>
+            <div class="stat-num" style="color:#138808;" id="d-joined">0</div>
             <div class="stat-label">जॉईन झाले</div>
         </div>
         <div class="stat-card">
@@ -193,7 +173,7 @@
             <div class="stat-label">एकूण लिस्ट</div>
         </div>
         <div class="stat-card">
-            <div class="stat-num" style="color:#d97706;" id="d-hot">0</div>
+            <div class="stat-num" style="color:#FF9933;" id="d-hot">0</div>
             <div class="stat-label">Hot प्रॉस्पेक्ट्स</div>
         </div>
     </div>
@@ -214,14 +194,14 @@
         <button class="btn-report btn-pdf" onclick="exportToPDF()">📄 PDF</button>
     </div>
 
-    <div id="loading" style="text-align:center; padding:30px; color:var(--text-light);">Loading...</div>
+    <div id="loading" style="text-align:center; padding:30px; color:#000080; font-weight:600;">Loading...</div>
     <div class="card-list" id="list"></div>
 
     <button class="fab" onclick="openModal()">+</button>
 
     <div class="modal" id="entryModal">
         <div class="modal-content">
-            <h3 style="margin-top:0;">प्रॉस्पेक्ट डिटेल्स</h3>
+            <h3 style="margin-top:0; color:#000080;">प्रॉस्पेक्ट डिटेल्स</h3>
             <input type="hidden" id="docId">
             
             <div style="display:grid; gap:12px;">
@@ -229,11 +209,8 @@
                 <input type="number" class="modern-input" id="pMobile" placeholder="मोबाईल नंबर">
                 
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                    <input type="text" class="modern-input" id="pCity" placeholder="गाव">
-                    <div style="display:flex; flex-direction:column;">
-                        <label style="font-size:11px; color:var(--text-light);">पुढची तारीख (Next)</label>
-                        <input type="date" class="modern-input" id="pNextDate">
-                    </div>
+                    <input type="text" class="modern-input" id="pCity" placeholder="शहर / गाव">
+                    <input type="text" class="modern-input" id="pOccupation" placeholder="व्यवसाय (Job)">
                 </div>
 
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
@@ -247,6 +224,11 @@
                         <option value="Follow Up">फॉलो अप</option>
                         <option value="Joined">जॉईन झाले ✅</option>
                     </select>
+                </div>
+
+                <div style="display:flex; flex-direction:column;">
+                    <label style="font-size:11px; color:var(--text-light);">पुढची तारीख (Next Follow-up)</label>
+                    <input type="date" class="modern-input" id="pNextDate">
                 </div>
 
                 <select class="modern-input" id="pProduct">
@@ -292,7 +274,7 @@
 
     const app = firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
-    const collectionName = "rcm_prospects"; // Old Data
+    const collectionName = "rcm_prospects"; 
 
     let prospectsData = [];
     let selectedContact = { mobile: '', name: '' };
@@ -350,7 +332,7 @@
         });
 
         if(filtered.length === 0) {
-            listDiv.innerHTML = '<div style="text-align:center; color:var(--text-light); margin-top:20px;">माहिती नाही.</div>';
+            listDiv.innerHTML = '<div style="text-align:center; color:#000080; margin-top:20px;">माहिती नाही.</div>';
             return;
         }
 
@@ -358,7 +340,6 @@
             let statusClass = p.status === 'Joined' ? 's-joined' : (p.category === 'Hot' ? 's-hot' : 's-new');
             let isDue = p.nextDate && p.nextDate <= today && p.status !== 'Joined';
             
-            // Background Logic based on status
             let statusBorderClass = '';
             if(p.status === 'Joined') statusBorderClass = 'status-joined';
             else if(p.category === 'Hot') statusBorderClass = 'status-hot';
@@ -390,6 +371,7 @@
                             
                             <div class="p-details">
                                 <span>📍 ${p.city || '-'}</span>
+                                <span>💼 ${p.occupation || '-'}</span>
                                 <span>📞 ${p.mobile}</span>
                             </div>
 
@@ -439,7 +421,16 @@
 
     function exportToExcel() {
         if(prospectsData.length === 0) return alert("No Data");
-        const formatted = prospectsData.map((p, i) => ({ "Sr": i+1, "Name": p.name, "Mobile": p.mobile, "Next": p.nextDate, "Status": p.status, "Note": p.interests }));
+        const formatted = prospectsData.map((p, i) => ({ 
+            "Sr": i+1, 
+            "Name": p.name, 
+            "Mobile": p.mobile,
+            "City": p.city,
+            "Occupation": p.occupation, 
+            "Next": p.nextDate, 
+            "Status": p.status, 
+            "Note": p.interests 
+        }));
         const ws = XLSX.utils.json_to_sheet(formatted);
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, "RCM Data");
@@ -451,8 +442,8 @@
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
         doc.text("Team Unique List", 14, 20);
-        const rows = prospectsData.map((p, i) => [i+1, p.name, p.mobile, p.nextDate, p.interests]);
-        doc.autoTable({ head: [["#", "Name", "Mobile", "Date", "Note"]], body: rows, startY: 30 });
+        const rows = prospectsData.map((p, i) => [i+1, p.name, p.mobile, p.city, p.occupation || '-', p.nextDate]);
+        doc.autoTable({ head: [["#", "Name", "Mobile", "City", "Job", "Date"]], body: rows, startY: 30 });
         doc.save("RCM_List.pdf");
     }
 
@@ -463,6 +454,7 @@
             name: document.getElementById('pName').value,
             mobile: document.getElementById('pMobile').value,
             city: document.getElementById('pCity').value,
+            occupation: document.getElementById('pOccupation').value, 
             category: document.getElementById('pCategory').value,
             status: document.getElementById('pStatus').value,
             nextDate: document.getElementById('pNextDate').value, 
@@ -490,6 +482,7 @@
             document.getElementById('pName').value = p.name;
             document.getElementById('pMobile').value = p.mobile;
             document.getElementById('pCity').value = p.city;
+            document.getElementById('pOccupation').value = p.occupation || ''; 
             document.getElementById('pCategory').value = p.category;
             document.getElementById('pStatus').value = p.status;
             document.getElementById('pNextDate').value = p.nextDate || '';
@@ -501,6 +494,7 @@
             document.getElementById('pName').value = '';
             document.getElementById('pMobile').value = '';
             document.getElementById('pCity').value = '';
+            document.getElementById('pOccupation').value = ''; 
             document.getElementById('pStatus').value = 'New';
             document.getElementById('pNextDate').value = '';
             document.getElementById('pProduct').value = '';
@@ -513,4 +507,3 @@
 
 </body>
 </html>
-
