@@ -12,6 +12,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <style>
         :root {
@@ -33,7 +34,6 @@
 
         body { 
             font-family: 'Mukta', sans-serif; 
-            /* Tricolor Background */
             background: linear-gradient(180deg, #FF9933 0%, #FFFFFF 45%, #FFFFFF 55%, #138808 100%);
             background-attachment: fixed;
             color: var(--text-main); 
@@ -54,7 +54,6 @@
         .top-nav { display: flex; justify-content: space-between; align-items: center; }
         .theme-toggle { background: rgba(255,255,255,0.2); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; }
 
-        /* --- COLORFUL DASHBOARD CARDS --- */
         .dash-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -72,9 +71,9 @@
             position: relative;
             overflow: hidden;
             color: #1e293b;
+            background: rgba(255, 255, 255, 0.95);
         }
         
-        /* Specific Colors for Cards */
         .card-red { background: linear-gradient(135deg, #fee2e2, #fecaca); color: #7f1d1d; border-color: #fca5a5; }
         .card-green { background: linear-gradient(135deg, #dcfce7, #bbf7d0); color: #14532d; border-color: #86efac; }
         .card-blue { background: linear-gradient(135deg, #dbeafe, #bfdbfe); color: #1e3a8a; border-color: #93c5fd; }
@@ -86,8 +85,16 @@
         .stat-num { font-size: 26px; font-weight: 800; margin: 5px 0; font-family: 'Inter', sans-serif; }
         .stat-label { font-size: 13px; font-weight: 700; opacity: 0.8; }
 
-        .controls { padding: 0 20px 10px 20px; display: flex; gap: 10px; }
+        .core-section { margin: 0 20px 20px 20px; background: white; padding: 15px; border-radius: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .core-title { margin: 0 0 10px 0; font-size: 16px; font-weight: 700; color: var(--primary); display: flex; align-items: center; justify-content: space-between; }
+        
+        .checklist-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .chk-item { display: flex; align-items: center; gap: 8px; font-size: 14px; background: #f8fafc; padding: 8px; border-radius: 8px; border: 1px solid #e2e8f0; }
+        .chk-item input { width: 18px; height: 18px; accent-color: #138808; }
+
+        .controls { padding: 0 20px 10px 20px; display: grid; grid-template-columns: 2fr 1.5fr; gap: 10px; }
         .modern-input { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 12px; background: rgba(255,255,255,0.9); color: var(--text-main); font-size: 15px; font-family: 'Mukta', sans-serif; }
+        .filter-row { padding: 0 20px 10px 20px; display: flex; gap: 10px; }
 
         .report-actions { padding: 0 20px 15px 20px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
         .btn-report { padding: 10px; border-radius: 10px; border: none; font-weight: 600; cursor: pointer; color: white; font-size: 12px; display: flex; flex-direction: column; align-items: center; gap: 4px; font-family: 'Mukta', sans-serif; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
@@ -109,22 +116,16 @@
             overflow: hidden;
         }
         .pro-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.15); }
-        body.dark-mode .pro-card { background: linear-gradient(145deg, #1e293b 0%, #162032 100%); border-color: #334155; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-
         .pro-card.status-joined { border-left: 5px solid #138808; }
         .pro-card.status-hot { border-left: 5px solid #FF9933; }
         .pro-card.status-new { border-left: 5px solid #000080; }
-
         .due-today { border: 2px solid #ef4444 !important; background: #fff1f2 !important; }
-        body.dark-mode .due-today { background: #450a0a !important; }
 
         .card-header { display: flex; align-items: flex-start; gap: 12px; }
         .num-badge { background: var(--bg); color: var(--text-main); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; border: 2px solid var(--border); flex-shrink: 0; font-family: 'Inter', sans-serif; }
 
         .info-area { flex-grow: 1; }
         .p-name { font-weight: 700; font-size: 18px; margin-bottom: 5px; display:flex; justify-content:space-between; color: #000080; }
-        body.dark-mode .p-name { color: #60a5fa; }
-
         .p-details { font-size: 13px; color: var(--text-light); display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top:5px; }
         
         .status-badge { font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -141,39 +142,38 @@
         .act-btn { width: 42px; height: 42px; border-radius: 12px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 19px; transition:0.2s; text-decoration: none; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .act-btn:hover { transform: scale(1.1); }
         
-        /* Modal Styles */
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 999; align-items: center; justify-content: center; }
-        
-        .modal-content { 
-            background: var(--surface); 
-            width: 90%; 
-            max-width: 400px; 
-            border-radius: 24px; 
-            padding: 25px; 
-            animation: slideUp 0.3s ease;
-            position: relative;
-            max-height: 85vh; 
-            overflow-y: auto; 
-        }
-        
-        .close-icon {
-            position: absolute;
-            top: 15px;
-            right: 20px;
-            font-size: 28px;
-            color: var(--text-light);
-            cursor: pointer;
-            font-weight: bold;
-            line-height: 1;
-        }
+        .modal-content { background: var(--surface); width: 90%; max-width: 400px; border-radius: 24px; padding: 25px; animation: slideUp 0.3s ease; position: relative; max-height: 85vh; overflow-y: auto; }
+        .close-icon { position: absolute; top: 15px; right: 20px; font-size: 28px; color: var(--text-light); cursor: pointer; font-weight: bold; line-height: 1; }
 
         .wa-options { display: grid; gap: 10px; margin-top: 15px; }
         .wa-btn { padding: 12px; border: 1px solid var(--border); background: var(--bg); border-radius: 10px; text-align: left; font-size: 15px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 10px; color: var(--text-main); }
         .wa-btn:hover { background: #dcfce7; border-color: #22c55e; }
 
         .full-btn { width: 100%; padding: 14px; background: linear-gradient(135deg, #FF9933, #e68a00); color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; margin-top: 15px; cursor: pointer; }
+        
+        /* FAB BUTTONS */
+        .fab-video { position: fixed; bottom: 30px; left: 30px; width: 50px; height: 50px; background: white; border-radius: 50%; color: #FF0000; font-size: 24px; border: none; box-shadow: 0 10px 20px rgba(0,0,0,0.2); cursor: pointer; z-index: 100; display:flex; align-items:center; justify-content:center; }
+        
+        .fab-qr { position: fixed; bottom: 90px; left: 30px; width: 50px; height: 50px; background: white; border-radius: 50%; color: #000080; font-size: 24px; border: none; box-shadow: 0 10px 20px rgba(0,0,0,0.2); cursor: pointer; z-index: 100; display:flex; align-items:center; justify-content:center; }
+        
         .fab { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; background: linear-gradient(135deg, #000080, #1e3a8a); border-radius: 20px; color: white; font-size: 30px; border: none; box-shadow: 0 10px 20px rgba(0, 0, 128, 0.4); cursor: pointer; z-index: 100; }
         
+        .vid-link { display: block; padding: 12px; margin-bottom: 8px; background: #fef2f2; border: 1px solid #fee2e2; border-radius: 8px; color: #b91c1c; text-decoration: none; font-weight: 600; }
+        
+        .visit-card {
+            background: linear-gradient(135deg, #000080, #1e3a8a);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,128,0.3);
+            margin-bottom: 20px;
+        }
+        .vc-name { font-size: 22px; font-weight: 700; margin: 0; }
+        .vc-role { font-size: 14px; opacity: 0.8; margin-top: 5px; }
+        .vc-qr { background: white; padding: 10px; border-radius: 10px; display: inline-block; margin: 15px 0; }
+
         @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     </style>
 </head>
@@ -184,7 +184,7 @@
             <h2 style="margin:0;">Team Unique 🇮🇳</h2>
             <button class="theme-toggle" onclick="toggleTheme()">🌗</button>
         </div>
-        <p style="margin:5px 0 0 0; opacity:0.8; font-size:14px;">Next Level Business Tool</p>
+        <p style="margin:5px 0 0 0; opacity:0.8; font-size:14px;">Complete Business System</p>
     </div>
 
     <div class="dash-grid">
@@ -206,11 +206,28 @@
         </div>
     </div>
 
+    <div class="core-section">
+        <h4 class="core-title">📝 आजचे काम (Daily Core)</h4>
+        <div class="checklist-grid">
+            <label class="chk-item"><input type="checkbox" onclick="saveCore(this)" id="core1"> <span>5 कॉल्स</span></label>
+            <label class="chk-item"><input type="checkbox" onclick="saveCore(this)" id="core2"> <span>1 प्लान शो</span></label>
+            <label class="chk-item"><input type="checkbox" onclick="saveCore(this)" id="core3"> <span>30 min व्हिडिओ</span></label>
+            <label class="chk-item"><input type="checkbox" onclick="saveCore(this)" id="core4"> <span>1 प्रॉडक्ट सेल</span></label>
+        </div>
+    </div>
+
     <div class="controls">
-        <input type="text" class="modern-input" id="search" placeholder="🔍 शोधा..." oninput="renderList()">
-        <select class="modern-input" id="filter" onchange="renderList()" style="width:120px;">
-            <option value="All">All</option>
-            <option value="Today">🔔 आजचे</option>
+        <input type="text" class="modern-input" id="search" placeholder="🔍 नाव शोधा..." oninput="renderList()">
+        <select class="modern-input" id="cityFilter" onchange="renderList()">
+            <option value="All">📍 सर्व शहरे</option>
+        </select>
+    </div>
+
+    <div class="filter-row">
+        <select class="modern-input" id="filter" onchange="renderList()">
+            <option value="All">सर्व (All)</option>
+            <option value="Today">🔔 आजचे कॉल्स</option>
+            <option value="Pending">⚠️ Pending (Old)</option>
             <option value="Hot">🔥 Hot</option>
             <option value="Joined">✅ Joined</option>
         </select>
@@ -218,7 +235,7 @@
 
     <div class="report-actions">
         <button class="btn-report btn-ai" onclick="generateAIReport()">🤖 AI सल्ला</button>
-        <button class="btn-report btn-excel" onclick="exportToExcel()">📊 Excel</button>
+        <button class="btn-report btn-excel" onclick="exportToExcel()">📊 Excel (Backup)</button>
         <button class="btn-report btn-pdf" onclick="exportToPDF()">📄 PDF</button>
     </div>
 
@@ -226,6 +243,9 @@
     <div class="card-list" id="list"></div>
 
     <button class="fab" onclick="openModal()">+</button>
+    
+    <button class="fab-video" onclick="document.getElementById('videoModal').style.display='flex'">🎥</button>
+    <button class="fab-qr" onclick="openQRCard()">🆔</button>
 
     <div class="modal" id="entryModal">
         <div class="modal-content">
@@ -288,7 +308,34 @@
                 <button class="wa-btn" onclick="sendWA('FollowUp')">📞 <b>फॉलो अप</b><br><small>पुन्हा चर्चा करण्यासाठी</small></button>
                 <button class="wa-btn" onclick="sendWA('Custom')">💬 <b>नुसते चॅट उघडा</b></button>
             </div>
-            <button class="full-btn" style="background:transparent; color:var(--text-light);" onclick="document.getElementById('waModal').style.display='none'">बंद करा</button>
+        </div>
+    </div>
+
+    <div class="modal" id="videoModal">
+        <div class="modal-content">
+            <span class="close-icon" onclick="document.getElementById('videoModal').style.display='none'">&times;</span>
+            <h3 style="margin-top:0;">🎥 RCM Video Library</h3>
+            <p style="font-size:13px; color:gray;">क्लिक करा आणि व्हिडिओ पहा:</p>
+            <a href="https://www.youtube.com/results?search_query=RCM+Marketing+Plan" target="_blank" class="vid-link">📈 RCM मार्केटिंग प्लान</a>
+            <a href="https://www.youtube.com/results?search_query=Nutricharge+Products" target="_blank" class="vid-link">💊 Nutricharge ट्रेनिंग</a>
+            <a href="https://www.youtube.com/results?search_query=Good+Dot+RCM" target="_blank" class="vid-link">🍲 Good Dot रेसिपी</a>
+            <a href="https://www.youtube.com/results?search_query=RCM+Success+Story" target="_blank" class="vid-link">🏆 सक्सेस स्टोरी</a>
+        </div>
+    </div>
+
+    <div class="modal" id="qrModal">
+        <div class="modal-content" style="text-align:center;">
+            <span class="close-icon" onclick="document.getElementById('qrModal').style.display='none'">&times;</span>
+            <h3 style="margin-top:0;">🆔 डिजिटल व्हिजिटिंग कार्ड</h3>
+            
+            <div class="visit-card">
+                <div class="vc-name">Deepak Shengule</div>
+                <div class="vc-role">RCM Business Associate</div>
+                <div id="qrcode" class="vc-qr"></div>
+                <div style="font-size:12px; margin-top:5px;">स्कॅन करा आणि नंबर सेव्ह करा!</div>
+            </div>
+            
+            <p style="font-size:12px; color:gray;">हा QR कोड कोणालाही दाखवा, तुमचा नंबर त्यांच्या मोबाईलमध्ये लगेच सेव्ह होईल.</p>
         </div>
     </div>
 
@@ -310,14 +357,15 @@
     let selectedContact = { mobile: '', name: '' };
 
     window.onclick = function(event) {
-        const modal = document.getElementById('entryModal');
-        const waModal = document.getElementById('waModal');
-        if (event.target == modal) closeModal();
-        if (event.target == waModal) waModal.style.display = "none";
+        if (event.target.classList.contains('modal')) {
+            event.target.style.display = "none";
+        }
     }
 
     document.addEventListener('DOMContentLoaded', () => {
         if(localStorage.getItem('rcmTheme') === 'dark') document.body.classList.add('dark-mode');
+        loadCore(); 
+        checkAutoBackup();
         
         db.collection(collectionName).orderBy("updatedAt", "desc")
             .onSnapshot((snapshot) => {
@@ -328,6 +376,7 @@
                     prospectsData.push(d);
                 });
                 updateDashboard();
+                populateCities();
                 renderList();
             });
     });
@@ -335,6 +384,66 @@
     function toggleTheme() {
         document.body.classList.toggle('dark-mode');
         localStorage.setItem('rcmTheme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+    }
+
+    // --- QR CARD LOGIC ---
+    function openQRCard() {
+        document.getElementById('qrModal').style.display = 'flex';
+        const qrContainer = document.getElementById("qrcode");
+        qrContainer.innerHTML = ""; // Clear previous
+        
+        // VCard Format for instant contact save
+        const vcard = `BEGIN:VCARD
+VERSION:3.0
+N:Shengule;Deepak;;;
+FN:Deepak Shengule
+ORG:RCM Business
+TEL;TYPE=CELL:919922610349
+END:VCARD`;
+
+        new QRCode(qrContainer, {
+            text: vcard,
+            width: 120,
+            height: 120
+        });
+    }
+
+    function saveCore(el) {
+        let today = new Date().toISOString().split('T')[0];
+        let data = JSON.parse(localStorage.getItem('rcmCore') || '{}');
+        if(data.date !== today) data = { date: today, checks: {} };
+        data.checks[el.id] = el.checked;
+        localStorage.setItem('rcmCore', JSON.stringify(data));
+    }
+    function loadCore() {
+        let today = new Date().toISOString().split('T')[0];
+        let data = JSON.parse(localStorage.getItem('rcmCore') || '{}');
+        if(data.date === today) {
+            for(let id in data.checks) {
+                if(document.getElementById(id)) document.getElementById(id).checked = data.checks[id];
+            }
+        }
+    }
+
+    function checkAutoBackup() {
+        let lastBackup = localStorage.getItem('rcmLastBackup');
+        let now = Date.now();
+        if(!lastBackup || (now - lastBackup > 7 * 24 * 60 * 60 * 1000)) {
+            setTimeout(() => {
+                if(confirm("⚠️ बॅकअप रिमाइंडर:\nतुम्ही 7 दिवसांपासून बॅकअप घेतला नाही. Excel फाईल डाउनलोड करायची का?")) {
+                    exportToExcel();
+                }
+            }, 3000);
+        }
+    }
+
+    function populateCities() {
+        const cities = [...new Set(prospectsData.map(p => p.city).filter(c => c && c.trim() !== ''))];
+        const sel = document.getElementById('cityFilter');
+        sel.innerHTML = '<option value="All">📍 सर्व शहरे</option>';
+        cities.sort().forEach(c => {
+            sel.innerHTML += `<option value="${c}">${c}</option>`;
+        });
     }
 
     function updateDashboard() {
@@ -358,12 +467,25 @@
         const listDiv = document.getElementById('list');
         const search = document.getElementById('search').value.toLowerCase();
         const filter = document.getElementById('filter').value;
+        const cityFilter = document.getElementById('cityFilter').value; 
         const today = new Date().toISOString().split('T')[0];
+        
+        let thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+        
         listDiv.innerHTML = '';
 
         const filtered = prospectsData.filter(p => {
+            if(cityFilter !== 'All' && p.city !== cityFilter) return false;
             if(filter === 'Today') return p.nextDate && p.nextDate <= today && p.status !== 'Joined';
-            if(filter !== 'All' && p.status !== filter && p.category !== filter) return false;
+            
+            if(filter === 'Pending') {
+                let updated = new Date(p.updatedAt || '2024-01-01');
+                return p.status !== 'Joined' && updated < thirtyDaysAgo;
+            }
+
+            if(filter !== 'All' && filter !== 'Pending' && filter !== 'Today' && p.status !== filter && p.category !== filter) return false;
+            
             if(search && !p.name.toLowerCase().includes(search) && !p.city.toLowerCase().includes(search)) return false;
             return true;
         });
@@ -457,6 +579,7 @@
     }
 
     function exportToExcel() {
+        localStorage.setItem('rcmLastBackup', Date.now());
         if(prospectsData.length === 0) return alert("No Data");
         const formatted = prospectsData.map((p, i) => ({ 
             "Sr": i+1, 
@@ -508,11 +631,8 @@
         action.then(() => { closeModal(); btn.innerText = "सेव्ह करा"; btn.disabled = false; }).catch(e => { alert(e); btn.disabled = false; });
     }
 
-    // --- SECURE DELETE FUNCTION ---
     function deleteItem(id) {
-        // Step 1: Normal Confirmation
         if (confirm("ही माहिती कायमची डिलीट करायची का? (Are you sure?)")) {
-            // Step 2: Code Verification
             let code = prompt("डिलीट करण्यासाठी सिक्युरिटी कोड टाका (Code: 2026):");
             if (code === "2026") {
                 db.collection(collectionName).doc(id).delete()
@@ -558,3 +678,4 @@
 
 </body>
 </html>
+
