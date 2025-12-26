@@ -1,217 +1,260 @@
+
 <!DOCTYPE html>
 <html lang="mr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RCM मराठी डॅशबोर्ड</title>
-    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <title>RCM Pro Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+
     <style>
         :root {
-            /* --- Light Theme Colors --- */
-            --primary: #2563eb;       /* निळा */
-            --secondary: #e11d48;     /* लाल */
-            --bg: #f0f4f8;            /* बॅकग्राउंड */
-            --surface: #ffffff;       /* कार्ड कलर */
-            --text-main: #1e293b;     
-            --text-light: #64748b;    
-            --border: #e2e8f0;        
-            --shadow: 0 4px 6px -1px rgba(148, 163, 184, 0.1);
-            --radius: 16px;
+            --primary: #4f46e5;
+            --danger: #dc2626;
+            --bg: #f3f4f6;
+            --surface: #ffffff;
+            --text-main: #111827;
+            --text-light: #6b7280;
+            --border: #e5e7eb;
         }
 
         body.dark-mode {
-            --bg: #0f172a;
-            --surface: #1e293b;
-            --text-main: #f8fafc;
-            --text-light: #94a3b8;
-            --border: #334155;
-            --primary: #60a5fa;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+            --bg: #111827;
+            --surface: #1f2937;
+            --text-main: #f9fafb;
+            --text-light: #9ca3af;
+            --border: #374151;
         }
 
-        body {
-            font-family: 'Mukta', 'Inter', sans-serif; /* मराठी फॉन्ट */
-            background-color: var(--bg);
-            color: var(--text-main);
-            margin: 0;
-            padding-bottom: 100px;
-            transition: 0.3s ease;
-        }
-
+        body { font-family: 'Mukta', sans-serif; background: var(--bg); color: var(--text-main); margin: 0; padding-bottom: 100px; }
         * { box-sizing: border-box; outline: none; }
 
-        /* हेडर */
         .header {
-            background: linear-gradient(135deg, #2563eb, #4f46e5);
-            padding: 20px 20px 50px 20px;
+            background: linear-gradient(135deg, #4338ca, #3b82f6);
+            padding: 20px 20px 80px 20px;
             color: white;
             border-radius: 0 0 30px 30px;
-            box-shadow: 0 10px 20px -5px rgba(37, 99, 235, 0.3);
+            box-shadow: 0 4px 20px rgba(67, 56, 202, 0.4);
         }
+        .top-nav { display: flex; justify-content: space-between; align-items: center; }
+        .theme-toggle { background: rgba(255,255,255,0.2); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; }
 
-        .top-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .theme-toggle { background: rgba(255,255,255,0.2); border: none; color: white; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; backdrop-filter: blur(5px); }
-
-        /* टार्गेट कार्ड */
-        .stats-container {
+        /* DASHBOARD GRID */
+        .dash-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            padding: 0 20px;
+            margin-top: -60px;
+            margin-bottom: 20px;
+        }
+        .stat-card {
             background: var(--surface);
-            margin: -40px 20px 20px 20px;
-            padding: 20px;
-            border-radius: var(--radius);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            text-align: center;
+            border: 1px solid var(--border);
             position: relative;
-            border: 1px solid var(--border);
+            overflow: hidden;
         }
-        .progress-track { background: var(--bg); height: 10px; border-radius: 10px; overflow: hidden; margin-top: 8px; }
-        .progress-fill { height: 100%; background: linear-gradient(90deg, #10b981, #059669); width: 0%; transition: width 1s ease-in-out; }
+        
+        /* ALERT ANIMATION FOR FOLLOW UP */
+        .alert-pulse { animation: pulseRed 2s infinite; border: 1px solid #fecaca; background: #fef2f2; }
+        @keyframes pulseRed { 0% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(220, 38, 38, 0); } 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); } }
 
-        /* सर्च आणि फिल्टर */
-        .controls { padding: 0 20px 15px 20px; display: flex; gap: 10px; }
-        .modern-input {
-            width: 100%; padding: 12px 15px;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            background: var(--surface);
-            color: var(--text-main);
-            font-size: 15px;
-            font-family: 'Mukta', sans-serif;
-            transition: 0.2s;
-        }
-        .modern-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
+        .stat-num { font-size: 26px; font-weight: 800; margin: 5px 0; color: var(--primary); font-family: 'Inter', sans-serif; }
+        .stat-label { font-size: 13px; color: var(--text-light); font-weight: 600; }
 
-        /* यादी (Cards) */
+        /* CONTROLS */
+        .controls { padding: 0 20px 10px 20px; display: flex; gap: 10px; }
+        .modern-input { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); color: var(--text-main); font-size: 15px; font-family: 'Mukta', sans-serif; }
+
+        /* REPORT BUTTONS */
+        .report-actions { padding: 0 20px 15px 20px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+        .btn-report { padding: 10px; border-radius: 10px; border: none; font-weight: 600; cursor: pointer; color: white; font-size: 12px; display: flex; flex-direction: column; align-items: center; gap: 4px; font-family: 'Mukta', sans-serif; }
+        .btn-excel { background: #059669; }
+        .btn-pdf { background: #dc2626; }
+        .btn-ai { background: linear-gradient(135deg, #7c3aed, #4f46e5); }
+
+        /* LIST CARDS */
         .card-list { padding: 0 20px; }
         .pro-card {
             background: var(--surface);
-            border-radius: var(--radius);
-            padding: 20px;
-            margin-bottom: 15px;
-            box-shadow: var(--shadow);
+            border-radius: 16px;
+            padding: 18px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
             border: 1px solid var(--border);
             position: relative;
-            transition: transform 0.2s;
+            transition: 0.3s;
         }
-        .pro-card:active { transform: scale(0.98); }
 
-        .pro-card.joined { border-left: 4px solid #10b981; }
-        .pro-card.hot { border-left: 4px solid #e11d48; }
-        .pro-card.warm { border-left: 4px solid #f59e0b; }
+        /* DUE TODAY HIGHLIGHT */
+        .due-today { border: 2px solid #ef4444; background: #fef2f2; }
+        body.dark-mode .due-today { background: #371b1b; border-color: #7f1d1d; }
 
-        .card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
-        .p-name { font-size: 18px; font-weight: 700; color: var(--text-main); }
-        .p-meta { font-size: 12px; color: var(--text-light); margin-top: 4px; display: flex; gap: 8px; align-items: center; }
+        .card-header { display: flex; align-items: flex-start; gap: 12px; }
+        .num-badge { background: var(--bg); color: var(--text-main); width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; border: 2px solid var(--border); flex-shrink: 0; font-family: 'Inter', sans-serif; }
+
+        .info-area { flex-grow: 1; }
+        .p-name { font-weight: 700; font-size: 17px; margin-bottom: 4px; display:flex; justify-content:space-between; }
+        .p-details { font-size: 13px; color: var(--text-light); display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top:5px; }
         
-        .badge { font-size: 11px; padding: 2px 8px; border-radius: 4px; font-weight: 600; background: var(--bg); color: var(--text-light); }
+        .status-badge { font-size: 11px; padding: 2px 8px; border-radius: 20px; font-weight: 600; text-transform: uppercase; }
+        .s-joined { background: #d1fae5; color: #065f46; }
+        .s-hot { background: #fee2e2; color: #991b1b; }
+        .s-new { background: #e0f2fe; color: #075985; }
+
+        /* NEXT DATE INDICATOR */
+        .next-date-pill { background: #eef2ff; color: #4338ca; padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
+        .due-pill { background: #fee2e2; color: #b91c1c; animation: pulse 2s infinite; }
+
+        .card-actions { margin-top: 15px; display: flex; justify-content: flex-end; gap: 10px; border-top: 1px solid var(--border); padding-top: 12px; }
+        .act-btn { width: 36px; height: 36px; border-radius: 10px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; transition:0.2s; }
+        .act-btn:active { transform: scale(0.9); }
+
+        /* MODALS */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 999; align-items: center; justify-content: center; }
+        .modal-content { background: var(--surface); width: 90%; max-width: 400px; border-radius: 24px; padding: 25px; animation: slideUp 0.3s ease; }
         
-        .status-pill { font-size: 12px; padding: 4px 10px; border-radius: 20px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-        .pill-joined { background: #d1fae5; color: #047857; }
-        .pill-new { background: #e0f2fe; color: #0369a1; }
-        .pill-follow { background: #fef3c7; color: #b45309; }
+        /* WA TEMPLATE BUTTONS */
+        .wa-options { display: grid; gap: 10px; margin-top: 15px; }
+        .wa-btn { padding: 12px; border: 1px solid var(--border); background: var(--bg); border-radius: 10px; text-align: left; font-size: 15px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 10px; color: var(--text-main); }
+        .wa-btn:hover { background: #dcfce7; border-color: #22c55e; }
 
-        .card-actions { display: flex; justify-content: flex-end; gap: 10px; border-top: 1px solid var(--border); padding-top: 12px; margin-top: 12px; }
-        .icon-btn { width: 38px; height: 38px; border-radius: 12px; border: none; font-size: 17px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
-        .btn-wa { background: #dcfce7; color: #15803d; }
-        .btn-edit { background: #eff6ff; color: #1d4ed8; }
-        .btn-del { background: #fee2e2; color: #b91c1c; }
-
-        /* पॉपअप फॉर्म (Modal) */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(3px); z-index: 200; align-items: center; justify-content: center; }
-        .modal-content { background: var(--surface); width: 90%; max-width: 400px; border-radius: 24px; padding: 25px; animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); }
-        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
-        .full-btn { width: 100%; padding: 14px; border: none; border-radius: 14px; font-weight: 600; font-size: 16px; margin-top: 15px; cursor: pointer; transition: 0.2s; font-family: 'Mukta', sans-serif; }
-        .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.4); }
-        .btn-primary:active { transform: scale(0.98); }
-
-        .fab { position: fixed; bottom: 30px; right: 30px; width: 64px; height: 64px; background: linear-gradient(135deg, var(--secondary), #be123c); border-radius: 20px; color: white; font-size: 32px; border: none; box-shadow: 0 10px 25px -5px rgba(225, 29, 72, 0.5); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: transform 0.2s; }
-        .fab:hover { transform: translateY(-3px); }
+        .full-btn { width: 100%; padding: 14px; background: var(--primary); color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; margin-top: 15px; cursor: pointer; }
+        .fab { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; background: linear-gradient(135deg, #e11d48, #be123c); border-radius: 20px; color: white; font-size: 30px; border: none; box-shadow: 0 10px 20px rgba(225, 29, 72, 0.4); cursor: pointer; z-index: 100; }
+        
+        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     </style>
 </head>
 <body>
 
     <div class="header">
         <div class="top-nav">
-            <div>
-                <h2 style="margin:0; font-weight:700;">Team Unique</h2>
-                <small style="opacity:0.9">RCM बिझनेस मॅनेजर</small>
-            </div>
+            <h2 style="margin:0;">Team Unique</h2>
             <button class="theme-toggle" onclick="toggleTheme()">🌗</button>
         </div>
+        <p style="margin:5px 0 0 0; opacity:0.8; font-size:14px;">Next Level Business Tool</p>
     </div>
 
-    <div class="stats-container" onclick="setTarget()">
-        <div style="display:flex; justify-content:space-between; font-weight:600; font-size:16px; color:var(--text-main);">
-            <span>🎯 महिन्याचे टार्गेट: <span id="targetVal">10</span></span>
-            <span style="color:#10b981" id="achievedVal">0 पूर्ण</span>
+    <div class="dash-grid">
+        <div class="stat-card alert-pulse" id="card-due">
+            <div class="stat-num" style="color:#dc2626;" id="d-due">0</div>
+            <div class="stat-label">🔔 आजचे कॉल्स (Today)</div>
         </div>
-        <div class="progress-track"><div class="progress-fill" id="progressBar"></div></div>
+        <div class="stat-card">
+            <div class="stat-num" style="color:#059669;" id="d-joined">0</div>
+            <div class="stat-label">जॉईन झाले</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-num" id="d-total">0</div>
+            <div class="stat-label">एकूण लिस्ट</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-num" style="color:#d97706;" id="d-hot">0</div>
+            <div class="stat-label">Hot प्रॉस्पेक्ट्स</div>
+        </div>
     </div>
 
     <div class="controls">
-        <input type="text" class="modern-input" id="search" placeholder="🔍 नाव शोधा..." oninput="renderList()" style="flex:2;">
-        <select class="modern-input" id="filter" onchange="renderList()" style="flex:1;">
-            <option value="All">सर्व</option>
-            <option value="Hot">🔥 Hot (इच्छुक)</option>
-            <option value="Joined">✅ जॉईन झाले</option>
-            <option value="New">नवीन</option>
+        <input type="text" class="modern-input" id="search" placeholder="🔍 शोधा..." oninput="renderList()">
+        <select class="modern-input" id="filter" onchange="renderList()" style="width:120px;">
+            <option value="All">All</option>
+            <option value="Today">🔔 आजचे</option>
+            <option value="Hot">🔥 Hot</option>
+            <option value="Joined">✅ Joined</option>
         </select>
     </div>
 
-    <div id="loading" style="text-align:center; padding:40px; color:var(--text-light); font-weight:500;">
-        डेटा लोड होत आहे...
+    <div class="report-actions">
+        <button class="btn-report btn-ai" onclick="generateAIReport()">🤖 AI सल्ला</button>
+        <button class="btn-report btn-excel" onclick="exportToExcel()">📊 Excel</button>
+        <button class="btn-report btn-pdf" onclick="exportToPDF()">📄 PDF</button>
     </div>
 
-    <div class="card-list" id="list">
-        </div>
+    <div id="loading" style="text-align:center; padding:30px; color:var(--text-light);">Loading...</div>
+    <div class="card-list" id="list"></div>
 
     <button class="fab" onclick="openModal()">+</button>
 
     <div class="modal" id="entryModal">
         <div class="modal-content">
-            <h3 style="margin-top:0; color:var(--text-main);">नवीन प्रॉस्पेक्ट</h3>
+            <h3 style="margin-top:0;">प्रॉस्पेक्ट डिटेल्स</h3>
             <input type="hidden" id="docId">
-
+            
             <div style="display:grid; gap:12px;">
-                <div style="display:grid; grid-template-columns: 2fr 1fr; gap:10px;">
-                    <input type="text" class="modern-input" id="pName" placeholder="पूर्ण नाव">
-                    <input type="date" class="modern-input" id="pDate">
-                </div>
-                <input type="text" class="modern-input" id="pRef" placeholder="रेफरन्स (कोणाकडून)">
+                <input type="text" class="modern-input" id="pName" placeholder="पूर्ण नाव">
                 <input type="number" class="modern-input" id="pMobile" placeholder="मोबाईल नंबर">
                 
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                    <input type="text" class="modern-input" id="pCity" placeholder="गाव / शहर">
+                    <input type="text" class="modern-input" id="pCity" placeholder="गाव">
+                    <div style="display:flex; flex-direction:column;">
+                        <label style="font-size:11px; color:var(--text-light);">पुढची तारीख (Next)</label>
+                        <input type="date" class="modern-input" id="pNextDate">
+                    </div>
+                </div>
+
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
                     <select class="modern-input" id="pCategory">
-                        <option value="Cold">थंड (Cold) ❄️</option>
-                        <option value="Warm">मध्यम (Warm) ⛅</option>
-                        <option value="Hot">इच्छुक (Hot) 🔥</option>
+                        <option value="Cold">Cold ❄️</option>
+                        <option value="Warm">Warm ⛅</option>
+                        <option value="Hot">Hot 🔥</option>
+                    </select>
+                    <select class="modern-input" id="pStatus">
+                        <option value="New">नवीन</option>
+                        <option value="Follow Up">फॉलो अप</option>
+                        <option value="Joined">जॉईन झाले ✅</option>
                     </select>
                 </div>
-                
-                <select class="modern-input" id="pStatus">
-                    <option value="New">स्थिती: नवीन</option>
-                    <option value="Follow Up">स्थिती: फॉलो अप (Follow Up)</option>
-                    <option value="Joined">स्थिती: जॉईन झाले ✅</option>
-                </select>
-                
-                <input type="text" class="modern-input" id="pInterests" placeholder="टीप / आवड (Note)">
-            </div>
 
-            <button class="full-btn btn-primary" id="saveBtn" onclick="saveData()">माहिती सेव्ह करा</button>
-            <button class="full-btn" style="background:transparent; color:var(--text-light); margin-top:0;" onclick="closeModal()">रद्द करा</button>
+                <select class="modern-input" id="pProduct">
+                    <option value="">-- आवडीचे प्रॉडक्ट --</option>
+                    <option value="Health (Nutricharge)">Health (Nutricharge) 💊</option>
+                    <option value="Agri Product">Agri Product 🌾</option>
+                    <option value="Daily Needs">Daily Needs (Oil/Soap) 🧼</option>
+                    <option value="Good Dot">Good Dot 🍲</option>
+                    <option value="Other">इतर</option>
+                </select>
+
+                <input type="text" class="modern-input" id="pRef" placeholder="रेफरन्स">
+                <input type="text" class="modern-input" id="pInterests" placeholder="एक्स्ट्रा टीप (Note)">
+            </div>
+            
+            <button class="full-btn" id="saveBtn" onclick="saveData()">सेव्ह करा</button>
+            <button class="full-btn" style="background:transparent; color:var(--text-light); margin-top:0;" onclick="closeModal()">बंद करा</button>
+        </div>
+    </div>
+
+    <div class="modal" id="waModal">
+        <div class="modal-content">
+            <h3 style="margin-top:0;">📲 WhatsApp मेसेज निवडा</h3>
+            <p style="font-size:13px; color:var(--text-light);">कोणता मेसेज पाठवायचा आहे?</p>
+            
+            <div class="wa-options">
+                <button class="wa-btn" onclick="sendWA('Intro')">👋 <b>परिचय (Intro)</b><br><small>नवीन लोकांसाठी</small></button>
+                <button class="wa-btn" onclick="sendWA('Plan')">🎥 <b>प्लान व्हिडिओ</b><br><small>व्हिडिओ लिंक पाठवा</small></button>
+                <button class="wa-btn" onclick="sendWA('FollowUp')">📞 <b>फॉलो अप</b><br><small>पुन्हा चर्चा करण्यासाठी</small></button>
+                <button class="wa-btn" onclick="sendWA('Custom')">💬 <b>नुसते चॅट उघडा</b></button>
+            </div>
+            <button class="full-btn" style="background:transparent; color:var(--text-light);" onclick="document.getElementById('waModal').style.display='none'">बंद करा</button>
         </div>
     </div>
 
 <script>
     // -----------------------------------------------------------
-    // 🔴 1. तुमची FIREBASE KEY इथे पेस्ट करा
+    // 🔴 1. तुमची FIREBASE KEY इथे आहे
     // -----------------------------------------------------------
     const firebaseConfig = {
-        apiKey: "AIzaSyB-AA1oAWceBEr6NCDbXATdpKdO8ks7jks", // तुमची खरी KEY इथे टाका
+        apiKey: "AIzaSyB-AA1oAWceBEr6NCDbXATdpKdO8ks7jks", 
         authDomain: "list-b182e.firebaseapp.com",
         projectId: "list-b182e",
         storageBucket: "list-b182e.firebasestorage.app",
@@ -219,18 +262,18 @@
         appId: "1:996772285132:web:cad03cafda172833f59069"
     };
 
-    // सेटअप
     const app = firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
-    const collectionName = "rcm_prospects";
+    
+    // 🔴 2. जुना डेटा परत मिळवण्यासाठी हे नाव "rcm_prospects" केले आहे
+    const collectionName = "rcm_prospects"; 
 
     let prospectsData = [];
-    let currentTarget = localStorage.getItem('rcmTarget') || 10;
+    let selectedContact = { mobile: '', name: '' }; // For WA Modal
 
     document.addEventListener('DOMContentLoaded', () => {
         if(localStorage.getItem('rcmTheme') === 'dark') document.body.classList.add('dark-mode');
-        updateTargetUI();
-
+        
         db.collection(collectionName).orderBy("updatedAt", "desc")
             .onSnapshot((snapshot) => {
                 document.getElementById('loading').style.display = 'none';
@@ -239,7 +282,7 @@
                     let d = doc.data(); d.id = doc.id;
                     prospectsData.push(d);
                 });
-                updateTargetUI();
+                updateDashboard();
                 renderList();
             });
     });
@@ -249,56 +292,88 @@
         localStorage.setItem('rcmTheme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
     }
 
+    // --- DASHBOARD LOGIC ---
+    function updateDashboard() {
+        const today = new Date().toISOString().split('T')[0];
+        
+        const total = prospectsData.length;
+        const joined = prospectsData.filter(p => p.status === 'Joined').length;
+        const hot = prospectsData.filter(p => p.category === 'Hot').length;
+        
+        // Due Today Logic
+        const due = prospectsData.filter(p => p.nextDate && p.nextDate <= today && p.status !== 'Joined').length;
+
+        document.getElementById("d-total").innerText = total;
+        document.getElementById("d-joined").innerText = joined;
+        document.getElementById("d-hot").innerText = hot;
+        document.getElementById("d-due").innerText = due;
+
+        const dueCard = document.getElementById("card-due");
+        if(due > 0) dueCard.classList.add('alert-pulse');
+        else dueCard.classList.remove('alert-pulse');
+    }
+
+    // --- LIST RENDER ---
     function renderList() {
         const listDiv = document.getElementById('list');
         const search = document.getElementById('search').value.toLowerCase();
         const filter = document.getElementById('filter').value;
+        const today = new Date().toISOString().split('T')[0];
+        
         listDiv.innerHTML = '';
 
         const filtered = prospectsData.filter(p => {
+            if(filter === 'Today') {
+                return p.nextDate && p.nextDate <= today && p.status !== 'Joined';
+            }
             if(filter !== 'All' && p.status !== filter && p.category !== filter) return false;
             if(search && !p.name.toLowerCase().includes(search) && !p.city.toLowerCase().includes(search)) return false;
             return true;
         });
 
         if(filtered.length === 0) {
-            listDiv.innerHTML = '<div style="text-align:center; padding:30px; color:var(--text-light)">माहिती सापडली नाही.</div>';
+            listDiv.innerHTML = '<div style="text-align:center; color:var(--text-light); margin-top:20px;">माहिती नाही.</div>';
             return;
         }
 
-        filtered.forEach(p => {
-            // मराठी डिस्प्लेसाठी लॉजिक
-            let displayStatus = p.status;
-            if(p.status === 'New') displayStatus = 'नवीन';
-            if(p.status === 'Joined') displayStatus = 'जॉईन झाले';
-            if(p.status === 'Follow Up') displayStatus = 'फॉलो अप';
-
-            let pillClass = p.status === 'Joined' ? 'pill-joined' : (p.status === 'Follow Up' ? 'pill-follow' : 'pill-new');
-            let cardClass = p.status === 'Joined' ? 'joined' : (p.category === 'Hot' ? 'hot' : (p.category === 'Warm' ? 'warm' : ''));
+        filtered.forEach((p, index) => {
+            let statusClass = p.status === 'Joined' ? 's-joined' : (p.category === 'Hot' ? 's-hot' : 's-new');
+            let isDue = p.nextDate && p.nextDate <= today && p.status !== 'Joined';
+            let cardClass = isDue ? 'pro-card due-today' : 'pro-card';
+            
+            let nextDateBadge = '';
+            if(p.nextDate) {
+                let dClass = isDue ? 'due-pill' : '';
+                let icon = isDue ? '🔔' : '📅';
+                nextDateBadge = `<span class="next-date-pill ${dClass}">${icon} Next: ${p.nextDate}</span>`;
+            }
 
             const html = `
-                <div class="pro-card ${cardClass}">
-                    <div class="card-top">
-                        <div>
-                            <div class="p-name">${p.name}</div>
-                            <div class="p-meta">
-                                <span>📅 ${p.date || '-'}</span>
-                                ${p.ref ? `<span class="badge">Ref: ${p.ref}</span>` : ''}
+                <div class="${cardClass}">
+                    <div class="card-header">
+                        <div class="num-badge">${index + 1}</div>
+                        <div class="info-area">
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <div class="p-name">${p.name}</div>
+                                <span class="status-badge ${statusClass}">${p.status}</span>
+                            </div>
+                            
+                            <div class="p-details">
+                                <span>📍 ${p.city || '-'}</span>
+                                <span>📞 ${p.mobile}</span>
+                            </div>
+
+                            <div style="margin-top:8px; display:flex; gap:10px; flex-wrap:wrap;">
+                                ${nextDateBadge}
+                                ${p.product ? `<span style="font-size:11px; background:#f3f4f6; padding:2px 6px; border-radius:4px; color:#4b5563;">🛍️ ${p.product}</span>` : ''}
                             </div>
                         </div>
-                        <span class="status-pill ${pillClass}">${displayStatus}</span>
                     </div>
-                    
-                    <div style="font-size:14px; color:var(--text-light); margin-top:8px; display:flex; align-items:center; gap:6px;">
-                        📍 ${p.city || 'गाव टाकले नाही'} &nbsp;|&nbsp; 📞 ${p.mobile}
-                    </div>
-                    
-                    ${p.interests ? `<div style="font-size:14px; margin-top:6px; color:var(--text-main); font-weight:500;">📝 ${p.interests}</div>` : ''}
 
                     <div class="card-actions">
-                        <a href="https://wa.me/91${p.mobile}" target="_blank" class="icon-btn btn-wa">💬</a>
-                        <button class="icon-btn btn-edit" onclick="openModal('${p.id}')">✏️</button>
-                        <button class="icon-btn btn-del" onclick="deleteItem('${p.id}')">🗑️</button>
+                        <button class="act-btn" style="background:#dcfce7; color:#166534;" onclick="openWA('${p.mobile}', '${p.name}')">💬</button>
+                        <button class="act-btn" style="background:#eff6ff; color:#1d4ed8;" onclick="openModal('${p.id}')">✏️</button>
+                        <button class="act-btn" style="background:#fee2e2; color:#b91c1c;" onclick="deleteItem('${p.id}')">🗑️</button>
                     </div>
                 </div>
             `;
@@ -306,73 +381,129 @@
         });
     }
 
-    // डेटा सेव्ह करणे
+    // --- WHATSAPP LOGIC ---
+    function openWA(mobile, name) {
+        selectedContact = { mobile, name };
+        document.getElementById('waModal').style.display = 'flex';
+    }
+
+    function sendWA(type) {
+        const { mobile, name } = selectedContact;
+        let msg = "";
+
+        if(type === 'Intro') {
+            msg = `नमस्कार ${name}, मी दीपक. RCM बिजनेस बद्दल माहिती देण्यासाठी तुम्हाला संपर्क केला होता. तुम्हाला अधिक माहिती हवी असल्यास सांगा.`;
+        } else if(type === 'Plan') {
+            msg = `नमस्कार ${name}, RCM बिजनेसचा हा छोटा व्हिडिओ नक्की पहा. यामुळे तुम्हाला बिजनेसची ताकद समजेल. [Link]`;
+        } else if(type === 'FollowUp') {
+            msg = `नमस्कार ${name}, आपली RCM बद्दल बोलणी झाली होती. पुढची स्टेप काय करायची? तुमची काही शंका असल्यास नक्की विचारा.`;
+        }
+
+        const url = `https://wa.me/91${mobile}?text=${encodeURIComponent(msg)}`;
+        window.open(url, '_blank');
+        document.getElementById('waModal').style.display = 'none';
+    }
+
+    // --- AI & EXPORT ---
+    function generateAIReport() {
+        const joined = prospectsData.filter(p => p.status === 'Joined').length;
+        const total = prospectsData.length;
+        let rate = total > 0 ? Math.round((joined / total) * 100) : 0;
+        
+        let msg = `📊 **तुमचा रिपोर्ट:**\n`;
+        msg += `एकूण लिस्ट: ${total}\n`;
+        msg += `जॉईन झाले: ${joined} (${rate}%)\n\n`;
+        msg += `💡 **AI टीप:** `;
+        
+        if(rate < 10) msg += `फॉलो-अप वाढवा! 🔔 ज्यांची 'Next Date' आज आहे, त्यांना आधी कॉल करा.`;
+        else msg += `तुमचे काम उत्तम आहे! 🔥 'Hot' प्रॉस्पेक्ट्सना व्हिडीओ पाठवा.`;
+
+        alert(msg);
+    }
+
+    function exportToExcel() {
+        if(prospectsData.length === 0) return alert("No Data");
+        const formatted = prospectsData.map((p, i) => ({
+            "Sr": i+1, "Name": p.name, "Mobile": p.mobile, "Next FollowUp": p.nextDate, "Status": p.status, "Product Interest": p.product
+        }));
+        const ws = XLSX.utils.json_to_sheet(formatted);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "RCM Data");
+        XLSX.writeFile(wb, "RCM_Pro_Report.xlsx");
+    }
+
+    function exportToPDF() {
+        if(prospectsData.length === 0) return alert("No Data");
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        doc.text("Team Unique - Call List", 14, 20);
+        const rows = prospectsData.map((p, i) => [i+1, p.name, p.mobile, p.nextDate || '-', p.status]);
+        doc.autoTable({ head: [["#", "Name", "Mobile", "FollowUp", "Status"]], body: rows, startY: 30 });
+        doc.save("RCM_FollowUp_List.pdf");
+    }
+
+    // --- CRUD ---
     function saveData() {
         const id = document.getElementById('docId').value;
         const btn = document.getElementById('saveBtn');
         const data = {
             name: document.getElementById('pName').value,
-            date: document.getElementById('pDate').value,
-            ref: document.getElementById('pRef').value,
             mobile: document.getElementById('pMobile').value,
             city: document.getElementById('pCity').value,
             category: document.getElementById('pCategory').value,
             status: document.getElementById('pStatus').value,
+            
+            // New Fields
+            nextDate: document.getElementById('pNextDate').value, 
+            product: document.getElementById('pProduct').value,
+
+            ref: document.getElementById('pRef').value,
             interests: document.getElementById('pInterests').value,
             updatedAt: new Date().toISOString()
         };
 
-        if(!data.name || !data.mobile) return alert("कृपया नाव आणि मोबाईल नंबर टाका.");
+        if(!data.name || !data.mobile) return alert("नाव आणि मोबाईल टाका.");
         btn.innerText = "सेव्ह करत आहे..."; btn.disabled = true;
 
         const action = id ? db.collection(collectionName).doc(id).update(data) : db.collection(collectionName).add(data);
-        action.then(() => { closeModal(); btn.innerText = "माहिती सेव्ह करा"; btn.disabled = false; }).catch(e => alert(e));
+        action.then(() => { closeModal(); btn.innerText = "सेव्ह करा"; btn.disabled = false; }).catch(e => { alert(e); btn.disabled = false; });
     }
 
     function deleteItem(id) {
-        if(confirm("ही माहिती कायमची डिलीट करायची का?")) db.collection(collectionName).doc(id).delete();
+        if(confirm("डिलीट करायचे का?")) db.collection(collectionName).doc(id).delete();
     }
 
     function openModal(id = null) {
         document.getElementById('entryModal').style.display = 'flex';
         const today = new Date().toISOString().split('T')[0];
-        
         if(id) {
             const p = prospectsData.find(x => x.id === id);
             document.getElementById('docId').value = id;
             document.getElementById('pName').value = p.name;
-            document.getElementById('pDate').value = p.date || today;
-            document.getElementById('pRef').value = p.ref || '';
             document.getElementById('pMobile').value = p.mobile;
             document.getElementById('pCity').value = p.city;
             document.getElementById('pCategory').value = p.category;
             document.getElementById('pStatus').value = p.status;
+            
+            document.getElementById('pNextDate').value = p.nextDate || '';
+            document.getElementById('pProduct').value = p.product || '';
+
+            document.getElementById('pRef').value = p.ref || '';
             document.getElementById('pInterests').value = p.interests || '';
         } else {
+            // Reset Form
             document.getElementById('docId').value = '';
             document.getElementById('pName').value = '';
-            document.getElementById('pDate').value = today;
-            document.getElementById('pRef').value = '';
             document.getElementById('pMobile').value = '';
             document.getElementById('pCity').value = '';
-            document.getElementById('pInterests').value = '';
             document.getElementById('pStatus').value = 'New';
+            document.getElementById('pNextDate').value = '';
+            document.getElementById('pProduct').value = '';
+            document.getElementById('pRef').value = '';
+            document.getElementById('pInterests').value = '';
         }
     }
-
     function closeModal() { document.getElementById('entryModal').style.display = 'none'; }
-    
-    function setTarget() {
-        let t = prompt("या महिन्याचे टार्गेट किती?", currentTarget);
-        if(t) { currentTarget = t; localStorage.setItem('rcmTarget', t); updateTargetUI(); }
-    }
-
-    function updateTargetUI() {
-        const joined = prospectsData.filter(p => p.status === 'Joined').length;
-        document.getElementById('targetVal').innerText = currentTarget;
-        document.getElementById('achievedVal').innerText = joined + " पूर्ण";
-        document.getElementById('progressBar').style.width = Math.min((joined/currentTarget)*100, 100) + "%";
-    }
 </script>
 
 </body>
