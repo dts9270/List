@@ -255,8 +255,12 @@
             
             <div style="display:grid; gap:12px;">
                 <input type="text" class="modern-input" id="pName" placeholder="पूर्ण नाव">
-                <input type="number" class="modern-input" id="pMobile" placeholder="मोबाईल नंबर">
                 
+                <div style="display:flex; gap:8px;">
+                    <input type="number" class="modern-input" id="pMobile" placeholder="मोबाईल नंबर" style="flex-grow:1;">
+                    <button type="button" onclick="pickContact()" style="width:50px; background:#e0e7ff; border:1px solid #c7d2fe; border-radius:12px; font-size:20px; cursor:pointer;" title="संपर्क निवडा">📒</button>
+                </div>
+
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
                     <input type="text" class="modern-input" id="pCity" placeholder="शहर / गाव">
                     <input type="text" class="modern-input" id="pOccupation" placeholder="व्यवसाय (Job)">
@@ -674,6 +678,38 @@ END:VCARD`;
         }
     }
     function closeModal() { document.getElementById('entryModal').style.display = 'none'; }
+
+    // --- Contact Picker Logic ---
+    async function pickContact() {
+        const supported = ('contacts' in navigator && 'ContactsManager' in window);
+        
+        if (!supported) {
+            alert("⚠️ हे फीचर फक्त Android Mobile वर Chrome ब्राउजरमध्ये चालते (HTTPS वर).");
+            return;
+        }
+
+        try {
+            const props = ['name', 'tel'];
+            const opts = { multiple: false };
+            
+            const contacts = await navigator.contacts.select(props, opts);
+            
+            if (contacts.length) {
+                const contact = contacts[0];
+                
+                if (contact.name && contact.name.length > 0) {
+                    document.getElementById('pName').value = contact.name[0];
+                }
+                
+                if (contact.tel && contact.tel.length > 0) {
+                    let cleanNumber = contact.tel[0].replace(/\s/g, '').replace(/-/g, '');
+                    document.getElementById('pMobile').value = cleanNumber;
+                }
+            }
+        } catch (ex) {
+            console.log("Contact pick cancelled or failed", ex);
+        }
+    }
 </script>
 
 </body>
