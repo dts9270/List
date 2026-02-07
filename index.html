@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RCM बिझनेस सिस्टम</title>
+    <title>RCM Pro System</title>
     <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -18,13 +18,13 @@
     <style>
         :root { --primary: #000080; --text-main: #111827; }
         
-        /* --- ॲनिमेटेड तिरंगा बॅकग्राऊंड --- */
+        /* TIRANGA BACKGROUND */
         body { 
             font-family: 'Mukta', sans-serif; 
             color: var(--text-main); margin: 0; 
             padding-bottom: 100px; 
             min-height: 100vh;
-            background: linear-gradient(-45deg, #ff9933, #ffffff, #ffffff, #138808);
+            background: linear-gradient(-45deg, #FF9933, #ffffff, #ffffff, #138808);
             background-size: 400% 400%;
             animation: tirangaBG 10s ease infinite;
         }
@@ -36,117 +36,67 @@
         
         * { box-sizing: border-box; outline: none; }
 
-        /* --- हेडर (Header) --- */
-        .header { 
-            background: linear-gradient(135deg, #000080, #1e3a8a);
-            color: white;
-            padding: 20px 20px 70px 20px; 
-            border-radius: 0 0 30px 30px; 
-            box-shadow: 0 10px 30px rgba(0, 0, 128, 0.4); 
-            position: relative; z-index: 10;
-        }
-        .user-name { font-size: 26px; font-weight: 800; margin: 0; }
-        .score-pill { 
-            background: rgba(255, 255, 255, 0.2); 
-            padding: 5px 15px; border-radius: 20px; 
-            font-size: 14px; font-weight: bold; color: #FFD700; 
-            border: 1px solid rgba(255, 215, 0, 0.5);
-            display: inline-block; margin-top: 5px;
-        }
+        /* Login UI */
+        #login-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #ffffff; z-index: 5000; display: flex; align-items: center; justify-content: center; padding: 25px; }
+        .login-card { background: white; width: 100%; max-width: 350px; padding: 30px; border-radius: 25px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,128,0.15); border: 1px solid #eee; }
+        .inp-field { width: 100%; padding: 14px; border: 2px solid #e5e7eb; border-radius: 12px; font-size: 16px; font-weight: 600; background: #f9fafb; margin-bottom: 15px; text-align: center; }
+        .btn-main { width: 100%; padding: 12px; background: #000080; color: white; border: none; border-radius: 12px; font-size: 17px; font-weight: 700; cursor: pointer; }
+        .toggle-link { display: block; margin-top: 20px; color: #000080; font-weight: 600; font-size: 14px; cursor: pointer; text-decoration: underline; }
 
-        /* --- रंगीत कार्ड्स (Colorful Stats) --- */
-        .dash-grid { 
-            display: grid; grid-template-columns: 1fr 1fr; gap: 12px; 
-            padding: 0 20px; margin-top: -50px; margin-bottom: 20px; 
-            position: relative; z-index: 20; 
-        }
-        .stat-card { 
-            padding: 15px; border-radius: 16px; text-align: center; 
-            color: white; box-shadow: 0 8px 15px rgba(0,0,0,0.1); 
-            transition: transform 0.2s;
-        }
-        .stat-card:active { transform: scale(0.95); }
+        /* Header */
+        #app-container { display: none; }
+        .header { background: linear-gradient(135deg, #000080, #1e3a8a); padding: 20px 20px 70px 20px; color: white; border-radius: 0 0 30px 30px; box-shadow: 0 10px 30px rgba(0, 0, 128, 0.3); }
+        .user-name { font-size: 26px; font-weight: 800; margin: 0; }
+        .score-pill { background: rgba(255, 255, 255, 0.2); padding: 5px 15px; border-radius: 20px; font-size: 14px; font-weight: bold; color: #FFD700; border: 1px solid rgba(255, 215, 0, 0.5); display: inline-block; margin-top: 5px; }
+
+        /* Dashboard Grid */
+        .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 20px; margin-top: -50px; margin-bottom: 20px; }
+        .stat-card { padding: 15px; border-radius: 16px; text-align: center; color: white; box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
         .card-red { background: linear-gradient(135deg, #ef4444, #b91c1c); }
         .card-green { background: linear-gradient(135deg, #22c55e, #15803d); }
         .card-blue { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
         .card-orange { background: linear-gradient(135deg, #f97316, #c2410c); }
-        
         .stat-num { font-size: 28px; font-weight: 800; font-family: 'Inter', sans-serif; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
         .stat-lbl { font-size: 13px; font-weight: 600; opacity: 0.9; }
 
-        /* बटणे आणि डिझाईन */
-        .campaign-btn { 
-            background: linear-gradient(135deg, #16a34a, #15803d); 
-            color: white; padding: 14px; border-radius: 15px; 
-            text-align: center; font-weight: bold; margin: 0 20px 20px 20px; 
-            box-shadow: 0 8px 20px rgba(22, 163, 74, 0.3); 
-            cursor: pointer; font-size: 18px; 
-            border: 2px solid #bbf7d0;
-        }
-
+        /* Buttons & Controls */
+        .campaign-btn { background: linear-gradient(135deg, #16a34a, #15803d); color: white; padding: 14px; border-radius: 15px; text-align: center; font-weight: bold; margin: 0 20px 20px 20px; box-shadow: 0 8px 20px rgba(22, 163, 74, 0.3); cursor: pointer; font-size: 18px; border: 2px solid #bbf7d0; }
         .core-section { margin: 0 20px 20px 20px; background: white; padding: 15px; border-radius: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         .chk-item { display: flex; align-items: center; gap: 10px; font-size: 16px; padding: 8px 0; border-bottom: 1px solid #f3f4f6; }
         .chk-item input { width: 20px; height: 20px; accent-color: #000080; }
-
         .controls { padding: 0 20px 10px 20px; display: grid; gap: 10px; }
         .modern-input { width: 100%; padding: 12px; border: 1px solid #e5e7eb; border-radius: 12px; background: white; font-size: 16px; }
-        
         .admin-controls { padding: 0 20px 10px 20px; display: none; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
         .btn-admin { padding: 10px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; color: #374151; font-size: 11px; background: white; border: 1px solid #e5e7eb; }
-
         .report-actions { padding: 0 20px 20px 20px; display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; }
         .btn-report { padding: 10px; border-radius: 12px; border: none; font-weight: 600; cursor: pointer; color: white; font-size: 12px; display: flex; flex-direction: column; align-items: center; gap: 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
         .btn-excel { background: #138808; } .btn-pdf { background: #FF9933; } .btn-ai { background: #000080; } .btn-gold { background: linear-gradient(135deg, #FDB931, #d4af37); color: black; }
 
-        /* लिस्ट आणि कार्ड */
+        /* List & Cards */
         .card-list { padding: 0 20px; }
-        .pro-card { 
-            background: white; border-radius: 16px; 
-            padding: 15px; margin-bottom: 12px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
-            position: relative; border-left: 5px solid #000080; 
-            transition: transform 0.2s;
-        }
-        .pro-card:hover { transform: translateY(-3px); }
+        .pro-card { background: white; border-radius: 16px; padding: 15px; margin-bottom: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); position: relative; border-left: 5px solid #000080; }
         .pro-card.status-joined { border-left-color: #138808; }
-        
         .owner-badge { position: absolute; top: 10px; right: 10px; background: #e0e7ff; color: #3730a3; padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; }
         .sr-badge { position: absolute; top: 10px; left: 10px; background: #f3f4f6; color: #64748b; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; border: 1px solid #e2e8f0; }
+        .act-btn { text-decoration: none; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
 
-        .btn-action-group { display: flex; gap: 10px; margin-top: 5px; }
-        .act-btn { 
-            text-decoration: none; width: 40px; height: 40px; 
-            display: flex; align-items: center; justify-content: center; 
-            border-radius: 50%; font-size: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
-        }
-
-        /* FABs */
+        /* Floating & Modals */
         .fab { position: fixed; bottom: 25px; right: 20px; width: 60px; height: 60px; background: linear-gradient(135deg, #000080, #1e3a8a); border-radius: 50%; color: white; font-size: 30px; border: none; z-index: 100; box-shadow: 0 10px 25px rgba(0,0,128,0.4); display: grid; place-items: center; }
         .fab-qr { position: fixed; bottom: 25px; left: 20px; width: 50px; height: 50px; background: white; border-radius: 50%; color: #000080; font-size: 24px; border: none; box-shadow: 0 5px 15px rgba(0,0,0,0.1); z-index: 100; display:flex; align-items:center; justify-content:center; }
-
-        /* Modals */
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
-        .modal-content { background: white; width: 90%; max-width: 400px; border-radius: 24px; padding: 25px; max-height: 85vh; overflow-y: auto; position: relative; animation: slideUp 0.3s ease; }
+        .modal-content { background: white; width: 90%; max-width: 400px; border-radius: 24px; padding: 25px; max-height: 85vh; overflow-y: auto; animation: slideUp 0.3s ease; }
         .full-btn { width: 100%; padding: 14px; background: #000080; color: white; border: none; border-radius: 12px; font-size: 18px; font-weight: 600; margin-top: 15px; box-shadow: 0 5px 15px rgba(0,0,128,0.2); }
 
-        /* Login UI */
-        #login-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #ffffff; z-index: 5000; display: flex; align-items: center; justify-content: center; padding: 25px; }
-        .login-card { background: white; width: 100%; max-width: 350px; padding: 30px; border-radius: 25px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,128,0.15); border: 1px solid #eee; }
-        
-        /* Notice & Image */
+        /* Extras */
         .notice-board { background: #fffbeb; border: 1px solid #fcd34d; color: #92400e; padding: 10px 15px; margin: 15px 20px 0 20px; border-radius: 10px; font-size: 14px; display: flex; align-items: center; gap: 10px; }
         .promo-area { margin: 15px 20px; text-align: center; display: none; }
         .promo-img { width: 100%; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border: 2px solid white; max-height: 200px; object-fit: cover; }
-        
         .bday-alert { background: linear-gradient(135deg, #fce7f3, #fbcfe8); padding: 12px; margin: 0 20px 15px 20px; border-radius: 12px; text-align: center; display: none; border: 1px solid #f9a8d4; color: #831843; }
-
-        /* Toppers Table */
         .top-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         .top-table th { text-align: left; background: #000080; color: white; padding: 10px; font-size: 13px; }
         .top-table td { padding: 10px; border-bottom: 1px solid #eee; font-size: 14px; background: #f9fafb; }
         .rank-1 { background: #fffbeb !important; color: #d97706; font-weight: bold; }
-
-        /* GPS */
+        
         .lightbox { display: none; position: fixed; inset: 0; z-index: 9999; background: rgba(0,0,0,0.95); align-items: center; justify-content: center; padding: 20px; }
         .lightbox-img { max-width: 100%; max-height: 80vh; border-radius: 10px; }
         .close-lightbox { position: absolute; top: 20px; right: 20px; color: white; font-size: 30px; cursor: pointer; }
@@ -298,21 +248,16 @@
 
     <div class="modal" id="noticeModal"><div class="modal-content"><h3>महत्वाची सूचना</h3><textarea id="noticeInput" class="modern-input" rows="3"></textarea><button class="full-btn" onclick="saveNotice()">पोस्ट करा</button><button class="full-btn" style="background:gray; margin-top:5px;" onclick="document.getElementById('noticeModal').style.display='none'">बंद करा</button></div></div>
     <div class="modal" id="imageModal"><div class="modal-content"><h3>इमेज सेटिंग</h3><input type="file" id="imgInput" accept="image/*" class="modern-input"><div style="margin:10px 0;"><label><input type="radio" name="imgDisplay" value="embedded" checked> नेहमी दाखवा</label> <label><input type="radio" name="imgDisplay" value="popup"> पॉप-अप</label></div><button class="full-btn" onclick="processImage()">अपलोड</button><button class="full-btn" style="background:#ef4444; margin-top:5px;" onclick="deleteImage()">डिलीट</button><button class="full-btn" style="background:gray; margin-top:5px;" onclick="document.getElementById('imageModal').style.display='none'">बंद करा</button></div></div>
-    
     <div class="modal" id="topperModal">
         <div class="modal-content">
             <span style="float:right; cursor:pointer;" onclick="document.getElementById('topperModal').style.display='none'">&times;</span>
             <h3 style="margin-top:0; color:#d4af37;">🏆 टॉपर्स लिस्ट</h3>
             <div style="max-height:300px; overflow-y:auto;">
-                <table class="top-table">
-                    <thead><tr><th>#</th><th>नाव</th><th>Pts</th><th>गिफ्ट</th></tr></thead>
-                    <tbody id="topper-list"></tbody>
-                </table>
+                <table class="top-table"><thead><tr><th>#</th><th>नाव</th><th>Pts</th><th>गिफ्ट</th></tr></thead><tbody id="topper-list"></tbody></table>
             </div>
             <button class="full-btn" style="margin-top:10px; background:#FF9933;" onclick="downloadTopperPDF()">📄 PDF रिपोर्ट</button>
         </div>
     </div>
-    
     <div class="modal" id="abhiyanAdminModal"><div class="modal-content"><h3>📊 अभियान रिपोर्ट</h3><div style="max-height:300px; overflow-y:auto;"><table class="top-table"><thead><tr><th>नाव/फोन</th><th>By</th><th>Pic</th></tr></thead><tbody id="abhiyan-list-body"></tbody></table></div><button class="full-btn" onclick="document.getElementById('abhiyanAdminModal').style.display='none'">बंद करा</button></div></div>
     <div class="modal" id="qrModal"><div class="modal-content" style="text-align:center;"><div id="qrcode" style="display:inline-block;"></div><br><button class="full-btn" onclick="document.getElementById('qrModal').style.display='none'">बंद करा</button></div></div>
 
@@ -389,7 +334,7 @@
         });
     }
 
-    // --- GPS CAMERA LOGIC ---
+    // --- GPS CAMERA LOGIC (NAME REMOVED FROM PHOTO) ---
     function openAbhiyanModal() {
         document.getElementById('abProposer').value = currentUser.displayName || "User";
         document.getElementById('abhiyanModal').style.display = 'flex';
@@ -422,14 +367,14 @@
                 canvas.width = maxWidth; canvas.height = img.height * scale;
                 ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
                 
-                ctx.fillStyle = "rgba(0, 0, 0, 0.6)"; ctx.fillRect(0, canvas.height - 100, canvas.width, 100);
+                // Overlay
+                ctx.fillStyle = "rgba(0, 0, 0, 0.6)"; ctx.fillRect(0, canvas.height - 80, canvas.width, 80);
                 ctx.fillStyle = "white"; ctx.font = "bold 16px sans-serif";
                 
                 const date = new Date().toLocaleString();
-                const userName = currentUser.displayName || "RCM Associate";
-                ctx.fillText(`📍 ${lat}, ${long}`, 20, canvas.height - 70);
-                ctx.fillText(`📅 ${date}`, 20, canvas.height - 45);
-                ctx.fillText(`👤 ${userName}`, 20, canvas.height - 20);
+                // NO NAME on Photo as requested
+                ctx.fillText(`📍 ${lat}, ${long}`, 20, canvas.height - 50);
+                ctx.fillText(`📅 ${date}`, 20, canvas.height - 25);
 
                 processedCampaignImage = canvas.toDataURL('image/jpeg', 0.7);
                 const preview = document.getElementById('gpsPreview'); preview.src = processedCampaignImage; preview.style.display = 'block';
@@ -465,7 +410,6 @@
             return true;
         }).forEach((p, i) => {
             let bd = (isAdmin && p.addedByName) ? `<span class="owner-badge">👤 ${p.addedByName}</span>` : '';
-            // RESTORED WHATSAPP BUTTON 👇
             listDiv.innerHTML += `
             <div class="pro-card" style="border-left:5px solid ${p.status==='Joined'?'#16a34a':'#000080'}">
                 <div class="sr-badge">#${i+1}</div>${bd}
@@ -521,8 +465,8 @@
     function openAbhiyanAdminModal() {
         const tbody = document.getElementById('abhiyan-list-body'); tbody.innerHTML = '';
         campaignData.forEach(c => {
-            let act = c.mobile ? `<a href="tel:${c.mobile}" class="act-btn-sm">📞</a>` : '-';
-            tbody.innerHTML += `<tr><td>${c.prospectName}<br><small>${c.mobile||''}</small></td><td>${c.proposer}</td><td><img src="${c.photo}" style="width:30px;height:30px;border-radius:5px;cursor:pointer;" onclick="openLightbox(this.src)"></td></tr>`;
+            let act = c.mobile ? `<a href="tel:${c.mobile}" class="act-btn-sm" style="font-size:14px;">📞</a> <a href="https://wa.me/91${c.mobile}" class="act-btn-sm" style="font-size:14px;">💬</a>` : '-';
+            tbody.innerHTML += `<tr><td>${c.prospectName}<br><small>${c.mobile||''}</small></td><td>${c.proposer}</td><td>${act}</td><td><img src="${c.photo}" style="width:30px;height:30px;border-radius:5px;cursor:pointer;" onclick="openLightbox(this.src)"></td></tr>`;
         });
         document.getElementById('abhiyanAdminModal').style.display='flex';
     }
@@ -537,7 +481,7 @@
     function checkBirthdays(){ /* Same */ }
     function calculateMyPoints(){ /* Same */ let pts=0, myP=prospectsData.filter(p=>p.addedBy===currentUser.uid), dateC={}; pts+=myP.length*2; myP.forEach(p=>{if(p.createdAt){if(!dateC[p.createdAt])dateC[p.createdAt]=0; dateC[p.createdAt]++;}}); for(let d in dateC)if(dateC[d]>=2)pts+=5; let myC=campaignData.filter(c=>c.uid===currentUser.uid); pts+=myC.length*5; document.getElementById('user-points').innerText=pts; }
     function updateDashboard(){ const t=new Date().toISOString().split('T')[0]; document.getElementById('d-total').innerText=prospectsData.length; document.getElementById('d-joined').innerText=prospectsData.filter(p=>p.status==='Joined').length; document.getElementById('d-hot').innerText=prospectsData.filter(p=>p.category==='Hot').length; document.getElementById('d-due').innerText=prospectsData.filter(p=>p.nextDate && p.nextDate<=t).length; }
-    function openTopperModal(){ /* Same */ let lb={}; [...prospectsData,...campaignData].forEach(d=>{ let n=d.addedByName||d.proposer||"User"; if(!lb[n])lb[n]=0; if(d.prospectName)lb[n]+=5; else lb[n]+=2; }); let s=Object.keys(lb).map(k=>({name:k,pts:lb[k]})).sort((a,b)=>b.pts-a.pts); document.getElementById('topper-list').innerHTML=s.map((u,i)=>`<tr><td>${i+1}</td><td>${u.name}</td><td>${u.pts}</td><td>${u.pts>=50?'🎁 हो':'नाही'}</td></tr>`).join(''); document.getElementById('topperModal').style.display='flex'; }
+    function openTopperModal(){ let lb={}; [...prospectsData,...campaignData].forEach(d=>{ let n=d.addedByName||d.proposer||"User"; if(!lb[n])lb[n]=0; if(d.prospectName)lb[n]+=5; else lb[n]+=2; }); let s=Object.keys(lb).map(k=>({name:k,pts:lb[k]})).sort((a,b)=>b.pts-a.pts); document.getElementById('topper-list').innerHTML=s.map((u,i)=>`<tr><td>${i+1}</td><td>${u.name}</td><td>${u.pts}</td><td>${u.pts>=50?'🎁 हो':'नाही'}</td></tr>`).join(''); document.getElementById('topperModal').style.display='flex'; }
     function openModal(id=null){document.getElementById('entryModal').style.display='flex'; if(id){document.getElementById('docId').value=id;}else{document.getElementById('docId').value='';}}
     function closeModal(){document.getElementById('entryModal').style.display='none';}
     function populateCities(){const s=document.getElementById('cityFilter'); [...new Set(prospectsData.map(p=>p.city).filter(c=>c))].forEach(c=>s.innerHTML+=`<option value="${c}">${c}</option>`);}
