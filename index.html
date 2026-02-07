@@ -41,7 +41,7 @@
 
         /* USER INFO */
         .user-info-bar {
-            background: white; padding: 15px 20px; margin: -15px 15px 20px 15px; 
+            background: white; padding: 15px 20px; margin: -20px 15px 20px 15px; 
             border-radius: 15px; display: flex; justify-content: space-between; align-items: center;
             box-shadow: 0 5px 15px rgba(0,0,0,0.08); position: relative; z-index: 20;
         }
@@ -58,6 +58,35 @@
         .card-orange { background: linear-gradient(135deg, #f97316, #c2410c); }
         .stat-num { font-size: 24px; font-weight: 800; font-family: 'Inter', sans-serif; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
         .stat-lbl { font-size: 12px; font-weight: 600; opacity: 0.9; }
+
+        /* --- NEW ABHIYAN CARD STYLE --- */
+        .abhiyan-card {
+            background: linear-gradient(135deg, #ecfccb, #f7fee7); /* Light Greenish */
+            border: 2px dashed #65a30d;
+            border-radius: 20px;
+            padding: 15px;
+            margin: 0 20px 20px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+        .abhiyan-card:active { transform: scale(0.98); }
+        .abhiyan-icon { font-size: 32px; background: #fff; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .abhiyan-info h3 { margin: 0; color: #365314; font-size: 18px; font-weight: 800; }
+        .abhiyan-info p { margin: 0; color: #4d7c0f; font-size: 12px; font-weight: 600; }
+        .abhiyan-arrow { font-size: 24px; color: #65a30d; }
+
+        /* --- ABHIYAN MODAL UI --- */
+        .upload-box {
+            background: #f8fafc; border: 2px dashed #cbd5e1;
+            border-radius: 16px; padding: 25px; text-align: center;
+            position: relative; margin-top: 10px; cursor: pointer;
+        }
+        .upload-icon-large { font-size: 40px; color: #94a3b8; display: block; margin-bottom: 5px; }
+        .upload-text { color: #64748b; font-size: 14px; font-weight: bold; }
 
         /* CONTROLS */
         .core-section { margin: 0 20px 20px 20px; background: white; padding: 15px; border-radius: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
@@ -95,7 +124,7 @@
         .top-table td { padding: 10px; border-bottom: 1px solid #eee; font-size: 14px; background: #f9fafb; vertical-align: middle; }
         .act-btn-sm { text-decoration: none; padding: 5px 8px; background: #f1f5f9; border-radius: 6px; margin-right: 5px; color: #334155; font-size: 14px; display: inline-block; }
         
-        /* --- LOGIN PAGE ANIMATION (RCM COLORS: Blue, Green, Orange) --- */
+        /* --- LOGIN PAGE ANIMATION --- */
         #login-container { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
             background: linear-gradient(-45deg, #0055A5, #008F4C, #F58220, #0055A5);
@@ -115,8 +144,6 @@
         .full-screen-content { width: 95%; height: 95%; max-width: none; max-height: 95vh; }
         .banner-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #eee; }
         .banner-thumb { width: 50px; height: 30px; object-fit: cover; border-radius: 4px; border: 1px solid #ccc; }
-        
-        /* Project Tag on Card */
         .project-tag { font-size: 11px; background: #e0f2fe; color: #0369a1; padding: 2px 6px; border-radius: 4px; font-weight: bold; border: 1px solid #bae6fd; display: inline-block; margin-top: 3px; }
     </style>
 </head>
@@ -174,8 +201,15 @@
             <h4 style="margin:0;">🎂 आजचा वाढदिवस</h4><div id="bday-names" style="margin:5px 0; font-weight:bold;"></div>
         </div>
 
-        <div class="campaign-btn" onclick="openAbhiyanModal()">
-            <span>📸</span> अभियान प्रचार (GPS फोटो)
+        <div class="abhiyan-card" onclick="openAbhiyanModal()">
+            <div style="display:flex; align-items:center; gap:15px;">
+                <div class="abhiyan-icon">📸</div>
+                <div class="abhiyan-info">
+                    <h3>अभियान प्रचार</h3>
+                    <p>GPS फोटो अपलोड करा</p>
+                </div>
+            </div>
+            <div class="abhiyan-arrow">➔</div>
         </div>
 
         <div class="core-section">
@@ -233,7 +267,6 @@
                 <label style="font-size:12px;margin-bottom:-5px;color:gray;">जन्मतारीख</label><input type="date" class="modern-input" id="pDob">
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;"><select class="modern-input" id="pCategory"><option value="Cold">Cold ❄️</option><option value="Warm">Warm 🌤️</option><option value="Hot">Hot 🔥</option></select><select class="modern-input" id="pStatus"><option value="New">नवीन</option><option value="Follow Up">फॉलो अप</option><option value="Joined">जॉईन ✅</option></select></div>
                 <label style="font-size:12px;margin-bottom:-5px;color:gray;">पुढची तारीख (Next Date)</label><input type="date" class="modern-input" id="pNextDate">
-                
                 <select class="modern-input" id="pProduct">
                     <option value="">-- प्रोजेक्ट निवडा (Project) --</option>
                     <option value="Arogya">आरोग्य (Arogya)</option>
@@ -242,7 +275,6 @@
                     <option value="Blood Check">ब्लड चेक (Blood Check)</option>
                     <option value="Network">नेटवर्क (Network)</option>
                 </select>
-                
                 <input type="text" class="modern-input" id="pInterests" placeholder="टीप (Note)">
             </div>
             <button class="full-btn" id="saveBtn" onclick="saveData()">सेव्ह करा (+2 Pts)</button>
@@ -250,7 +282,29 @@
     </div>
 
     <div class="modal" id="bannerModal"><div class="modal-content"><span style="float:right;cursor:pointer;" onclick="document.getElementById('bannerModal').style.display='none'">&times;</span><h3 style="margin-top:0;">🎞️ बॅनर स्लाइडर सेट करा</h3><div class="banner-row"><span>Banner 1:</span><input type="file" id="ban1" style="width:180px;font-size:12px;"><button onclick="uploadBanner(1)" class="bday-btn">Upload</button><button onclick="deleteBanner(1)" style="color:red;border:none;">🗑️</button></div><div class="banner-row"><span>Banner 2:</span><input type="file" id="ban2" style="width:180px;font-size:12px;"><button onclick="uploadBanner(2)" class="bday-btn">Upload</button><button onclick="deleteBanner(2)" style="color:red;border:none;">🗑️</button></div><div class="banner-row"><span>Banner 3:</span><input type="file" id="ban3" style="width:180px;font-size:12px;"><button onclick="uploadBanner(3)" class="bday-btn">Upload</button><button onclick="deleteBanner(3)" style="color:red;border:none;">🗑️</button></div><p style="font-size:12px;color:gray;">(Max 3 images)</p></div></div>
-    <div class="modal" id="abhiyanModal"><div class="modal-content"><span style="float:right;font-size:24px;cursor:pointer;" onclick="document.getElementById('abhiyanModal').style.display='none'">&times;</span><h3 style="margin-top:0;color:#16a34a;">📢 GPS फोटो एंट्री</h3><div style="display:grid;gap:10px;"><input type="text" class="modern-input" id="abName" placeholder="प्रॉस्पेक्टचे नाव"><input type="tel" class="modern-input" id="abMobile" placeholder="मोबाईल नंबर" maxlength="10"><input type="text" class="modern-input" id="abProposer" placeholder="प्रपोजर" readonly><div style="background:#f0fdf4;padding:10px;border-radius:10px;text-align:center;border:1px dashed #16a34a;"><label style="font-weight:bold;display:block;margin-bottom:5px;font-size:14px;">📸 फोटो काढा</label><input type="file" id="abPhotoInput" accept="image/*" capture="environment" class="modern-input" onchange="drawGPSImage()"></div><canvas id="gpsCanvas"></canvas><img id="gpsPreview" alt="Preview"></div><button class="full-btn" style="background:#16a34a;" onclick="submitAbhiyan()">सबमिट करा (+5 Pts)</button></div></div>
+    
+    <div class="modal" id="abhiyanModal">
+        <div class="modal-content">
+            <span style="float:right;font-size:24px;cursor:pointer;" onclick="document.getElementById('abhiyanModal').style.display='none'">&times;</span>
+            <h3 style="margin-top:0;color:#16a34a;">📢 अभियान फोटो अपलोड</h3>
+            <div style="display:grid;gap:10px;">
+                <input type="text" class="modern-input" id="abName" placeholder="प्रॉस्पेक्टचे नाव (Name)">
+                <input type="tel" class="modern-input" id="abMobile" placeholder="मोबाईल नंबर (Mobile)" maxlength="10">
+                <input type="text" class="modern-input" id="abProposer" placeholder="प्रपोजर" readonly>
+                
+                <div class="upload-box" onclick="document.getElementById('abPhotoInput').click()">
+                    <span class="upload-icon-large">📷</span>
+                    <span class="upload-text">येथे क्लिक करून फोटो काढा</span>
+                    <input type="file" id="abPhotoInput" accept="image/*" capture="environment" style="display:none;" onchange="drawGPSImage()">
+                </div>
+                
+                <canvas id="gpsCanvas"></canvas>
+                <img id="gpsPreview" alt="Preview">
+            </div>
+            <button class="full-btn" style="background:#16a34a; margin-top:15px;" onclick="submitAbhiyan()">सबमिट करा (+5 Pts)</button>
+        </div>
+    </div>
+
     <div class="modal" id="abhiyanAdminModal"><div class="modal-content full-screen-content"><span style="float:right;font-size:24px;cursor:pointer;" onclick="document.getElementById('abhiyanAdminModal').style.display='none'">&times;</span><h3 style="margin-top:0;">📊 अभियान रिपोर्ट (Full)</h3><div style="flex-grow:1;overflow-y:auto;margin-bottom:10px;"><table class="top-table"><thead><tr><th>नाव/फोन</th><th>By</th><th>Pic</th></tr></thead><tbody id="abhiyan-list-body"></tbody></table></div><button class="full-btn" style="background:#FF9933;" onclick="downloadAbhiyanPDF()">📄 PDF डाउनलोड करा (with Photos)</button></div></div>
     <div class="modal" id="noticeModal"><div class="modal-content"><h3>महत्वाची सूचना</h3><textarea id="noticeInput" class="modern-input" rows="3"></textarea><button class="full-btn" onclick="saveNotice()">पोस्ट करा</button><button class="full-btn" style="background:gray;margin-top:5px;" onclick="document.getElementById('noticeModal').style.display='none'">बंद करा</button></div></div>
     <div class="modal" id="imageModal"><div class="modal-content"><h3>इमेज सेटिंग</h3><input type="file" id="imgInput" accept="image/*" class="modern-input"><div style="margin:10px 0;"><label><input type="radio" name="imgDisplay" value="embedded" checked> नेहमी दाखवा</label> <label><input type="radio" name="imgDisplay" value="popup"> पॉप-अप</label></div><button class="full-btn" onclick="processImage()">अपलोड</button><button class="full-btn" style="background:#ef4444;margin-top:5px;" onclick="deleteImage()">डिलीट</button><button class="full-btn" style="background:gray;margin-top:5px;" onclick="document.getElementById('imageModal').style.display='none'">बंद करा</button></div></div>
@@ -327,7 +381,7 @@
     }
     function deleteBanner(i){if(confirm("Delete?"))db.collection(colBanners).doc(`slide_${i}`).delete().then(()=>alert("Deleted"))}
 
-    // --- NOTICE ---
+    // --- NOTICE LOGIC ---
     function loadNotice() {
         db.collection(colNotice).doc('main_notice').onSnapshot(doc => {
             if(doc.exists) {
@@ -340,7 +394,7 @@
         });
     }
 
-    // --- CORE ---
+    // --- CORE LOGIC ---
     function checkLoginPoint() {
         const t=new Date().toISOString().split('T')[0], id=currentUser.uid+"_"+t;
         db.collection(colLogins).doc(id).get().then(d=>{if(!d.exists)db.collection(colLogins).doc(id).set({uid:currentUser.uid,name:currentUser.displayName,date:t})});
@@ -361,13 +415,17 @@
     }
     function logout(){auth.signOut()}
     
-    // --- MAIN DATA ---
+    // --- MAIN DATA LOGIC FIXED ---
     function loadData(){
         db.collection(colProspects).orderBy("updatedAt","desc").onSnapshot(s=>{
             prospectsData=[];
             s.forEach(d=>{
                 let da=d.data(); da.id=d.id;
-                if(isAdmin){ prospectsData.push(da); } else if(da.addedBy===currentUser.uid) { prospectsData.push(da); }
+                if(isAdmin){
+                    prospectsData.push(da);
+                } else if(da.addedBy===currentUser.uid) {
+                    prospectsData.push(da);
+                }
             });
             if(isAdmin) populateTeamFilter();
             loadCampaign(); 
@@ -381,19 +439,33 @@
                 let c=d.data(); c.id=d.id;
                 if(isAdmin || c.uid===currentUser.uid) campaignData.push(c);
             });
-            calculateMyPoints(); checkBirthdays(); populateCities(); renderList();
+            calculateMyPoints(); 
+            checkBirthdays(); 
+            populateCities();
+            renderList();
         });
     }
     
     function populateTeamFilter(){
         if(!isAdmin) return;
-        const s = document.getElementById('teamFilter'); const oldVal = s.value; 
+        const s = document.getElementById('teamFilter');
+        const oldVal = s.value; 
+        
         const users = new Set();
-        prospectsData.forEach(p => { let name = p.addedByName || p.addedByMobile || "Unknown"; if(name) users.add(name); });
+        prospectsData.forEach(p => {
+            let name = p.addedByName || p.addedByMobile || "Unknown";
+            if(name) users.add(name);
+        });
+        
         let html = '<option value="All">👥 सर्व टीम (All Team)</option>';
-        users.forEach(u => { html += `<option value="${u}">👤 ${u}</option>`; });
+        users.forEach(u => {
+            html += `<option value="${u}">👤 ${u}</option>`;
+        });
+        
         s.innerHTML = html;
-        if([...users].includes(oldVal) || oldVal === 'All') s.value = oldVal;
+        if([...users].includes(oldVal) || oldVal === 'All') {
+            s.value = oldVal;
+        }
     }
 
     function renderList() {
@@ -409,7 +481,7 @@
             if(cVal !== 'All' && p.city !== cVal) return false;
             if(isAdmin && tVal !== 'All') { let pName = p.addedByName || p.addedByMobile || "Unknown"; if(pName !== tVal) return false; }
             if(sVal && !p.name.toLowerCase().includes(sVal) && !p.mobile.includes(sVal)) return false;
-            if(pVal !== 'All' && p.product !== pVal) return false; // Project Filter Logic
+            if(pVal !== 'All' && p.product !== pVal) return false;
             return true;
         });
 
@@ -418,7 +490,6 @@
         filteredData.forEach((p, i) => {
             let bd=(isAdmin&&p.addedByName)?`<span class="owner-badge">👤 ${p.addedByName}</span>`:'';
             let del=isAdmin?`<span onclick="delP('${p.id}')" class="act-btn" style="background:#fee2e2;color:red;">🗑️</span>`:'';
-            // Show Project Tag on Card
             let projTag = p.product ? `<br><span class="project-tag">📌 ${p.product}</span>` : '';
             l.innerHTML+=`<div class="pro-card" style="border-left:5px solid ${p.status==='Joined'?'#16a34a':'#000080'}"><div class="sr-badge">#${i+1}</div>${bd}<div style="padding-left:30px; display:flex; justify-content:space-between;"><div><div style="font-weight:bold; font-size:18px;">${p.name}</div><div style="font-size:13px; color:gray;">📍 ${p.city||'-'} | 📞 ${p.mobile}</div>${projTag}</div><div><span style="font-size:12px; font-weight:bold; background:#f3f4f6; padding:2px 6px; border-radius:5px;">${p.status}</span></div></div><div class="btn-action-group"><a href="tel:${p.mobile}" class="act-btn" style="background:#e0f2fe; color:#0284c7;">📞</a><a href="https://wa.me/91${p.mobile}" class="act-btn" style="background:#dcfce7; color:#16a34a;">💬</a><span onclick="openModal('${p.id}')" class="act-btn" style="background:#f3f4f6; color:#475569;">✏️</span>${del}</div></div>`;
         });
