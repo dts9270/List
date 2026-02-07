@@ -59,19 +59,12 @@
         .stat-num { font-size: 24px; font-weight: 800; font-family: 'Inter', sans-serif; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
         .stat-lbl { font-size: 12px; font-weight: 600; opacity: 0.9; }
 
-        /* --- NEW ABHIYAN CARD STYLE --- */
+        /* ABHIYAN CARD */
         .abhiyan-card {
-            background: linear-gradient(135deg, #ecfccb, #f7fee7); /* Light Greenish */
-            border: 2px dashed #65a30d;
-            border-radius: 20px;
-            padding: 15px;
-            margin: 0 20px 20px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-            transition: transform 0.2s;
+            background: linear-gradient(135deg, #ecfccb, #f7fee7); border: 2px dashed #65a30d;
+            border-radius: 20px; padding: 15px; margin: 0 20px 20px 20px;
+            display: flex; align-items: center; justify-content: space-between;
+            cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: transform 0.2s;
         }
         .abhiyan-card:active { transform: scale(0.98); }
         .abhiyan-icon { font-size: 32px; background: #fff; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
@@ -79,14 +72,32 @@
         .abhiyan-info p { margin: 0; color: #4d7c0f; font-size: 12px; font-weight: 600; }
         .abhiyan-arrow { font-size: 24px; color: #65a30d; }
 
-        /* --- ABHIYAN MODAL UI --- */
-        .upload-box {
-            background: #f8fafc; border: 2px dashed #cbd5e1;
-            border-radius: 16px; padding: 25px; text-align: center;
-            position: relative; margin-top: 10px; cursor: pointer;
-        }
+        /* UPLOAD UI */
+        .upload-box { background: #f8fafc; border: 2px dashed #cbd5e1; border-radius: 16px; padding: 25px; text-align: center; position: relative; margin-top: 10px; cursor: pointer; }
         .upload-icon-large { font-size: 40px; color: #94a3b8; display: block; margin-bottom: 5px; }
         .upload-text { color: #64748b; font-size: 14px; font-weight: bold; }
+
+        /* --- COLORFUL QR CODE CSS --- */
+        .qr-frame {
+            position: relative;
+            padding: 6px;
+            background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+            background-size: 400%;
+            border-radius: 20px;
+            animation: glowing 20s linear infinite;
+            box-shadow: 0 0 25px rgba(0,0,0,0.3);
+            display: inline-block;
+        }
+        .qr-inner {
+            background: white;
+            padding: 15px;
+            border-radius: 16px;
+        }
+        @keyframes glowing {
+            0% { background-position: 0 0; }
+            50% { background-position: 400% 0; }
+            100% { background-position: 0 0; }
+        }
 
         /* CONTROLS */
         .core-section { margin: 0 20px 20px 20px; background: white; padding: 15px; border-radius: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
@@ -309,7 +320,15 @@
     <div class="modal" id="noticeModal"><div class="modal-content"><h3>महत्वाची सूचना</h3><textarea id="noticeInput" class="modern-input" rows="3"></textarea><button class="full-btn" onclick="saveNotice()">पोस्ट करा</button><button class="full-btn" style="background:gray;margin-top:5px;" onclick="document.getElementById('noticeModal').style.display='none'">बंद करा</button></div></div>
     <div class="modal" id="imageModal"><div class="modal-content"><h3>इमेज सेटिंग</h3><input type="file" id="imgInput" accept="image/*" class="modern-input"><div style="margin:10px 0;"><label><input type="radio" name="imgDisplay" value="embedded" checked> नेहमी दाखवा</label> <label><input type="radio" name="imgDisplay" value="popup"> पॉप-अप</label></div><button class="full-btn" onclick="processImage()">अपलोड</button><button class="full-btn" style="background:#ef4444;margin-top:5px;" onclick="deleteImage()">डिलीट</button><button class="full-btn" style="background:gray;margin-top:5px;" onclick="document.getElementById('imageModal').style.display='none'">बंद करा</button></div></div>
     <div class="modal" id="topperModal"><div class="modal-content"><span style="float:right;cursor:pointer;" onclick="document.getElementById('topperModal').style.display='none'">&times;</span><h3 style="margin-top:0;color:#d4af37;">🏆 टॉपर्स लिस्ट</h3><div style="max-height:300px;overflow-y:auto;"><table class="top-table"><thead><tr><th>#</th><th>नाव</th><th>Pts</th><th>गिफ्ट</th></tr></thead><tbody id="topper-list"></tbody></table></div><button class="full-btn" style="margin-top:10px;background:#FF9933;" onclick="downloadTopperPDF()">📄 PDF रिपोर्ट</button></div></div>
-    <div class="modal" id="qrModal"><div class="modal-content" style="text-align:center;"><div id="qrcode" style="display:inline-block;"></div><br><button class="full-btn" onclick="document.getElementById('qrModal').style.display='none'">बंद करा</button></div></div>
+    
+    <div class="modal" id="qrModal">
+        <div class="modal-content" style="background:transparent; box-shadow:none; border:none; display:flex; flex-direction:column; align-items:center;">
+            <div class="qr-frame">
+                <div id="qrcode" class="qr-inner"></div>
+            </div>
+            <button class="full-btn" onclick="document.getElementById('qrModal').style.display='none'" style="margin-top:20px; width:200px; background:white; color:#000080;">बंद करा (Close)</button>
+        </div>
+    </div>
 
 <script>
     const ADMIN_MOBILE = "7020970727";
@@ -415,17 +434,13 @@
     }
     function logout(){auth.signOut()}
     
-    // --- MAIN DATA LOGIC FIXED ---
+    // --- MAIN DATA ---
     function loadData(){
         db.collection(colProspects).orderBy("updatedAt","desc").onSnapshot(s=>{
             prospectsData=[];
             s.forEach(d=>{
                 let da=d.data(); da.id=d.id;
-                if(isAdmin){
-                    prospectsData.push(da);
-                } else if(da.addedBy===currentUser.uid) {
-                    prospectsData.push(da);
-                }
+                if(isAdmin){ prospectsData.push(da); } else if(da.addedBy===currentUser.uid) { prospectsData.push(da); }
             });
             if(isAdmin) populateTeamFilter();
             loadCampaign(); 
@@ -439,33 +454,19 @@
                 let c=d.data(); c.id=d.id;
                 if(isAdmin || c.uid===currentUser.uid) campaignData.push(c);
             });
-            calculateMyPoints(); 
-            checkBirthdays(); 
-            populateCities();
-            renderList();
+            calculateMyPoints(); checkBirthdays(); populateCities(); renderList();
         });
     }
     
     function populateTeamFilter(){
         if(!isAdmin) return;
-        const s = document.getElementById('teamFilter');
-        const oldVal = s.value; 
-        
+        const s = document.getElementById('teamFilter'); const oldVal = s.value; 
         const users = new Set();
-        prospectsData.forEach(p => {
-            let name = p.addedByName || p.addedByMobile || "Unknown";
-            if(name) users.add(name);
-        });
-        
+        prospectsData.forEach(p => { let name = p.addedByName || p.addedByMobile || "Unknown"; if(name) users.add(name); });
         let html = '<option value="All">👥 सर्व टीम (All Team)</option>';
-        users.forEach(u => {
-            html += `<option value="${u}">👤 ${u}</option>`;
-        });
-        
+        users.forEach(u => { html += `<option value="${u}">👤 ${u}</option>`; });
         s.innerHTML = html;
-        if([...users].includes(oldVal) || oldVal === 'All') {
-            s.value = oldVal;
-        }
+        if([...users].includes(oldVal) || oldVal === 'All') s.value = oldVal;
     }
 
     function renderList() {
@@ -547,7 +548,27 @@
         const id=document.getElementById('docId').value; if(!id)d.createdAt=new Date().toISOString().split('T')[0]; 
         (id?db.collection(colProspects).doc(id).update(d):db.collection(colProspects).add(d)).then(()=>{closeModal();btn.disabled=false;}); 
     }
-    function openQR(){document.getElementById('qrModal').style.display='flex';new QRCode(document.getElementById('qrcode'),{text:`RCM:${currentUser.displayName}`,width:120,height:120})}
+    
+    // --- UPDATED QR CODE FUNCTION ---
+    function openQR(){
+        document.getElementById('qrModal').style.display='flex';
+        document.getElementById('qrcode').innerHTML='';
+        
+        // Use currentUser.displayName if available, else "User"
+        // Also get mobile from email ID
+        const userName = currentUser.displayName || "User";
+        const userMobile = currentUser.email.split('@')[0];
+
+        // MECARD Format for Auto Contact Save
+        const qrText = `MECARD:N:${userName};TEL:${userMobile};;`;
+        
+        new QRCode(document.getElementById('qrcode'), {
+            text: qrText,
+            width: 180,
+            height: 180
+        });
+    }
+
     function saveCore(e){localStorage.setItem('rcm_'+e.id,e.checked)}
     function loadCore(){for(let i=1;i<=4;i++)if(localStorage.getItem('rcm_core'+i)=='true')document.getElementById('core'+i).checked=true}
     function checkBirthdays(){/*...*/}
