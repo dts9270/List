@@ -28,26 +28,77 @@
         @keyframes tirangaBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         * { box-sizing: border-box; outline: none; }
 
-        /* Header - Reverted to Logo.png */
+        /* --- HEADER (PURE BANNER SLIDER ONLY) --- */
         .header { 
-            background: url('Logo.png') no-repeat center center;
-            background-size: cover; background-color: white; 
-            color: #000080; padding: 20px 20px 70px 20px; 
-            border-radius: 0 0 30px 30px; box-shadow: 0 10px 30px rgba(0, 0, 128, 0.2); 
-            position: relative; z-index: 10;
+            position: relative; 
+            height: 200px; 
+            width: 100%;
+            border-radius: 0 0 25px 25px; 
+            overflow: hidden; 
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); 
+            background: #ffffff;
+            z-index: 10;
         }
-        .user-name { font-size: 26px; font-weight: 800; margin: 0; text-shadow: 2px 2px 4px rgba(255,255,255,0.8); }
-        .score-pill { background: rgba(0, 0, 128, 0.1); padding: 5px 15px; border-radius: 20px; font-size: 14px; font-weight: bold; color: #b45309; border: 1px solid rgba(0, 0, 128, 0.2); display: inline-block; margin-top: 5px; }
 
-        /* Dashboard */
-        .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 20px; margin-top: -50px; margin-bottom: 20px; position: relative; z-index: 20; }
-        .stat-card { padding: 15px; border-radius: 16px; text-align: center; color: white; box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
+        /* Slider Container */
+        .header-slider {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 0;
+        }
+
+        .slide-img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0; left: 0;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+        }
+        .slide-img.active { opacity: 1; }
+
+        /* --- USER INFO BAR --- */
+        .user-info-bar {
+            background: white;
+            padding: 15px 20px;
+            margin: -15px 15px 20px 15px; 
+            border-radius: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            position: relative;
+            z-index: 20;
+        }
+
+        .user-name-styled { 
+            font-size: 22px; font-weight: 800; margin: 0; color: #000080;
+        }
+
+        .score-pill-styled { 
+            background: #f0f9ff; 
+            padding: 6px 12px; border-radius: 20px; 
+            font-size: 14px; font-weight: bold; 
+            color: #0284c7;
+            border: 1px solid #bae6fd;
+            display: inline-flex; align-items: center; gap: 5px;
+        }
+
+        .btn-logout-styled {
+            background: #fee2e2; color: #b91c1c; 
+            border: 1px solid #fecaca; padding: 6px 12px; border-radius: 8px; 
+            font-size: 12px; font-weight: bold; cursor: pointer;
+        }
+
+        /* Dashboard Stats */
+        .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 20px; margin-bottom: 20px; position: relative; z-index: 20; }
+        .stat-card { padding: 12px; border-radius: 16px; text-align: center; color: white; box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
         .card-red { background: linear-gradient(135deg, #ef4444, #b91c1c); }
         .card-green { background: linear-gradient(135deg, #22c55e, #15803d); }
         .card-blue { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
         .card-orange { background: linear-gradient(135deg, #f97316, #c2410c); }
-        .stat-num { font-size: 28px; font-weight: 800; font-family: 'Inter', sans-serif; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-        .stat-lbl { font-size: 13px; font-weight: 600; opacity: 0.9; }
+        .stat-num { font-size: 24px; font-weight: 800; font-family: 'Inter', sans-serif; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .stat-lbl { font-size: 12px; font-weight: 600; opacity: 0.9; }
 
         /* Buttons & List */
         .campaign-btn { background: linear-gradient(135deg, #16a34a, #15803d); color: white; padding: 14px; border-radius: 15px; text-align: center; font-weight: bold; margin: 0 20px 20px 20px; box-shadow: 0 8px 20px rgba(22, 163, 74, 0.3); cursor: pointer; font-size: 18px; border: 2px solid #bbf7d0; display:flex; align-items:center; justify-content:center; gap:10px; }
@@ -101,6 +152,9 @@
         @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         
         .full-screen-content { width: 95%; height: 95%; max-width: none; max-height: 95vh; }
+        
+        .banner-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #eee; }
+        .banner-thumb { width: 50px; height: 30px; object-fit: cover; border-radius: 4px; border: 1px solid #ccc; }
     </style>
 </head>
 <body>
@@ -126,13 +180,17 @@
 
     <div id="app-container">
         <div class="header">
-            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-                <div>
-                    <p style="margin:0; opacity:0.9; font-size:14px; color:#000080;">नमस्कार,</p>
-                    <h1 class="user-name" id="user-display">User</h1>
-                    <div class="score-pill">🏆 पॉइंट्स: <span id="user-points">0</span></div>
-                </div>
-                <button onclick="logout()" style="background:#fee2e2; color:#b91c1c; border:none; padding:6px 12px; border-radius:8px; font-size:12px; font-weight:bold;">बाहेर पडा</button>
+            <div id="header-slider" class="header-slider"></div>
+        </div>
+
+        <div class="user-info-bar">
+            <div>
+                <p style="margin:0; font-size:12px; color:gray;">नमस्कार,</p>
+                <h2 class="user-name-styled" id="user-display">User</h2>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <div class="score-pill-styled">🏆 <span id="user-points">0</span></div>
+                <button onclick="logout()" class="btn-logout-styled">बाहेर पडा</button>
             </div>
         </div>
 
@@ -173,10 +231,11 @@
             <select id="teamFilter" class="modern-input" style="display:none;" onchange="renderList()"><option value="All">👥 सर्व टीम (Admin View)</option></select>
         </div>
 
-        <div id="admin-panel" class="admin-controls">
+        <div id="admin-panel" class="admin-controls" style="grid-template-columns: 1fr 1fr 1fr 1fr;">
             <button class="btn-admin" onclick="openNoticeModal()">📢 नोटीस</button>
             <button class="btn-admin" onclick="openImageModal()">🖼️ फोटो</button>
-            <button class="btn-admin" style="background:#dcfce7; color:#15803d;" onclick="openAbhiyanAdminModal()">📸 अभियान रिपोर्ट</button>
+            <button class="btn-admin" style="background:#dcfce7; color:#15803d;" onclick="openAbhiyanAdminModal()">📸 रिपोर्ट</button>
+            <button class="btn-admin" style="background:#e0f2fe; color:#0284c7;" onclick="openBannerModal()">🎞️ बॅनर</button>
         </div>
 
         <div class="report-actions">
@@ -194,7 +253,7 @@
     <div class="modal" id="entryModal">
         <div class="modal-content">
             <span style="float:right; font-size:24px; cursor:pointer;" onclick="closeModal()">&times;</span>
-            <h3 style="margin-top:0; color:#000080;">नवीन प्रॉस्पेक्ट</h3>
+            <h3 style="margin-top:0; color:#000080;">प्रॉस्पेक्ट डिटेल्स</h3>
             <input type="hidden" id="docId">
             <div style="display:grid; gap:10px;">
                 <div style="display:flex; gap:8px;">
@@ -208,18 +267,43 @@
                 </div>
                 <label style="font-size:12px; margin-bottom:-5px; color:gray;">जन्मतारीख</label>
                 <input type="date" class="modern-input" id="pDob">
-                
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
                     <select class="modern-input" id="pCategory"><option value="Cold">Cold ❄️</option><option value="Warm">Warm 🌤️</option><option value="Hot">Hot 🔥</option></select>
                     <select class="modern-input" id="pStatus"><option value="New">नवीन</option><option value="Follow Up">फॉलो अप</option><option value="Joined">जॉईन ✅</option></select>
                 </div>
-                
                 <label style="font-size:12px; margin-bottom:-5px; color:gray;">पुढची तारीख (Next Date)</label>
                 <input type="date" class="modern-input" id="pNextDate">
                 <select class="modern-input" id="pProduct"><option value="">-- प्रॉडक्ट --</option><option value="Health">हेल्थ (Nutricharge)</option><option value="Agri">शेती (Agri)</option><option value="FMCG">किराणा (FMCG)</option></select>
                 <input type="text" class="modern-input" id="pInterests" placeholder="टीप (Note)">
             </div>
-            <button class="full-btn" onclick="saveData()">सेव्ह करा (+2 Pts)</button>
+            <button class="full-btn" id="saveBtn" onclick="saveData()">सेव्ह करा (+2 Pts)</button>
+        </div>
+    </div>
+
+    <div class="modal" id="bannerModal">
+        <div class="modal-content">
+            <span style="float:right; cursor:pointer;" onclick="document.getElementById('bannerModal').style.display='none'">&times;</span>
+            <h3 style="margin-top:0;">🎞️ बॅनर स्लाइडर सेट करा</h3>
+            
+            <div class="banner-row">
+                <span>Banner 1:</span>
+                <input type="file" id="ban1" style="width:180px; font-size:12px;">
+                <button onclick="uploadBanner(1)" class="bday-btn">Upload</button>
+                <button onclick="deleteBanner(1)" style="color:red; border:none; background:none;">🗑️</button>
+            </div>
+            <div class="banner-row">
+                <span>Banner 2:</span>
+                <input type="file" id="ban2" style="width:180px; font-size:12px;">
+                <button onclick="uploadBanner(2)" class="bday-btn">Upload</button>
+                <button onclick="deleteBanner(2)" style="color:red; border:none; background:none;">🗑️</button>
+            </div>
+            <div class="banner-row">
+                <span>Banner 3:</span>
+                <input type="file" id="ban3" style="width:180px; font-size:12px;">
+                <button onclick="uploadBanner(3)" class="bday-btn">Upload</button>
+                <button onclick="deleteBanner(3)" style="color:red; border:none; background:none;">🗑️</button>
+            </div>
+            <p style="font-size:12px; color:gray;">(Max 3 images. They will slide automatically)</p>
         </div>
     </div>
 
@@ -231,7 +315,6 @@
                 <input type="text" class="modern-input" id="abName" placeholder="प्रॉस्पेक्टचे नाव">
                 <input type="tel" class="modern-input" id="abMobile" placeholder="मोबाईल नंबर" maxlength="10">
                 <input type="text" class="modern-input" id="abProposer" placeholder="प्रपोजर" readonly>
-                
                 <div style="background:#f0fdf4; padding:10px; border-radius:10px; text-align:center; border:1px dashed #16a34a;">
                     <label style="font-weight:bold; display:block; margin-bottom:5px; font-size:14px;">📸 फोटो काढा</label>
                     <input type="file" id="abPhotoInput" accept="image/*" capture="environment" class="modern-input" onchange="drawGPSImage()">
@@ -295,8 +378,10 @@
     const colCampaign = "rcm_campaign";
     const colNotice = "rcm_notices";
     const colLogins = "rcm_daily_logins";
+    const colBanners = "rcm_banners";
 
     let prospectsData = []; let campaignData = []; let loginData = []; let currentUser = null; let isAdmin = false; let isRegisterMode = false; let processedCampaignImage = null;
+    let bannerImages = []; let currentSlide = 0;
 
     auth.onAuthStateChanged((user) => {
         if (user) {
@@ -309,334 +394,162 @@
             if(isAdmin) { document.getElementById('teamFilter').style.display='block'; document.getElementById('admin-panel').style.display='grid'; } 
             else { document.getElementById('teamFilter').style.display='none'; document.getElementById('admin-panel').style.display='none'; }
             
-            // Check Daily Login Point
             checkLoginPoint();
-            loadCore(); loadData(); loadNotice(); loadLogins();
+            loadCore(); loadData(); loadNotice(); loadLogins(); loadBanners();
         } else {
             currentUser = null; document.getElementById('login-container').style.display = 'flex'; document.getElementById('app-container').style.display = 'none';
         }
     });
 
-    // --- DAILY LOGIN POINT LOGIC ---
-    function checkLoginPoint() {
-        const today = new Date().toISOString().split('T')[0];
-        const docId = currentUser.uid + "_" + today;
-        const ref = db.collection(colLogins).doc(docId);
-        
-        ref.get().then(doc => {
-            if(!doc.exists) {
-                ref.set({
-                    uid: currentUser.uid,
-                    name: currentUser.displayName,
-                    date: today,
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                }).then(() => console.log("Login point added"));
-            }
+    function loadBanners() {
+        db.collection(colBanners).onSnapshot(snap => {
+            bannerImages = [];
+            snap.forEach(doc => { if(doc.data().image) bannerImages.push(doc.data().image); });
+            renderSlider();
         });
     }
 
-    function loadLogins() {
-        db.collection(colLogins).onSnapshot(snap => {
-            loginData = [];
-            snap.forEach(d => { loginData.push(d.data()); });
-            calculateMyPoints(); // Recalculate with login points
-        });
+    function renderSlider() {
+        const container = document.getElementById('header-slider');
+        if(bannerImages.length === 0) { container.innerHTML = ''; return; }
+        let html = '';
+        bannerImages.forEach((img, index) => { html += `<img src="${img}" class="slide-img ${index === 0 ? 'active' : ''}" id="slide-${index}">`; });
+        container.innerHTML = html;
+        currentSlide = 0;
+        if(window.sliderInterval) clearInterval(window.sliderInterval);
+        if(bannerImages.length > 1) { window.sliderInterval = setInterval(nextSlide, 4000); }
     }
 
-    function toggleAuthMode() { isRegisterMode = !isRegisterMode; document.getElementById('name-field-container').style.display = isRegisterMode?'block':'none'; document.getElementById('btn-auth-action').innerText=isRegisterMode?'रजिस्टर करा (Register)':'लॉगिन करा (Login)'; document.getElementById('toggle-text').innerText=isRegisterMode?'अकाउंट आहे? लॉगिन करा':'नवीन आहात? अकाउंट बनवा'; }
+    function nextSlide() {
+        document.getElementById(`slide-${currentSlide}`).classList.remove('active');
+        currentSlide = (currentSlide + 1) % bannerImages.length;
+        document.getElementById(`slide-${currentSlide}`).classList.add('active');
+    }
+
+    function openBannerModal() { document.getElementById('bannerModal').style.display = 'flex'; }
     
-    function handleAuth() {
-        const btn = document.getElementById('btn-auth-action');
-        const n = document.getElementById('uName').value;
-        const m = document.getElementById('uMobile').value;
-        const p = document.getElementById('uPin').value;
-
-        if(m.length !== 10 || p.length !== 4) return alert("मोबाईल नंबर 10 अंकी आणि पिन 4 अंकी असावा.");
-
-        const em = m + SECRET_SUFFIX;
-        const pw = p + PIN_SALT;
-
-        btn.innerText = "कृपया थांबा...";
-        btn.disabled = true;
-
-        if(isRegisterMode) {
-            if(!n) {
-                btn.innerText = "रजिस्टर करा"; btn.disabled = false;
-                return alert("नाव आवश्यक आहे.");
-            }
-            auth.createUserWithEmailAndPassword(em, pw)
-                .then(c => {
-                    c.user.updateProfile({displayName:n}).then(() => {});
-                })
-                .catch(e => {
-                    alert("Error: " + e.message);
-                    btn.innerText = "रजिस्टर करा"; btn.disabled = false;
-                });
-        } else {
-            auth.signInWithEmailAndPassword(em, pw)
-                .catch(e => {
-                    alert("Error: " + e.message);
-                    btn.innerText = "लॉगिन (Login)"; btn.disabled = false;
-                });
-        }
-    }
-
-    function logout() { auth.signOut(); }
-
-    function loadData() {
-        db.collection(colProspects).orderBy("updatedAt", "desc").onSnapshot(snap => {
-            prospectsData = []; const teamSet = new Set();
-            snap.forEach(d => {
-                let da = d.data(); da.id = d.id;
-                if(isAdmin) { prospectsData.push(da); if(da.addedByName) teamSet.add(da.addedByName); }
-                else if(da.addedBy === currentUser.uid) prospectsData.push(da);
-            });
-            loadCampaign();
-        });
-    }
-
-    function loadCampaign() {
-        db.collection(colCampaign).orderBy("timestamp", "desc").onSnapshot(snap => {
-            campaignData = [];
-            snap.forEach(d => { let c = d.data(); c.id = d.id; if(isAdmin || c.uid === currentUser.uid) campaignData.push(c); });
-            calculateMyPoints(); checkBirthdays(); updateDashboard(); populateCities(); renderList(); if(isAdmin) populateTeamFilter();
-        });
-    }
-
-    // --- GPS CAMERA LOGIC (NO NAME ON PHOTO) ---
-    function openAbhiyanModal() {
-        document.getElementById('abProposer').value = currentUser.displayName || "User";
-        document.getElementById('abhiyanModal').style.display = 'flex';
-        processedCampaignImage = null;
-        document.getElementById('gpsPreview').style.display = 'none';
-        document.getElementById('abPhotoInput').value = "";
-    }
-
-    function drawGPSImage() {
-        const fileInput = document.getElementById('abPhotoInput');
-        const file = fileInput.files[0];
-        if(!file) return;
-
-        if(navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(position => {
-                const lat = position.coords.latitude.toFixed(5);
-                const long = position.coords.longitude.toFixed(5);
-                fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${long}`).then(res => res.json()).then(data => {
-                    const addr = data.address; const village = addr.village || addr.town || addr.city || addr.suburb || "Unknown"; const state = addr.state || "";
-                    processCanvas(file, lat, long, `${village}, ${state}`);
-                }).catch(() => processCanvas(file, lat, long, "Loc Network Error"));
-            }, () => processCanvas(file, "No Loc", "No Loc", "Denied"));
-        } else {
-            processCanvas(file, "No GPS", "No GPS", "GPS Error");
-        }
-    }
-
-    function processCanvas(file, lat, long, address) {
+    function uploadBanner(index) {
+        const file = document.getElementById(`ban${index}`).files[0];
+        if(!file) return alert("फाईल निवडा");
         const reader = new FileReader();
         reader.onload = function(e) {
             const img = new Image(); img.src = e.target.result;
             img.onload = function() {
-                const canvas = document.getElementById('gpsCanvas'); const ctx = canvas.getContext('2d');
+                const canvas = document.createElement('canvas'); const ctx = canvas.getContext('2d');
                 const maxWidth = 800; const scale = maxWidth / img.width;
                 canvas.width = maxWidth; canvas.height = img.height * scale;
                 ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                
-                // Overlay
-                ctx.fillStyle = "rgba(0, 0, 0, 0.6)"; ctx.fillRect(0, canvas.height - 100, canvas.width, 100);
-                ctx.fillStyle = "white"; ctx.font = "bold 16px sans-serif";
-                
-                const date = new Date().toLocaleString();
-                // NO NAME on Photo
-                ctx.fillText(`🏠 ${address}`, 20, canvas.height - 70);
-                ctx.fillText(`📍 ${lat}, ${long}`, 20, canvas.height - 45);
-                ctx.fillText(`📅 ${date}`, 20, canvas.height - 20);
-
-                processedCampaignImage = canvas.toDataURL('image/jpeg', 0.7);
-                const preview = document.getElementById('gpsPreview'); preview.src = processedCampaignImage; preview.style.display = 'block';
+                db.collection(colBanners).doc(`slide_${index}`).set({ image: canvas.toDataURL('image/jpeg', 0.7) }).then(() => alert(`Banner ${index} Updated!`));
             }
         }
         reader.readAsDataURL(file);
     }
 
-    function submitAbhiyan() {
-        const name = document.getElementById('abName').value;
-        const mobile = document.getElementById('abMobile').value;
-        const proposer = document.getElementById('abProposer').value;
-        
-        if(!name) return alert("नाव आवश्यक आहे.");
-        if(!processedCampaignImage) return alert("फोटो आवश्यक आहे.");
-
-        // Fix for "By Null" - explicitly use the input value or current user
-        const finalProposer = proposer || currentUser.displayName || "Unknown User";
-
-        db.collection(colCampaign).add({
-            prospectName: name, mobile: mobile || "", proposer: finalProposer,
-            uid: currentUser.uid, photo: processedCampaignImage, timestamp: new Date().toISOString()
-        }).then(() => { alert("माहिती सेव्ह झाली! (+5 Points)"); document.getElementById('abhiyanModal').style.display='none'; });
+    function deleteBanner(index) {
+        if(confirm("Delete?")) { db.collection(colBanners).doc(`slide_${index}`).delete().then(() => alert("Deleted")); }
     }
 
-    // --- RENDER LIST ---
-    function renderList() {
-        const listDiv = document.getElementById('list');
-        const s = document.getElementById('search').value.toLowerCase();
-        const c = document.getElementById('cityFilter').value;
-        const tf = document.getElementById('teamFilter').value;
-        listDiv.innerHTML = '';
-        
-        prospectsData.filter(p => {
-            if(c!=='All' && p.city!==c) return false;
-            if(isAdmin && tf!=='All' && (p.addedByName!==tf && p.addedByMobile!==tf)) return false;
-            if(s && !p.name.toLowerCase().includes(s)) return false;
-            return true;
-        }).forEach((p, i) => {
-            let bd = (isAdmin && p.addedByName) ? `<span class="owner-badge">👤 ${p.addedByName}</span>` : '';
-            let delBtn = isAdmin ? `<span onclick="deleteProspect('${p.id}')" class="act-btn" style="background:#fee2e2; color:#b91c1c; cursor:pointer;">🗑️</span>` : '';
-            
-            listDiv.innerHTML += `
-            <div class="pro-card" style="border-left:5px solid ${p.status==='Joined'?'#16a34a':'#000080'}">
-                <div class="sr-badge">#${i+1}</div>${bd}
-                <div style="padding-left:30px; display:flex; justify-content:space-between; align-items:start;">
-                    <div>
-                        <div style="font-weight:bold; font-size:18px;">${p.name}</div>
-                        <div style="font-size:13px; color:gray;">📍 ${p.city || '-'} | 📞 ${p.mobile}</div>
-                    </div>
-                    <div style="text-align:right;">
-                        <span style="font-size:12px; font-weight:bold; background:#f3f4f6; padding:2px 6px; border-radius:5px;">${p.status}</span>
-                    </div>
-                </div>
-                
-                <div class="btn-action-group">
-                    <a href="tel:${p.mobile}" class="act-btn" style="background:#e0f2fe; color:#0284c7;">📞</a>
-                    <a href="https://wa.me/91${p.mobile}" target="_blank" class="act-btn" style="background:#dcfce7; color:#16a34a;">💬</a>
-                    <span onclick="openModal('${p.id}')" class="act-btn" style="background:#f3f4f6; color:#475569; cursor:pointer;">✏️</span>
-                    ${delBtn}
-                </div>
-            </div>`;
-        });
+    // --- STANDARD FUNCTIONS (Login, GPS, etc) ---
+    function checkLoginPoint() {
+        const t = new Date().toISOString().split('T')[0]; const dId = currentUser.uid + "_" + t;
+        db.collection(colLogins).doc(dId).get().then(d => { if(!d.exists) db.collection(colLogins).doc(dId).set({uid:currentUser.uid, name:currentUser.displayName, date:t}); });
     }
-
-    function deleteProspect(id) {
-        if(confirm('खात्री आहे? (Delete?)')) {
-            db.collection(colProspects).doc(id).delete().then(() => alert("Deleted!"));
+    function loadLogins() { db.collection(colLogins).onSnapshot(s => { loginData=[]; s.forEach(d=>loginData.push(d.data())); calculateMyPoints(); }); }
+    
+    function toggleAuthMode() { isRegisterMode = !isRegisterMode; document.getElementById('name-field-container').style.display = isRegisterMode?'block':'none'; document.getElementById('btn-auth-action').innerText=isRegisterMode?'रजिस्टर करा':'लॉगिन करा'; document.getElementById('toggle-text').innerText=isRegisterMode?'लॉगिन करा':'नवीन अकाउंट बनवा'; }
+    function handleAuth() {
+        const btn=document.getElementById('btn-auth-action'), n=document.getElementById('uName').value, m=document.getElementById('uMobile').value, p=document.getElementById('uPin').value;
+        if(m.length!==10 || p.length!==4) return alert("चेक नंबर/पिन");
+        btn.innerText="थांबा..."; btn.disabled=true;
+        const em=m+SECRET_SUFFIX, pw=p+PIN_SALT;
+        if(isRegisterMode) {
+            if(!n) { btn.innerText="रजिस्टर"; btn.disabled=false; return alert("नाव टाका"); }
+            auth.createUserWithEmailAndPassword(em,pw).then(c=>c.user.updateProfile({displayName:n})).catch(e=>{alert(e.message);btn.disabled=false;});
+        } else {
+            auth.signInWithEmailAndPassword(em,pw).catch(e=>{alert(e.message);btn.innerText="लॉगिन";btn.disabled=false;});
         }
     }
-
-    // --- REPORT FUNCTIONS ---
-    function exportToExcel() {
-        if(!prospectsData.length) return alert("माहिती नाही");
-        const data = prospectsData.map(p => ({
-            "नाव": p.name, "मोबाईल": p.mobile, "शहर": p.city, "स्थिती": p.status, "प्रॉडक्ट": p.product
-        }));
-        const ws = XLSX.utils.json_to_sheet(data);
-        const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "Prospects");
-        XLSX.writeFile(wb, "RCM_List.xlsx");
-    }
-
-    function exportToPDF() {
-        if(!prospectsData.length) return alert("माहिती नाही");
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-        doc.text("RCM Prospect List", 14, 20);
-        
-        const tableData = prospectsData.map((p, i) => [i+1, p.name, p.mobile, p.city, p.status]);
-        
-        doc.autoTable({
-            head: [["#", "Name", "Mobile", "City", "Status"]],
-            body: tableData,
-            startY: 30,
-        });
-        doc.save("RCM_Report.pdf");
-    }
+    function logout(){auth.signOut()}
+    function loadData() { db.collection(colProspects).orderBy("updatedAt", "desc").onSnapshot(s => { prospectsData=[]; const ts=new Set(); s.forEach(d => { let da=d.data(); da.id=d.id; if(isAdmin) { prospectsData.push(da); if(da.addedByName) ts.add(da.addedByName); } else if(da.addedBy===currentUser.uid) prospectsData.push(da); }); loadCampaign(); }); }
+    function loadCampaign() { db.collection(colCampaign).orderBy("timestamp", "desc").onSnapshot(s => { campaignData=[]; s.forEach(d => { let c=d.data(); c.id=d.id; if(isAdmin || c.uid===currentUser.uid) campaignData.push(c); }); calculateMyPoints(); updateDashboard(); populateCities(); renderList(); if(isAdmin) populateTeamFilter(); }); }
     
-    // --- ABHIYAN PDF REPORT ---
-    function downloadAbhiyanPDF() {
-        if(!campaignData.length) return alert("माहिती नाही");
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-        
-        const d = new Date();
-        const dateStr = `${d.getDate()}-${d.getMonth()+1}-${d.getFullYear()}_${d.getHours()}-${d.getMinutes()}`;
-        
-        doc.text("Abhiyan Report with Photos", 14, 20);
-        
-        doc.autoTable({
-            head: [["Name", "By", "Photo"]],
-            body: campaignData.map(c => [c.prospectName, c.proposer, c.photo]), 
-            bodyStyles: { minCellHeight: 25 },
-            didDrawCell: function(data) {
-                if (data.column.index === 2 && data.cell.section === 'body') {
-                    var img = data.cell.raw; 
-                    if (img && img.startsWith('data:image')) {
-                        doc.addImage(img, 'JPEG', data.cell.x + 2, data.cell.y + 2, 20, 20);
-                        data.cell.text = ''; 
-                    }
-                }
-            },
-            startY: 30
-        });
-        doc.save(`Abhiyan_Report_${dateStr}.pdf`);
+    function openAbhiyanModal() { document.getElementById('abProposer').value = currentUser.displayName || "User"; document.getElementById('abhiyanModal').style.display = 'flex'; processedCampaignImage = null; document.getElementById('gpsPreview').style.display = 'none'; document.getElementById('abPhotoInput').value = ""; }
+    function drawGPSImage() {
+        const f = document.getElementById('abPhotoInput').files[0]; if(!f) return;
+        if(navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(p => {
+                const lat=p.coords.latitude.toFixed(5), long=p.coords.longitude.toFixed(5);
+                fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${long}`).then(r=>r.json()).then(d=>{
+                    const a=d.address, v=a.village||a.town||a.city||"Unknown", s=a.state||"";
+                    processCanvas(f, lat, long, `${v}, ${s}`);
+                }).catch(()=>processCanvas(f, lat, long, "Net Err"));
+            }, ()=>processCanvas(f, "No Loc", "No Loc", "Denied"));
+        } else processCanvas(f, "No GPS", "No GPS", "Err");
+    }
+    function processCanvas(f, lat, long, addr) {
+        const r = new FileReader(); r.onload = e => {
+            const i = new Image(); i.src = e.target.result;
+            i.onload = () => {
+                const c=document.getElementById('gpsCanvas'), x=c.getContext('2d'), mw=800, s=mw/i.width; c.width=mw; c.height=i.height*s;
+                x.drawImage(i,0,0,c.width,c.height);
+                x.fillStyle="rgba(0,0,0,0.6)"; x.fillRect(0,c.height-80,c.width,80);
+                x.fillStyle="white"; x.font="bold 16px sans-serif";
+                x.fillText(`🏠 ${addr}`, 20, c.height-50); x.fillText(`📅 ${new Date().toLocaleString()}`, 20, c.height-25);
+                processedCampaignImage = c.toDataURL('image/jpeg', 0.7);
+                const p=document.getElementById('gpsPreview'); p.src=processedCampaignImage; p.style.display='block';
+            }
+        }; r.readAsDataURL(f);
+    }
+    function submitAbhiyan() {
+        if(!document.getElementById('abName').value) return alert("नाव टाका"); if(!processedCampaignImage) return alert("फोटो घ्या");
+        db.collection(colCampaign).add({ prospectName: document.getElementById('abName').value, mobile: document.getElementById('abMobile').value, proposer: document.getElementById('abProposer').value, uid: currentUser.uid, photo: processedCampaignImage, timestamp: new Date().toISOString() }).then(() => { alert("सेव्ह झाले! (+5 Pts)"); document.getElementById('abhiyanModal').style.display='none'; });
     }
 
-    // --- OTHER STANDARD FUNCTIONS ---
-    function saveData() {
-        const n=document.getElementById('pName').value, m=document.getElementById('pMobile').value; if(!n)return alert("नाव आवश्यक आहे.");
-        const d={name:n, mobile:m, city:document.getElementById('pCity').value, occupation:document.getElementById('pOccupation').value, category:document.getElementById('pCategory').value, status:document.getElementById('pStatus').value, nextDate:document.getElementById('pNextDate').value, product:document.getElementById('pProduct').value, interests:document.getElementById('pInterests').value, dob:document.getElementById('pDob').value, updatedAt:new Date().toISOString(), addedBy:currentUser.uid, addedByMobile:currentUser.email.split('@')[0], addedByName:currentUser.displayName};
-        const id=document.getElementById('docId').value; if(!id)d.createdAt=new Date().toISOString().split('T')[0];
-        (id?db.collection(colProspects).doc(id).update(d):db.collection(colProspects).add(d)).then(()=>{closeModal()});
+    function renderList() {
+        const l=document.getElementById('list'), s=document.getElementById('search').value.toLowerCase(), c=document.getElementById('cityFilter').value;
+        l.innerHTML = '';
+        prospectsData.filter(p => (c==='All'||p.city===c) && (!s||p.name.toLowerCase().includes(s))).forEach((p, i) => {
+            let bd=(isAdmin&&p.addedByName)?`<span class="owner-badge">👤 ${p.addedByName}</span>`:'';
+            let del=isAdmin?`<span onclick="delP('${p.id}')" class="act-btn" style="background:#fee2e2;color:red;">🗑️</span>`:'';
+            l.innerHTML += `<div class="pro-card" style="border-left:5px solid ${p.status==='Joined'?'#16a34a':'#000080'}"><div class="sr-badge">#${i+1}</div>${bd}<div style="padding-left:30px; display:flex; justify-content:space-between;"><div><div style="font-weight:bold; font-size:18px;">${p.name}</div><div style="font-size:13px; color:gray;">📍 ${p.city||'-'} | 📞 ${p.mobile}</div></div><div><span style="font-size:12px; font-weight:bold; background:#f3f4f6; padding:2px 6px; border-radius:5px;">${p.status}</span></div></div><div class="btn-action-group"><a href="tel:${p.mobile}" class="act-btn" style="background:#e0f2fe; color:#0284c7;">📞</a><a href="https://wa.me/91${p.mobile}" class="act-btn" style="background:#dcfce7; color:#16a34a;">💬</a><span onclick="openModal('${p.id}')" class="act-btn" style="background:#f3f4f6; color:#475569;">✏️</span>${del}</div></div>`;
+        });
     }
-    function loadNotice(){db.collection(colNotice).doc('main_notice').onSnapshot(doc=>{if(doc.exists){const d=doc.data();document.getElementById('notice-text').innerText=d.text||"";const a=document.getElementById('promo-area');if(d.image){if(d.displayType==='popup'){a.style.display='none';openLightbox(d.image)}else{a.style.display='block';document.getElementById('promo-img').src=d.image}}else{a.style.display='none'}}})}
-    function openAbhiyanAdminModal(){const b=document.getElementById('abhiyan-list-body');b.innerHTML='';campaignData.forEach(c=>{let a=c.mobile?`<a href="tel:${c.mobile}" class="act-btn-sm">📞</a>`:'-';b.innerHTML+=`<tr><td>${c.prospectName}<br><small>${c.mobile||''}</small></td><td>${c.proposer}</td><td><img src="${c.photo}" style="width:40px;height:40px;border-radius:5px;cursor:pointer;" onclick="openLightbox(this.src)"></td></tr>`});document.getElementById('abhiyanAdminModal').style.display='flex'}
+    function delP(id){if(confirm("Delete?"))db.collection(colProspects).doc(id).delete()}
+    
+    function calculateMyPoints(){ let p=0, mp=prospectsData.filter(x=>x.addedBy===currentUser.uid), dc={}; p+=mp.length*2; mp.forEach(x=>{if(x.createdAt){if(!dc[x.createdAt])dc[x.createdAt]=0;dc[x.createdAt]++}}); for(let d in dc)if(dc[d]>=2)p+=5; p+=campaignData.filter(c=>c.uid===currentUser.uid).length*5; p+=loginData.filter(l=>l.uid===currentUser.uid).length; document.getElementById('user-points').innerText=p; }
+    function updateDashboard(){const t=new Date().toISOString().split('T')[0];document.getElementById('d-total').innerText=prospectsData.length;document.getElementById('d-joined').innerText=prospectsData.filter(p=>p.status==='Joined').length;document.getElementById('d-hot').innerText=prospectsData.filter(p=>p.category==='Hot').length;document.getElementById('d-due').innerText=prospectsData.filter(p=>p.nextDate&&p.nextDate<=t).length}
+    
+    function openModal(id=null){document.getElementById('entryModal').style.display='flex';document.getElementById('pName').value='';document.getElementById('pMobile').value='';document.getElementById('pCity').value='';if(id){const p=prospectsData.find(x=>x.id===id);if(p){document.getElementById('docId').value=id;document.getElementById('pName').value=p.name;document.getElementById('pMobile').value=p.mobile;document.getElementById('pCity').value=p.city;document.getElementById('saveBtn').innerText="Update";}}else{document.getElementById('docId').value='';document.getElementById('saveBtn').innerText="Save";}}
+    function closeModal(){document.getElementById('entryModal').style.display='none'}
+    function saveData() { const n=document.getElementById('pName').value, m=document.getElementById('pMobile').value; if(!n)return alert("नाव आवश्यक आहे."); const d={name:n, mobile:m, city:document.getElementById('pCity').value, occupation:document.getElementById('pOccupation').value, category:document.getElementById('pCategory').value, status:document.getElementById('pStatus').value, nextDate:document.getElementById('pNextDate').value, product:document.getElementById('pProduct').value, interests:document.getElementById('pInterests').value, dob:document.getElementById('pDob').value, updatedAt:new Date().toISOString(), addedBy:currentUser.uid, addedByMobile:currentUser.email.split('@')[0], addedByName:currentUser.displayName}; const id=document.getElementById('docId').value; if(!id)d.createdAt=new Date().toISOString().split('T')[0]; (id?db.collection(colProspects).doc(id).update(d):db.collection(colProspects).add(d)).then(()=>{closeModal()}); }
+
+    // --- UTILS ---
+    function openQR(){document.getElementById('qrModal').style.display='flex';new QRCode(document.getElementById('qrcode'),{text:`RCM:${currentUser.displayName}`,width:120,height:120})}
+    function saveCore(e){localStorage.setItem('rcm_'+e.id,e.checked)}
+    function loadCore(){for(let i=1;i<=4;i++)if(localStorage.getItem('rcm_core'+i)=='true')document.getElementById('core'+i).checked=true}
+    function checkBirthdays(){/*...*/}
+    function populateCities(){const s=document.getElementById('cityFilter');[...new Set(prospectsData.map(p=>p.city).filter(c=>c))].forEach(c=>s.innerHTML+=`<option value="${c}">${c}</option>`)}
+    function populateTeamFilter(){if(!isAdmin)return;const s=document.getElementById('teamFilter'),n=new Set();prospectsData.forEach(p=>{if(p.addedByName)n.add(p.addedByName)});campaignData.forEach(c=>{if(c.proposer)n.add(c.proposer)});s.innerHTML='<option value="All">👥 सर्व टीम</option>';n.forEach(m=>s.innerHTML+=`<option value="${m}">${m}</option>`)}
+    
+    // --- REPORTS ---
+    function generateAIReport(){alert("Keep Growing!")}
+    function exportToExcel(){ const data = prospectsData.map(p => ({"Name":p.name,"Mobile":p.mobile,"City":p.city,"Status":p.status})); const ws = XLSX.utils.json_to_sheet(data); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Data"); XLSX.writeFile(wb, `RCM_List_${new Date().toISOString().slice(0,10)}.xlsx`); }
+    function exportToPDF(){ const {jsPDF}=window.jspdf; const doc=new jsPDF(); doc.text("RCM List",14,20); doc.autoTable({head:[["Name","Mobile","City"]], body:prospectsData.map(p=>[p.name,p.mobile,p.city]), startY:30}); doc.save(`RCM_Report_${new Date().toISOString().slice(0,10)}.pdf`); }
+    function downloadTopperPDF(){ const {jsPDF}=window.jspdf; const doc=new jsPDF(); doc.text("Toppers List",14,20); doc.autoTable({html:'.top-table',startY:30}); doc.save(`Toppers_${new Date().toISOString().slice(0,10)}.pdf`); }
+    function downloadAbhiyanPDF() { if(!campaignData.length) return alert("No Data"); const {jsPDF} = window.jspdf; const doc = new jsPDF(); doc.text("Abhiyan Report", 14, 20); doc.autoTable({ head: [["Name", "By", "Photo"]], body: campaignData.map(c => [c.prospectName, c.proposer, c.photo]), bodyStyles: { minCellHeight: 25 }, didDrawCell: function(data) { if (data.column.index === 2 && data.cell.section === 'body') { var img = data.cell.raw; if (img && img.startsWith('data:image')) { doc.addImage(img, 'JPEG', data.cell.x + 2, data.cell.y + 2, 20, 20); data.cell.text = ''; } } }, startY: 30 }); doc.save(`Abhiyan_Report_${new Date().toISOString().slice(0,10)}.pdf`); }
+    
+    // Notice & Modals
+    function loadNotice(){db.collection(colNotice).doc('main_notice').onSnapshot(doc=>{if(doc.exists){const d=doc.data();document.getElementById('notice-text').innerText=d.text||"";if(d.image){document.getElementById('promo-area').style.display='block';document.getElementById('promo-img').src=d.image}else{document.getElementById('promo-area').style.display='none'}}})}
     function openNoticeModal(){if(isAdmin)document.getElementById('noticeModal').style.display='flex'}
     function openImageModal(){if(isAdmin)document.getElementById('imageModal').style.display='flex'}
     function saveNotice(){if(!isAdmin)return;db.collection(colNotice).doc('main_notice').set({text:document.getElementById('noticeInput').value},{merge:true}).then(()=>{alert("Posted");document.getElementById('noticeModal').style.display='none'})}
-    function processImage(){const f=document.getElementById('imgInput').files[0];if(!f)return;const r=new FileReader();r.onload=e=>{const i=new Image();i.src=e.target.result;i.onload=()=>{const c=document.createElement('canvas'),x=c.getContext('2d'),s=800/i.width;c.width=800;c.height=i.height*s;x.drawImage(i,0,0,c.width,c.height);db.collection(colNotice).doc('main_notice').set({image:c.toDataURL('image/jpeg',0.6),displayType:document.querySelector('input[name="imgDisplay"]:checked').value},{merge:true}).then(()=>{alert("Uploaded");document.getElementById('imageModal').style.display='none'})}};r.readAsDataURL(f)}
-    function deleteImage(){db.collection(colNotice).doc('main_notice').update({image:firebase.firestore.FieldValue.delete(),displayType:firebase.firestore.FieldValue.delete()}).then(()=>alert("Deleted"))}
+    function processImage(){const f=document.getElementById('imgInput').files[0];if(!f)return;const r=new FileReader();r.onload=e=>{const i=new Image();i.src=e.target.result;i.onload=()=>{const c=document.createElement('canvas'),x=c.getContext('2d'),s=800/i.width;c.width=800;c.height=i.height*s;x.drawImage(i,0,0,c.width,c.height);db.collection(colNotice).doc('main_notice').set({image:c.toDataURL('image/jpeg',0.6)},{merge:true}).then(()=>{alert("Uploaded");document.getElementById('imageModal').style.display='none'})}};r.readAsDataURL(f)}
+    function deleteImage(){db.collection(colNotice).doc('main_notice').update({image:firebase.firestore.FieldValue.delete()}).then(()=>alert("Deleted"))}
+    function openTopperModal(){ let lb={}; [...prospectsData].forEach(d=>{let n=d.addedByName||"User"; if(!lb[n])lb[n]=0; lb[n]+=2;}); [...campaignData].forEach(d=>{let n=d.proposer||"User"; if(!lb[n])lb[n]=0; lb[n]+=5;}); [...loginData].forEach(d=>{let n=d.name||"User"; if(!lb[n])lb[n]=0; lb[n]+=1;}); let s=Object.keys(lb).map(k=>({n:k,p:lb[k]})).sort((a,b)=>b.p-a.p); document.getElementById('topper-list').innerHTML=s.map((u,i)=>`<tr><td>${i+1}</td><td>${u.n}</td><td>${u.p}</td><td>${u.p>=50?'🎁':''}</td></tr>`).join(''); document.getElementById('topperModal').style.display='flex'; }
+    function openAbhiyanAdminModal(){const b=document.getElementById('abhiyan-list-body');b.innerHTML='';campaignData.forEach(c=>{let a=c.mobile?`<a href="tel:${c.mobile}" class="act-btn-sm">📞</a>`:'-';b.innerHTML+=`<tr><td>${c.prospectName}<br><small>${c.mobile||''}</small></td><td>${c.proposer}</td><td><img src="${c.photo}" style="width:40px;height:40px;border-radius:5px;" onclick="openLightbox(this.src)"></td></tr>`});document.getElementById('abhiyanAdminModal').style.display='flex'}
     function openLightbox(s){document.getElementById('lightbox-img').src=s;document.getElementById('lightbox').style.display='flex'}
     function closeLightbox(){document.getElementById('lightbox').style.display='none'}
-    function checkBirthdays(){/*...*/}; 
-    
-    // UPDATED POINTS WITH DAILY LOGIN
-    function calculateMyPoints(){
-        let pts=0;
-        // 1. Prospects
-        let myP=prospectsData.filter(x=>x.addedBy===currentUser.uid), dateC={};
-        pts+=myP.length*2; 
-        myP.forEach(x=>{if(x.createdAt){if(!dateC[x.createdAt])dateC[x.createdAt]=0;dc[x.createdAt]++}});
-        for(let d in dateC)if(dateC[d]>=2)pts+=5;
-        
-        // 2. Campaigns
-        let myC=campaignData.filter(c=>c.uid===currentUser.uid); 
-        pts+=myC.length*5;
-        
-        // 3. Logins
-        let myL=loginData.filter(l=>l.uid===currentUser.uid);
-        pts+=myL.length*1;
-
-        document.getElementById('user-points').innerText=pts;
-    }
-    
-    function updateDashboard(){const t=new Date().toISOString().split('T')[0];document.getElementById('d-total').innerText=prospectsData.length;document.getElementById('d-joined').innerText=prospectsData.filter(p=>p.status==='Joined').length;document.getElementById('d-hot').innerText=prospectsData.filter(p=>p.category==='Hot').length;document.getElementById('d-due').innerText=prospectsData.filter(p=>p.nextDate&&p.nextDate<=t).length}
-    function openTopperModal(){
-        let lb={}; 
-        [...prospectsData].forEach(d=>{let n=d.addedByName||"User"; if(!lb[n])lb[n]=0; lb[n]+=2;});
-        [...campaignData].forEach(d=>{let n=d.proposer||"User"; if(!lb[n])lb[n]=0; lb[n]+=5;});
-        [...loginData].forEach(d=>{let n=d.name||"User"; if(!lb[n])lb[n]=0; lb[n]+=1;});
-        
-        let s=Object.keys(lb).map(k=>({n:k,p:lb[k]})).sort((a,b)=>b.p-a.p);
-        document.getElementById('topper-list').innerHTML=s.map((u,i)=>`<tr><td>${i+1}</td><td>${u.n}</td><td>${u.p}</td><td>${u.p>=50?'🎁':''}</td></tr>`).join('');
-        document.getElementById('topperModal').style.display='flex';
-    }
-    function openModal(id=null){document.getElementById('entryModal').style.display='flex';if(id)document.getElementById('docId').value=id;else document.getElementById('docId').value=''}
-    function closeModal(){document.getElementById('entryModal').style.display='none'}
-    function populateCities(){const s=document.getElementById('cityFilter');[...new Set(prospectsData.map(p=>p.city).filter(c=>c))].forEach(c=>s.innerHTML+=`<option value="${c}">${c}</option>`)}
-    function populateTeamFilter(){if(!isAdmin)return;const s=document.getElementById('teamFilter'),n=new Set();prospectsData.forEach(p=>{if(p.addedByName)n.add(p.addedByName)});campaignData.forEach(c=>{if(c.proposer)n.add(c.proposer)});s.innerHTML='<option value="All">👥 सर्व टीम (Admin)</option>';n.forEach(m=>s.innerHTML+=`<option value="${m}">${m}</option>`)}
-    function openQR(){document.getElementById('qrModal').style.display='flex';document.getElementById('qrcode').innerHTML='';new QRCode(document.getElementById('qrcode'),{text:`RCM:${currentUser.displayName}`,width:120,height:120})}
-    function saveCore(e){localStorage.setItem('rcm_'+e.id,e.checked)}
-    function loadCore(){for(let i=1;i<=4;i++)if(localStorage.getItem('rcm_core'+i)=='true')document.getElementById('core'+i).checked=true}
-    function generateAIReport(){alert("Keep Growing!")}
     async function pickContact(){try{const c=await navigator.contacts.select(['name','tel'],{multiple:false});if(c.length){document.getElementById('pName').value=c[0].name[0];document.getElementById('pMobile').value=c[0].tel[0].replace(/\D/g,'')}}catch(e){}}
-    function downloadTopperPDF(){const{jsPDF}=window.jspdf;const doc=new jsPDF();doc.text("RCM Toppers List",14,20);doc.autoTable({html:'.top-table',startY:30});doc.save("Toppers.pdf")}
 </script>
 </body>
 </html>
