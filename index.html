@@ -28,7 +28,7 @@
         @keyframes tirangaBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         * { box-sizing: border-box; outline: none; }
 
-        /* --- HEADER --- */
+        /* --- HEADER (AUTO ADJUST BANNER) --- */
         .header { 
             position: relative; 
             height: 180px; 
@@ -36,8 +36,7 @@
             border-radius: 0 0 30px 30px; 
             overflow: hidden; 
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2); 
-            /* डीफॉल्ट बॅकग्राउंड (जर बॅनर नसेल तर) */
-            background: linear-gradient(135deg, #000080, #1e3a8a); 
+            background: #ffffff;
         }
 
         /* Slider Container */
@@ -50,6 +49,7 @@
         .slide-img {
             width: 100%; height: 100%;
             object-fit: cover;
+            object-position: center;
             position: absolute;
             top: 0; left: 0;
             opacity: 0;
@@ -71,13 +71,11 @@
         }
 
         .user-name-styled { font-size: 22px; font-weight: 800; margin: 0; color: #000080; }
-        
         .score-pill-styled { 
             background: #f0f9ff; padding: 6px 12px; border-radius: 20px; 
             font-size: 14px; font-weight: bold; color: #0284c7;
             border: 1px solid #bae6fd; display: inline-flex; align-items: center; gap: 5px;
         }
-
         .btn-logout-styled {
             background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; 
             padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer;
@@ -291,7 +289,7 @@
                 <button onclick="uploadBanner(3)" class="bday-btn">Upload</button>
                 <button onclick="deleteBanner(3)" style="color:red; border:none; background:none;">🗑️</button>
             </div>
-            <p style="font-size:12px; color:gray;">(Max 3 images. They will slide automatically)</p>
+            <p style="font-size:12px; color:gray;">(Max 3 images)</p>
         </div>
     </div>
 
@@ -421,7 +419,6 @@
     function uploadBanner(index) {
         const file = document.getElementById(`ban${index}`).files[0];
         if(!file) return alert("फाईल निवडा");
-        
         const reader = new FileReader();
         reader.onload = function(e) {
             const img = new Image(); img.src = e.target.result;
@@ -488,7 +485,7 @@
     }
     function logout(){auth.signOut()}
     function loadData() { db.collection(colProspects).orderBy("updatedAt", "desc").onSnapshot(s => { prospectsData=[]; const ts=new Set(); s.forEach(d => { let da=d.data(); da.id=d.id; if(isAdmin) { prospectsData.push(da); if(da.addedByName) ts.add(da.addedByName); } else if(da.addedBy===currentUser.uid) prospectsData.push(da); }); loadCampaign(); }); }
-    function loadCampaign() { db.collection(colCampaign).orderBy("timestamp", "desc").onSnapshot(s => { campaignData=[]; s.forEach(d => { let c=d.data(); c.id=d.id; if(isAdmin || c.uid===currentUser.uid) campaignData.push(c); }); calculateMyPoints(); checkBirthdays(); updateDashboard(); populateCities(); renderList(); if(isAdmin) populateTeamFilter(); }); }
+    function loadCampaign() { db.collection(colCampaign).orderBy("timestamp", "desc").onSnapshot(s => { campaignData=[]; s.forEach(d => { let c=d.data(); c.id=d.id; if(isAdmin || c.uid===currentUser.uid) campaignData.push(c); }); calculateMyPoints(); checkBirthdays(); updateDashboard(prospectsData); populateCities(); renderList(); if(isAdmin) populateTeamFilter(); }); }
     
     function openAbhiyanModal() { document.getElementById('abProposer').value = currentUser.displayName || "User"; document.getElementById('abhiyanModal').style.display = 'flex'; processedCampaignImage = null; document.getElementById('gpsPreview').style.display = 'none'; document.getElementById('abPhotoInput').value = ""; }
     function drawGPSImage() {
@@ -523,18 +520,40 @@
     }
 
     function renderList() {
-        const l=document.getElementById('list'), s=document.getElementById('search').value.toLowerCase(), c=document.getElementById('cityFilter').value;
+        const l=document.getElementById('list'), s=document.getElementById('search').value.toLowerCase(), c=document.getElementById('cityFilter').value, tf=document.getElementById('teamFilter').value;
         l.innerHTML = '';
-        prospectsData.filter(p => (c==='All'||p.city===c) && (!s||p.name.toLowerCase().includes(s))).forEach((p, i) => {
+        
+        // Filter Data based on Search, City, and Team (Admin)
+        const filteredData = prospectsData.filter(p => {
+            if(c !== 'All' && p.city !== c) return false;
+            if(isAdmin && tf !== 'All' && p.addedByName !== tf) return false;
+            if(s && !p.name.toLowerCase().includes(s)) return false;
+            return true;
+        });
+
+        // Update Dashboard Stats dynamically based on filtered data (REPORT MODE)
+        updateDashboard(filteredData);
+
+        // Render Cards
+        filteredData.forEach((p, i) => {
             let bd=(isAdmin&&p.addedByName)?`<span class="owner-badge">👤 ${p.addedByName}</span>`:'';
             let del=isAdmin?`<span onclick="delP('${p.id}')" class="act-btn" style="background:#fee2e2;color:red;">🗑️</span>`:'';
             l.innerHTML += `<div class="pro-card" style="border-left:5px solid ${p.status==='Joined'?'#16a34a':'#000080'}"><div class="sr-badge">#${i+1}</div>${bd}<div style="padding-left:30px; display:flex; justify-content:space-between;"><div><div style="font-weight:bold; font-size:18px;">${p.name}</div><div style="font-size:13px; color:gray;">📍 ${p.city||'-'} | 📞 ${p.mobile}</div></div><div><span style="font-size:12px; font-weight:bold; background:#f3f4f6; padding:2px 6px; border-radius:5px;">${p.status}</span></div></div><div class="btn-action-group"><a href="tel:${p.mobile}" class="act-btn" style="background:#e0f2fe; color:#0284c7;">📞</a><a href="https://wa.me/91${p.mobile}" class="act-btn" style="background:#dcfce7; color:#16a34a;">💬</a><span onclick="openModal('${p.id}')" class="act-btn" style="background:#f3f4f6; color:#475569;">✏️</span>${del}</div></div>`;
         });
     }
+    
+    function updateDashboard(data) {
+        // Stats are now based on whatever data is passed (Filtered or Full)
+        const t = new Date().toISOString().split('T')[0];
+        document.getElementById('d-total').innerText = data.length;
+        document.getElementById('d-joined').innerText = data.filter(p => p.status === 'Joined').length;
+        document.getElementById('d-hot').innerText = data.filter(p => p.category === 'Hot').length;
+        document.getElementById('d-due').innerText = data.filter(p => p.nextDate && p.nextDate <= t).length;
+    }
+
     function delP(id){if(confirm("Delete?"))db.collection(colProspects).doc(id).delete()}
     
     function calculateMyPoints(){ let p=0, mp=prospectsData.filter(x=>x.addedBy===currentUser.uid), dc={}; p+=mp.length*2; mp.forEach(x=>{if(x.createdAt){if(!dc[x.createdAt])dc[x.createdAt]=0;dc[x.createdAt]++}}); for(let d in dc)if(dc[d]>=2)p+=5; p+=campaignData.filter(c=>c.uid===currentUser.uid).length*5; p+=loginData.filter(l=>l.uid===currentUser.uid).length; document.getElementById('user-points').innerText=p; }
-    function updateDashboard(){const t=new Date().toISOString().split('T')[0];document.getElementById('d-total').innerText=prospectsData.length;document.getElementById('d-joined').innerText=prospectsData.filter(p=>p.status==='Joined').length;document.getElementById('d-hot').innerText=prospectsData.filter(p=>p.category==='Hot').length;document.getElementById('d-due').innerText=prospectsData.filter(p=>p.nextDate&&p.nextDate<=t).length}
     
     function openModal(id=null){document.getElementById('entryModal').style.display='flex';document.getElementById('pName').value='';document.getElementById('pMobile').value='';document.getElementById('pCity').value='';if(id){const p=prospectsData.find(x=>x.id===id);if(p){document.getElementById('docId').value=id;document.getElementById('pName').value=p.name;document.getElementById('pMobile').value=p.mobile;document.getElementById('pCity').value=p.city;document.getElementById('saveBtn').innerText="Update";}}else{document.getElementById('docId').value='';document.getElementById('saveBtn').innerText="Save";}}
     function closeModal(){document.getElementById('entryModal').style.display='none'}
