@@ -28,9 +28,9 @@
         @keyframes tirangaBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         * { box-sizing: border-box; outline: none; }
 
-        /* Header */
+        /* Header - Reverted to Logo.png */
         .header { 
-            background: url('rcm_header.png') no-repeat center center;
+            background: url('Logo.png') no-repeat center center;
             background-size: cover; background-color: white; 
             color: #000080; padding: 20px 20px 70px 20px; 
             border-radius: 0 0 30px 30px; box-shadow: 0 10px 30px rgba(0, 0, 128, 0.2); 
@@ -100,7 +100,6 @@
 
         @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         
-        /* Full Screen Modal for Report */
         .full-screen-content { width: 95%; height: 95%; max-width: none; max-height: 95vh; }
     </style>
 </head>
@@ -232,6 +231,7 @@
                 <input type="text" class="modern-input" id="abName" placeholder="प्रॉस्पेक्टचे नाव">
                 <input type="tel" class="modern-input" id="abMobile" placeholder="मोबाईल नंबर" maxlength="10">
                 <input type="text" class="modern-input" id="abProposer" placeholder="प्रपोजर" readonly>
+                
                 <div style="background:#f0fdf4; padding:10px; border-radius:10px; text-align:center; border:1px dashed #16a34a;">
                     <label style="font-weight:bold; display:block; margin-bottom:5px; font-size:14px;">📸 फोटो काढा</label>
                     <input type="file" id="abPhotoInput" accept="image/*" capture="environment" class="modern-input" onchange="drawGPSImage()">
@@ -294,8 +294,9 @@
     const colProspects = "rcm_prospects"; 
     const colCampaign = "rcm_campaign";
     const colNotice = "rcm_notices";
+    const colLogins = "rcm_daily_logins";
 
-    let prospectsData = []; let campaignData = []; let currentUser = null; let isAdmin = false; let isRegisterMode = false; let processedCampaignImage = null;
+    let prospectsData = []; let campaignData = []; let loginData = []; let currentUser = null; let isAdmin = false; let isRegisterMode = false; let processedCampaignImage = null;
 
     auth.onAuthStateChanged((user) => {
         if (user) {
@@ -307,11 +308,40 @@
             document.getElementById('user-display').innerText = user.displayName || mobile;
             if(isAdmin) { document.getElementById('teamFilter').style.display='block'; document.getElementById('admin-panel').style.display='grid'; } 
             else { document.getElementById('teamFilter').style.display='none'; document.getElementById('admin-panel').style.display='none'; }
-            loadCore(); loadData(); loadNotice();
+            
+            // Check Daily Login Point
+            checkLoginPoint();
+            loadCore(); loadData(); loadNotice(); loadLogins();
         } else {
             currentUser = null; document.getElementById('login-container').style.display = 'flex'; document.getElementById('app-container').style.display = 'none';
         }
     });
+
+    // --- DAILY LOGIN POINT LOGIC ---
+    function checkLoginPoint() {
+        const today = new Date().toISOString().split('T')[0];
+        const docId = currentUser.uid + "_" + today;
+        const ref = db.collection(colLogins).doc(docId);
+        
+        ref.get().then(doc => {
+            if(!doc.exists) {
+                ref.set({
+                    uid: currentUser.uid,
+                    name: currentUser.displayName,
+                    date: today,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                }).then(() => console.log("Login point added"));
+            }
+        });
+    }
+
+    function loadLogins() {
+        db.collection(colLogins).onSnapshot(snap => {
+            loginData = [];
+            snap.forEach(d => { loginData.push(d.data()); });
+            calculateMyPoints(); // Recalculate with login points
+        });
+    }
 
     function toggleAuthMode() { isRegisterMode = !isRegisterMode; document.getElementById('name-field-container').style.display = isRegisterMode?'block':'none'; document.getElementById('btn-auth-action').innerText=isRegisterMode?'रजिस्टर करा (Register)':'लॉगिन करा (Login)'; document.getElementById('toggle-text').innerText=isRegisterMode?'अकाउंट आहे? लॉगिन करा':'नवीन आहात? अकाउंट बनवा'; }
     
@@ -373,7 +403,7 @@
         });
     }
 
-    // --- GPS CAMERA LOGIC ---
+    // --- GPS CAMERA LOGIC (NO NAME ON PHOTO) ---
     function openAbhiyanModal() {
         document.getElementById('abProposer').value = currentUser.displayName || "User";
         document.getElementById('abhiyanModal').style.display = 'flex';
@@ -410,12 +440,17 @@
                 const maxWidth = 800; const scale = maxWidth / img.width;
                 canvas.width = maxWidth; canvas.height = img.height * scale;
                 ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                
+                // Overlay
                 ctx.fillStyle = "rgba(0, 0, 0, 0.6)"; ctx.fillRect(0, canvas.height - 100, canvas.width, 100);
                 ctx.fillStyle = "white"; ctx.font = "bold 16px sans-serif";
+                
                 const date = new Date().toLocaleString();
+                // NO NAME on Photo
                 ctx.fillText(`🏠 ${address}`, 20, canvas.height - 70);
                 ctx.fillText(`📍 ${lat}, ${long}`, 20, canvas.height - 45);
                 ctx.fillText(`📅 ${date}`, 20, canvas.height - 20);
+
                 processedCampaignImage = canvas.toDataURL('image/jpeg', 0.7);
                 const preview = document.getElementById('gpsPreview'); preview.src = processedCampaignImage; preview.style.display = 'block';
             }
@@ -486,90 +521,122 @@
         }
     }
 
-    // --- STANDARD FUNCTIONS ---
-    function saveData() {
-        const n = document.getElementById('pName').value, m = document.getElementById('pMobile').value;
-        if(!n) return alert("नाव आवश्यक आहे.");
-        const d = {
-            name: n, mobile: m, city: document.getElementById('pCity').value,
-            occupation: document.getElementById('pOccupation').value, category: document.getElementById('pCategory').value,
-            status: document.getElementById('pStatus').value, nextDate: document.getElementById('pNextDate').value,
-            product: document.getElementById('pProduct').value, interests: document.getElementById('pInterests').value,
-            dob: document.getElementById('pDob').value, updatedAt: new Date().toISOString(),
-            addedBy: currentUser.uid, addedByMobile: currentUser.email.split('@')[0], addedByName: currentUser.displayName
-        };
-        const id = document.getElementById('docId').value;
-        if(!id) d.createdAt = new Date().toISOString().split('T')[0];
-        (id ? db.collection(colProspects).doc(id).update(d) : db.collection(colProspects).add(d)).then(() => closeModal());
+    // --- REPORT FUNCTIONS ---
+    function exportToExcel() {
+        if(!prospectsData.length) return alert("माहिती नाही");
+        const data = prospectsData.map(p => ({
+            "नाव": p.name, "मोबाईल": p.mobile, "शहर": p.city, "स्थिती": p.status, "प्रॉडक्ट": p.product
+        }));
+        const ws = XLSX.utils.json_to_sheet(data);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Prospects");
+        XLSX.writeFile(wb, "RCM_List.xlsx");
     }
 
-    function loadNotice() {
-        db.collection(colNotice).doc('main_notice').onSnapshot(doc => {
-            if(doc.exists) {
-                const d = doc.data(); document.getElementById('notice-text').innerText = d.text || "";
-                const area = document.getElementById('promo-area');
-                if(d.image) {
-                    if(d.displayType === 'popup') { area.style.display='none'; openLightbox(d.image); } 
-                    else { area.style.display='block'; document.getElementById('promo-img').src = d.image; }
-                } else { area.style.display='none'; }
-            }
-        });
-    }
-    
-    // --- ADMIN ABHIYAN REPORT with PDF IMAGES ---
-    function openAbhiyanAdminModal() {
-        const tbody = document.getElementById('abhiyan-list-body'); tbody.innerHTML = '';
-        campaignData.forEach(c => {
-            let act = c.mobile ? `<a href="tel:${c.mobile}" class="act-btn-sm" style="font-size:14px;">📞</a>` : '-';
-            tbody.innerHTML += `<tr><td>${c.prospectName}<br><small>${c.mobile||''}</small></td><td>${c.proposer}</td><td><img src="${c.photo}" style="width:40px;height:40px;border-radius:5px;cursor:pointer;" onclick="openLightbox(this.src)"></td></tr>`;
-        });
-        document.getElementById('abhiyanAdminModal').style.display='flex';
-    }
-
-    function downloadAbhiyanPDF() {
+    function exportToPDF() {
+        if(!prospectsData.length) return alert("माहिती नाही");
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
+        doc.text("RCM Prospect List", 14, 20);
+        
+        const tableData = prospectsData.map((p, i) => [i+1, p.name, p.mobile, p.city, p.status]);
+        
+        doc.autoTable({
+            head: [["#", "Name", "Mobile", "City", "Status"]],
+            body: tableData,
+            startY: 30,
+        });
+        doc.save("RCM_Report.pdf");
+    }
+    
+    // --- ABHIYAN PDF REPORT ---
+    function downloadAbhiyanPDF() {
+        if(!campaignData.length) return alert("माहिती नाही");
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        
+        const d = new Date();
+        const dateStr = `${d.getDate()}-${d.getMonth()+1}-${d.getFullYear()}_${d.getHours()}-${d.getMinutes()}`;
+        
         doc.text("Abhiyan Report with Photos", 14, 20);
         
         doc.autoTable({
             head: [["Name", "By", "Photo"]],
-            body: campaignData.map(c => [c.prospectName, c.proposer, c.photo]), // Pass base64 to body
+            body: campaignData.map(c => [c.prospectName, c.proposer, c.photo]), 
             bodyStyles: { minCellHeight: 25 },
             didDrawCell: function(data) {
                 if (data.column.index === 2 && data.cell.section === 'body') {
-                    var img = data.cell.raw; // Get base64 string
+                    var img = data.cell.raw; 
                     if (img && img.startsWith('data:image')) {
                         doc.addImage(img, 'JPEG', data.cell.x + 2, data.cell.y + 2, 20, 20);
-                        data.cell.text = ''; // Clear text so it doesn't overlap
+                        data.cell.text = ''; 
                     }
                 }
             },
             startY: 30
         });
-        doc.save("Abhiyan_Report.pdf");
+        doc.save(`Abhiyan_Report_${dateStr}.pdf`);
     }
 
-    function openNoticeModal(){if(isAdmin)document.getElementById('noticeModal').style.display='flex';}
-    function openImageModal(){if(isAdmin)document.getElementById('imageModal').style.display='flex';}
-    function saveNotice(){ if(!isAdmin)return; db.collection(colNotice).doc('main_notice').set({text:document.getElementById('noticeInput').value},{merge:true}).then(()=>{alert("Posted");document.getElementById('noticeModal').style.display='none'});}
-    function processImage(){ const f=document.getElementById('imgInput').files[0]; if(!f)return; const r=new FileReader(); r.onload=e=>{const i=new Image(); i.src=e.target.result; i.onload=()=>{const c=document.createElement('canvas'),x=c.getContext('2d'); const s=800/i.width; c.width=800; c.height=i.height*s; x.drawImage(i,0,0,c.width,c.height); db.collection(colNotice).doc('main_notice').set({image:c.toDataURL('image/jpeg',0.6), displayType:document.querySelector('input[name="imgDisplay"]:checked').value},{merge:true}).then(()=>{alert("Uploaded");document.getElementById('imageModal').style.display='none'})}}; r.readAsDataURL(f);}
-    function deleteImage(){ db.collection(colNotice).doc('main_notice').update({image:firebase.firestore.FieldValue.delete(), displayType:firebase.firestore.FieldValue.delete()}).then(()=>alert("Deleted")); }
-    function openLightbox(src){document.getElementById('lightbox-img').src=src; document.getElementById('lightbox').style.display='flex';}
-    function closeLightbox(){document.getElementById('lightbox').style.display='none';}
-    function checkBirthdays(){ /* Same */ }
-    function calculateMyPoints(){ /* Same */ let pts=0, myP=prospectsData.filter(p=>p.addedBy===currentUser.uid), dateC={}; pts+=myP.length*2; myP.forEach(p=>{if(p.createdAt){if(!dateC[p.createdAt])dateC[p.createdAt]=0; dateC[p.createdAt]++;}}); for(let d in dateC)if(dateC[d]>=2)pts+=5; let myC=campaignData.filter(c=>c.uid===currentUser.uid); pts+=myC.length*5; document.getElementById('user-points').innerText=pts; }
-    function updateDashboard(){ const t=new Date().toISOString().split('T')[0]; document.getElementById('d-total').innerText=prospectsData.length; document.getElementById('d-joined').innerText=prospectsData.filter(p=>p.status==='Joined').length; document.getElementById('d-hot').innerText=prospectsData.filter(p=>p.category==='Hot').length; document.getElementById('d-due').innerText=prospectsData.filter(p=>p.nextDate && p.nextDate<=t).length; }
-    function openTopperModal(){ let lb={}; [...prospectsData,...campaignData].forEach(d=>{ let n=d.addedByName||d.proposer||"User"; if(!lb[n])lb[n]=0; if(d.prospectName)lb[n]+=5; else lb[n]+=2; }); let s=Object.keys(lb).map(k=>({name:k,pts:lb[k]})).sort((a,b)=>b.pts-a.pts); document.getElementById('topper-list').innerHTML=s.map((u,i)=>`<tr><td>${i+1}</td><td>${u.name}</td><td>${u.pts}</td><td>${u.pts>=50?'🎁 हो':'नाही'}</td></tr>`).join(''); document.getElementById('topperModal').style.display='flex'; }
-    function openModal(id=null){document.getElementById('entryModal').style.display='flex'; if(id){document.getElementById('docId').value=id;}else{document.getElementById('docId').value='';}}
-    function closeModal(){document.getElementById('entryModal').style.display='none';}
-    function populateCities(){const s=document.getElementById('cityFilter'); [...new Set(prospectsData.map(p=>p.city).filter(c=>c))].forEach(c=>s.innerHTML+=`<option value="${c}">${c}</option>`);}
-    function populateTeamFilter(){if(!isAdmin)return; const s=document.getElementById('teamFilter'); let n=new Set(); prospectsData.forEach(p=>{if(p.addedByName)n.add(p.addedByName)}); campaignData.forEach(c=>{if(c.proposer)n.add(c.proposer)}); s.innerHTML='<option value="All">👥 सर्व टीम (Admin)</option>'; n.forEach(m=>s.innerHTML+=`<option value="${m}">${m}</option>`);}
-    function openQR(){document.getElementById('qrModal').style.display='flex'; document.getElementById('qrcode').innerHTML=''; new QRCode(document.getElementById('qrcode'),{text:`RCM:${currentUser.displayName}`,width:120,height:120});}
-    function saveCore(el){localStorage.setItem('rcm_'+el.id,el.checked);}
-    function loadCore(){for(let i=1;i<=4;i++)if(localStorage.getItem('rcm_core'+i)=='true')document.getElementById('core'+i).checked=true;}
-    function exportToExcel(){alert("Downloading Excel...");} function exportToPDF(){alert("Downloading PDF...");} function generateAIReport(){alert("Keep Growing!");}
-    async function pickContact(){try{const c=await navigator.contacts.select(['name','tel'],{multiple:false}); if(c.length){document.getElementById('pName').value=c[0].name[0]; document.getElementById('pMobile').value=c[0].tel[0].replace(/\D/g,'');}}catch(e){}}
-    function downloadTopperPDF() { const {jsPDF}=window.jspdf; const doc=new jsPDF(); doc.text("RCM Toppers List",14,20); doc.autoTable({ html: '.top-table', startY: 30 }); doc.save("Toppers.pdf"); }
+    // --- OTHER STANDARD FUNCTIONS ---
+    function saveData() {
+        const n=document.getElementById('pName').value, m=document.getElementById('pMobile').value; if(!n)return alert("नाव आवश्यक आहे.");
+        const d={name:n, mobile:m, city:document.getElementById('pCity').value, occupation:document.getElementById('pOccupation').value, category:document.getElementById('pCategory').value, status:document.getElementById('pStatus').value, nextDate:document.getElementById('pNextDate').value, product:document.getElementById('pProduct').value, interests:document.getElementById('pInterests').value, dob:document.getElementById('pDob').value, updatedAt:new Date().toISOString(), addedBy:currentUser.uid, addedByMobile:currentUser.email.split('@')[0], addedByName:currentUser.displayName};
+        const id=document.getElementById('docId').value; if(!id)d.createdAt=new Date().toISOString().split('T')[0];
+        (id?db.collection(colProspects).doc(id).update(d):db.collection(colProspects).add(d)).then(()=>{closeModal()});
+    }
+    function loadNotice(){db.collection(colNotice).doc('main_notice').onSnapshot(doc=>{if(doc.exists){const d=doc.data();document.getElementById('notice-text').innerText=d.text||"";const a=document.getElementById('promo-area');if(d.image){if(d.displayType==='popup'){a.style.display='none';openLightbox(d.image)}else{a.style.display='block';document.getElementById('promo-img').src=d.image}}else{a.style.display='none'}}})}
+    function openAbhiyanAdminModal(){const b=document.getElementById('abhiyan-list-body');b.innerHTML='';campaignData.forEach(c=>{let a=c.mobile?`<a href="tel:${c.mobile}" class="act-btn-sm">📞</a>`:'-';b.innerHTML+=`<tr><td>${c.prospectName}<br><small>${c.mobile||''}</small></td><td>${c.proposer}</td><td><img src="${c.photo}" style="width:40px;height:40px;border-radius:5px;cursor:pointer;" onclick="openLightbox(this.src)"></td></tr>`});document.getElementById('abhiyanAdminModal').style.display='flex'}
+    function openNoticeModal(){if(isAdmin)document.getElementById('noticeModal').style.display='flex'}
+    function openImageModal(){if(isAdmin)document.getElementById('imageModal').style.display='flex'}
+    function saveNotice(){if(!isAdmin)return;db.collection(colNotice).doc('main_notice').set({text:document.getElementById('noticeInput').value},{merge:true}).then(()=>{alert("Posted");document.getElementById('noticeModal').style.display='none'})}
+    function processImage(){const f=document.getElementById('imgInput').files[0];if(!f)return;const r=new FileReader();r.onload=e=>{const i=new Image();i.src=e.target.result;i.onload=()=>{const c=document.createElement('canvas'),x=c.getContext('2d'),s=800/i.width;c.width=800;c.height=i.height*s;x.drawImage(i,0,0,c.width,c.height);db.collection(colNotice).doc('main_notice').set({image:c.toDataURL('image/jpeg',0.6),displayType:document.querySelector('input[name="imgDisplay"]:checked').value},{merge:true}).then(()=>{alert("Uploaded");document.getElementById('imageModal').style.display='none'})}};r.readAsDataURL(f)}
+    function deleteImage(){db.collection(colNotice).doc('main_notice').update({image:firebase.firestore.FieldValue.delete(),displayType:firebase.firestore.FieldValue.delete()}).then(()=>alert("Deleted"))}
+    function openLightbox(s){document.getElementById('lightbox-img').src=s;document.getElementById('lightbox').style.display='flex'}
+    function closeLightbox(){document.getElementById('lightbox').style.display='none'}
+    function checkBirthdays(){/*...*/}; 
+    
+    // UPDATED POINTS WITH DAILY LOGIN
+    function calculateMyPoints(){
+        let pts=0;
+        // 1. Prospects
+        let myP=prospectsData.filter(x=>x.addedBy===currentUser.uid), dateC={};
+        pts+=myP.length*2; 
+        myP.forEach(x=>{if(x.createdAt){if(!dateC[x.createdAt])dateC[x.createdAt]=0;dc[x.createdAt]++}});
+        for(let d in dateC)if(dateC[d]>=2)pts+=5;
+        
+        // 2. Campaigns
+        let myC=campaignData.filter(c=>c.uid===currentUser.uid); 
+        pts+=myC.length*5;
+        
+        // 3. Logins
+        let myL=loginData.filter(l=>l.uid===currentUser.uid);
+        pts+=myL.length*1;
+
+        document.getElementById('user-points').innerText=pts;
+    }
+    
+    function updateDashboard(){const t=new Date().toISOString().split('T')[0];document.getElementById('d-total').innerText=prospectsData.length;document.getElementById('d-joined').innerText=prospectsData.filter(p=>p.status==='Joined').length;document.getElementById('d-hot').innerText=prospectsData.filter(p=>p.category==='Hot').length;document.getElementById('d-due').innerText=prospectsData.filter(p=>p.nextDate&&p.nextDate<=t).length}
+    function openTopperModal(){
+        let lb={}; 
+        [...prospectsData].forEach(d=>{let n=d.addedByName||"User"; if(!lb[n])lb[n]=0; lb[n]+=2;});
+        [...campaignData].forEach(d=>{let n=d.proposer||"User"; if(!lb[n])lb[n]=0; lb[n]+=5;});
+        [...loginData].forEach(d=>{let n=d.name||"User"; if(!lb[n])lb[n]=0; lb[n]+=1;});
+        
+        let s=Object.keys(lb).map(k=>({n:k,p:lb[k]})).sort((a,b)=>b.p-a.p);
+        document.getElementById('topper-list').innerHTML=s.map((u,i)=>`<tr><td>${i+1}</td><td>${u.n}</td><td>${u.p}</td><td>${u.p>=50?'🎁':''}</td></tr>`).join('');
+        document.getElementById('topperModal').style.display='flex';
+    }
+    function openModal(id=null){document.getElementById('entryModal').style.display='flex';if(id)document.getElementById('docId').value=id;else document.getElementById('docId').value=''}
+    function closeModal(){document.getElementById('entryModal').style.display='none'}
+    function populateCities(){const s=document.getElementById('cityFilter');[...new Set(prospectsData.map(p=>p.city).filter(c=>c))].forEach(c=>s.innerHTML+=`<option value="${c}">${c}</option>`)}
+    function populateTeamFilter(){if(!isAdmin)return;const s=document.getElementById('teamFilter'),n=new Set();prospectsData.forEach(p=>{if(p.addedByName)n.add(p.addedByName)});campaignData.forEach(c=>{if(c.proposer)n.add(c.proposer)});s.innerHTML='<option value="All">👥 सर्व टीम (Admin)</option>';n.forEach(m=>s.innerHTML+=`<option value="${m}">${m}</option>`)}
+    function openQR(){document.getElementById('qrModal').style.display='flex';document.getElementById('qrcode').innerHTML='';new QRCode(document.getElementById('qrcode'),{text:`RCM:${currentUser.displayName}`,width:120,height:120})}
+    function saveCore(e){localStorage.setItem('rcm_'+e.id,e.checked)}
+    function loadCore(){for(let i=1;i<=4;i++)if(localStorage.getItem('rcm_core'+i)=='true')document.getElementById('core'+i).checked=true}
+    function generateAIReport(){alert("Keep Growing!")}
+    async function pickContact(){try{const c=await navigator.contacts.select(['name','tel'],{multiple:false});if(c.length){document.getElementById('pName').value=c[0].name[0];document.getElementById('pMobile').value=c[0].tel[0].replace(/\D/g,'')}}catch(e){}}
+    function downloadTopperPDF(){const{jsPDF}=window.jspdf;const doc=new jsPDF();doc.text("RCM Toppers List",14,20);doc.autoTable({html:'.top-table',startY:30});doc.save("Toppers.pdf")}
 </script>
 </body>
 </html>
