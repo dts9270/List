@@ -28,32 +28,25 @@
         @keyframes tirangaBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         * { box-sizing: border-box; outline: none; }
 
-        /* --- HEADER (PURE BANNER SLIDER ONLY) --- */
+        /* --- HEADER (CLEAN BANNER) --- */
         .header { 
             position: relative; 
-            height: 200px; 
+            height: 180px; 
             width: 100%;
-            border-radius: 0 0 25px 25px; 
+            border-radius: 0 0 30px 30px; 
             overflow: hidden; 
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); 
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2); 
             background: #ffffff;
-            z-index: 10;
         }
 
-        /* Slider Container */
-        .header-slider {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 0;
-        }
+        .header-slider { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; }
 
         .slide-img {
             width: 100%; height: 100%;
-            object-fit: cover;
-            position: absolute;
-            top: 0; left: 0;
-            opacity: 0;
-            transition: opacity 1.5s ease-in-out;
+            object-fit: cover; /* Photo clear disel */
+            object-position: center;
+            position: absolute; top: 0; left: 0;
+            opacity: 0; transition: opacity 1.5s ease-in-out;
         }
         .slide-img.active { opacity: 1; }
 
@@ -61,36 +54,27 @@
         .user-info-bar {
             background: white;
             padding: 15px 20px;
-            margin: -15px 15px 20px 15px; 
+            margin: -20px 15px 20px 15px; 
             border-radius: 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-            position: relative;
-            z-index: 20;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            position: relative; z-index: 20;
         }
 
-        .user-name-styled { 
-            font-size: 22px; font-weight: 800; margin: 0; color: #000080;
-        }
-
+        .user-name-styled { font-size: 22px; font-weight: 800; margin: 0; color: #000080; }
         .score-pill-styled { 
-            background: #f0f9ff; 
-            padding: 6px 12px; border-radius: 20px; 
-            font-size: 14px; font-weight: bold; 
-            color: #0284c7;
-            border: 1px solid #bae6fd;
-            display: inline-flex; align-items: center; gap: 5px;
+            background: #f0f9ff; padding: 6px 12px; border-radius: 20px; 
+            font-size: 14px; font-weight: bold; color: #0284c7;
+            border: 1px solid #bae6fd; display: inline-flex; align-items: center; gap: 5px;
         }
-
         .btn-logout-styled {
-            background: #fee2e2; color: #b91c1c; 
-            border: 1px solid #fecaca; padding: 6px 12px; border-radius: 8px; 
-            font-size: 12px; font-weight: bold; cursor: pointer;
+            background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; 
+            padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer;
         }
 
-        /* Dashboard Stats */
+        /* Stats */
         .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 20px; margin-bottom: 20px; position: relative; z-index: 20; }
         .stat-card { padding: 12px; border-radius: 16px; text-align: center; color: white; box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
         .card-red { background: linear-gradient(135deg, #ef4444, #b91c1c); }
@@ -100,7 +84,7 @@
         .stat-num { font-size: 24px; font-weight: 800; font-family: 'Inter', sans-serif; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
         .stat-lbl { font-size: 12px; font-weight: 600; opacity: 0.9; }
 
-        /* Buttons & List */
+        /* UI Elements */
         .campaign-btn { background: linear-gradient(135deg, #16a34a, #15803d); color: white; padding: 14px; border-radius: 15px; text-align: center; font-weight: bold; margin: 0 20px 20px 20px; box-shadow: 0 8px 20px rgba(22, 163, 74, 0.3); cursor: pointer; font-size: 18px; border: 2px solid #bbf7d0; display:flex; align-items:center; justify-content:center; gap:10px; }
         .core-section { margin: 0 20px 20px 20px; background: white; padding: 15px; border-radius: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         .chk-item { display: flex; align-items: center; gap: 10px; font-size: 16px; padding: 8px 0; border-bottom: 1px solid #f3f4f6; }
@@ -109,7 +93,6 @@
         .modern-input { width: 100%; padding: 12px; border: 1px solid #e5e7eb; border-radius: 12px; background: white; font-size: 16px; }
         .admin-controls { padding: 0 20px 10px 20px; display: none; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
         .btn-admin { padding: 10px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; color: #374151; font-size: 11px; background: white; border: 1px solid #e5e7eb; }
-        
         .report-actions { padding: 0 20px 20px 20px; display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; }
         .btn-report { padding: 10px; border-radius: 12px; border: none; font-weight: 600; cursor: pointer; color: white; font-size: 12px; display: flex; flex-direction: column; align-items: center; gap: 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
         .btn-excel { background: #138808; } .btn-pdf { background: #FF9933; } .btn-ai { background: #000080; } .btn-gold { background: linear-gradient(135deg, #FDB931, #d4af37); color: black; }
@@ -122,14 +105,12 @@
         .btn-action-group { display: flex; gap: 10px; margin-top: 5px; justify-content: flex-end; }
         .act-btn { text-decoration: none; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); cursor: pointer; }
 
-        /* Floating & Modal */
         .fab { position: fixed; bottom: 25px; right: 20px; width: 60px; height: 60px; background: linear-gradient(135deg, #000080, #1e3a8a); border-radius: 50%; color: white; font-size: 30px; border: none; z-index: 100; box-shadow: 0 10px 25px rgba(0,0,128,0.4); display: grid; place-items: center; }
         .fab-qr { position: fixed; bottom: 25px; left: 20px; width: 50px; height: 50px; background: white; border-radius: 50%; color: #000080; font-size: 24px; border: none; box-shadow: 0 5px 15px rgba(0,0,0,0.1); z-index: 100; display:flex; align-items:center; justify-content:center; }
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
         .modal-content { background: white; width: 90%; max-width: 400px; border-radius: 24px; padding: 25px; max-height: 85vh; overflow-y: auto; position: relative; animation: slideUp 0.3s ease; }
         .full-btn { width: 100%; padding: 14px; background: #000080; color: white; border: none; border-radius: 12px; font-size: 18px; font-weight: 600; margin-top: 15px; box-shadow: 0 5px 15px rgba(0,0,128,0.2); }
 
-        /* Login */
         #login-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #ffffff; z-index: 5000; display: flex; align-items: center; justify-content: center; padding: 25px; }
         .login-card { background: white; width: 100%; max-width: 350px; padding: 30px; border-radius: 25px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,128,0.15); border: 1px solid #eee; }
         
@@ -150,9 +131,7 @@
         #gpsPreview { width: 100%; border-radius: 10px; margin-top: 10px; border: 2px solid #ccc; display: none; }
 
         @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        
         .full-screen-content { width: 95%; height: 95%; max-width: none; max-height: 95vh; }
-        
         .banner-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #eee; }
         .banner-thumb { width: 50px; height: 30px; object-fit: cover; border-radius: 4px; border: 1px solid #ccc; }
     </style>
@@ -303,7 +282,7 @@
                 <button onclick="uploadBanner(3)" class="bday-btn">Upload</button>
                 <button onclick="deleteBanner(3)" style="color:red; border:none; background:none;">🗑️</button>
             </div>
-            <p style="font-size:12px; color:gray;">(Max 3 images. They will slide automatically)</p>
+            <p style="font-size:12px; color:gray;">(Max 3 images)</p>
         </div>
     </div>
 
@@ -449,7 +428,39 @@
         if(confirm("Delete?")) { db.collection(colBanners).doc(`slide_${index}`).delete().then(() => alert("Deleted")); }
     }
 
-    // --- STANDARD FUNCTIONS (Login, GPS, etc) ---
+    // --- LOGIC: POPUP vs EMBEDDED NOTICE ---
+    function loadNotice() {
+        db.collection(colNotice).doc('main_notice').onSnapshot(doc => {
+            if(doc.exists) {
+                const d = doc.data();
+                document.getElementById('notice-text').innerText = d.text || "";
+                
+                const area = document.getElementById('promo-area');
+                const img = document.getElementById('promo-img');
+
+                if (d.image) {
+                    if (d.displayType === 'popup') {
+                        // If type is POPUP, Hide Embedded Area
+                        area.style.display = 'none'; 
+                        
+                        // Open Popup (Lightbox)
+                        // Simple Logic: Open it. If you want once per session, we can add sessionStorage check.
+                        // For now, as per request, just make sure it DOES NOT show in embedded area.
+                        openLightbox(d.image);
+                    } else {
+                        // If type is EMBEDDED (Continue), Show Area, Hide Popup logic
+                        area.style.display = 'block';
+                        img.src = d.image;
+                        closeLightbox(); // Ensure popup is closed
+                    }
+                } else {
+                    area.style.display = 'none';
+                }
+            }
+        });
+    }
+
+    // --- EXISTING FUNCTIONS ---
     function checkLoginPoint() {
         const t = new Date().toISOString().split('T')[0]; const dId = currentUser.uid + "_" + t;
         db.collection(colLogins).doc(dId).get().then(d => { if(!d.exists) db.collection(colLogins).doc(dId).set({uid:currentUser.uid, name:currentUser.displayName, date:t}); });
@@ -471,7 +482,7 @@
     }
     function logout(){auth.signOut()}
     function loadData() { db.collection(colProspects).orderBy("updatedAt", "desc").onSnapshot(s => { prospectsData=[]; const ts=new Set(); s.forEach(d => { let da=d.data(); da.id=d.id; if(isAdmin) { prospectsData.push(da); if(da.addedByName) ts.add(da.addedByName); } else if(da.addedBy===currentUser.uid) prospectsData.push(da); }); loadCampaign(); }); }
-    function loadCampaign() { db.collection(colCampaign).orderBy("timestamp", "desc").onSnapshot(s => { campaignData=[]; s.forEach(d => { let c=d.data(); c.id=d.id; if(isAdmin || c.uid===currentUser.uid) campaignData.push(c); }); calculateMyPoints(); updateDashboard(); populateCities(); renderList(); if(isAdmin) populateTeamFilter(); }); }
+    function loadCampaign() { db.collection(colCampaign).orderBy("timestamp", "desc").onSnapshot(s => { campaignData=[]; s.forEach(d => { let c=d.data(); c.id=d.id; if(isAdmin || c.uid===currentUser.uid) campaignData.push(c); }); calculateMyPoints(); checkBirthdays(); updateDashboard(); populateCities(); renderList(); if(isAdmin) populateTeamFilter(); }); }
     
     function openAbhiyanModal() { document.getElementById('abProposer').value = currentUser.displayName || "User"; document.getElementById('abhiyanModal').style.display = 'flex'; processedCampaignImage = null; document.getElementById('gpsPreview').style.display = 'none'; document.getElementById('abPhotoInput').value = ""; }
     function drawGPSImage() {
@@ -533,23 +544,17 @@
     
     // --- REPORTS ---
     function generateAIReport(){alert("Keep Growing!")}
-    function exportToExcel(){ const data = prospectsData.map(p => ({"Name":p.name,"Mobile":p.mobile,"City":p.city,"Status":p.status})); const ws = XLSX.utils.json_to_sheet(data); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Data"); XLSX.writeFile(wb, `RCM_List_${new Date().toISOString().slice(0,10)}.xlsx`); }
-    function exportToPDF(){ const {jsPDF}=window.jspdf; const doc=new jsPDF(); doc.text("RCM List",14,20); doc.autoTable({head:[["Name","Mobile","City"]], body:prospectsData.map(p=>[p.name,p.mobile,p.city]), startY:30}); doc.save(`RCM_Report_${new Date().toISOString().slice(0,10)}.pdf`); }
+    function exportToExcel(){ const data = prospectsData.map(p => ({"Name":p.name,"Mobile":p.mobile,"City":p.city,"Status":p.status})); const ws = XLSX.utils.json_to_sheet(data); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Data"); XLSX.writeFile(wb, `RCM_List_${new Date().toISOString().slice(0,16).replace('T','_').replace(':','-')}.xlsx`); }
+    function exportToPDF(){ const {jsPDF}=window.jspdf; const doc=new jsPDF(); doc.text("RCM List",14,20); doc.autoTable({head:[["Name","Mobile","City"]], body:prospectsData.map(p=>[p.name,p.mobile,p.city]), startY:30}); doc.save(`RCM_Report_${new Date().toISOString().slice(0,16).replace('T','_').replace(':','-')}.pdf`); }
     function downloadTopperPDF(){ const {jsPDF}=window.jspdf; const doc=new jsPDF(); doc.text("Toppers List",14,20); doc.autoTable({html:'.top-table',startY:30}); doc.save(`Toppers_${new Date().toISOString().slice(0,10)}.pdf`); }
     function downloadAbhiyanPDF() { if(!campaignData.length) return alert("No Data"); const {jsPDF} = window.jspdf; const doc = new jsPDF(); doc.text("Abhiyan Report", 14, 20); doc.autoTable({ head: [["Name", "By", "Photo"]], body: campaignData.map(c => [c.prospectName, c.proposer, c.photo]), bodyStyles: { minCellHeight: 25 }, didDrawCell: function(data) { if (data.column.index === 2 && data.cell.section === 'body') { var img = data.cell.raw; if (img && img.startsWith('data:image')) { doc.addImage(img, 'JPEG', data.cell.x + 2, data.cell.y + 2, 20, 20); data.cell.text = ''; } } }, startY: 30 }); doc.save(`Abhiyan_Report_${new Date().toISOString().slice(0,10)}.pdf`); }
     
     // Notice & Modals
-    function loadNotice(){db.collection(colNotice).doc('main_notice').onSnapshot(doc=>{if(doc.exists){const d=doc.data();document.getElementById('notice-text').innerText=d.text||"";if(d.image){document.getElementById('promo-area').style.display='block';document.getElementById('promo-img').src=d.image}else{document.getElementById('promo-area').style.display='none'}}})}
     function openNoticeModal(){if(isAdmin)document.getElementById('noticeModal').style.display='flex'}
     function openImageModal(){if(isAdmin)document.getElementById('imageModal').style.display='flex'}
     function saveNotice(){if(!isAdmin)return;db.collection(colNotice).doc('main_notice').set({text:document.getElementById('noticeInput').value},{merge:true}).then(()=>{alert("Posted");document.getElementById('noticeModal').style.display='none'})}
-    function processImage(){const f=document.getElementById('imgInput').files[0];if(!f)return;const r=new FileReader();r.onload=e=>{const i=new Image();i.src=e.target.result;i.onload=()=>{const c=document.createElement('canvas'),x=c.getContext('2d'),s=800/i.width;c.width=800;c.height=i.height*s;x.drawImage(i,0,0,c.width,c.height);db.collection(colNotice).doc('main_notice').set({image:c.toDataURL('image/jpeg',0.6)},{merge:true}).then(()=>{alert("Uploaded");document.getElementById('imageModal').style.display='none'})}};r.readAsDataURL(f)}
+    function processImage(){const f=document.getElementById('imgInput').files[0];if(!f)return;const r=new FileReader();r.onload=e=>{const i=new Image();i.src=e.target.result;i.onload=()=>{const c=document.createElement('canvas'),x=c.getContext('2d'),s=800/i.width;c.width=800;c.height=i.height*s;x.drawImage(i,0,0,c.width,c.height);db.collection(colNotice).doc('main_notice').set({image:c.toDataURL('image/jpeg',0.6),displayType:document.querySelector('input[name="imgDisplay"]:checked').value},{merge:true}).then(()=>{alert("Uploaded");document.getElementById('imageModal').style.display='none'})}};r.readAsDataURL(f)}
     function deleteImage(){db.collection(colNotice).doc('main_notice').update({image:firebase.firestore.FieldValue.delete()}).then(()=>alert("Deleted"))}
     function openTopperModal(){ let lb={}; [...prospectsData].forEach(d=>{let n=d.addedByName||"User"; if(!lb[n])lb[n]=0; lb[n]+=2;}); [...campaignData].forEach(d=>{let n=d.proposer||"User"; if(!lb[n])lb[n]=0; lb[n]+=5;}); [...loginData].forEach(d=>{let n=d.name||"User"; if(!lb[n])lb[n]=0; lb[n]+=1;}); let s=Object.keys(lb).map(k=>({n:k,p:lb[k]})).sort((a,b)=>b.p-a.p); document.getElementById('topper-list').innerHTML=s.map((u,i)=>`<tr><td>${i+1}</td><td>${u.n}</td><td>${u.p}</td><td>${u.p>=50?'🎁':''}</td></tr>`).join(''); document.getElementById('topperModal').style.display='flex'; }
     function openAbhiyanAdminModal(){const b=document.getElementById('abhiyan-list-body');b.innerHTML='';campaignData.forEach(c=>{let a=c.mobile?`<a href="tel:${c.mobile}" class="act-btn-sm">📞</a>`:'-';b.innerHTML+=`<tr><td>${c.prospectName}<br><small>${c.mobile||''}</small></td><td>${c.proposer}</td><td><img src="${c.photo}" style="width:40px;height:40px;border-radius:5px;" onclick="openLightbox(this.src)"></td></tr>`});document.getElementById('abhiyanAdminModal').style.display='flex'}
-    function openLightbox(s){document.getElementById('lightbox-img').src=s;document.getElementById('lightbox').style.display='flex'}
-    function closeLightbox(){document.getElementById('lightbox').style.display='none'}
-    async function pickContact(){try{const c=await navigator.contacts.select(['name','tel'],{multiple:false});if(c.length){document.getElementById('pName').value=c[0].name[0];document.getElementById('pMobile').value=c[0].tel[0].replace(/\D/g,'')}}catch(e){}}
-</script>
-</body>
-</html>
+    function openLightbox(s){document.getElementById('lightbox-img').src=s;document.getElementById('lightbox').
