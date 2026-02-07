@@ -98,20 +98,14 @@
         /* --- LOGIN PAGE ANIMATION (RCM COLORS: Blue, Green, Orange) --- */
         #login-container { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            /* RCM Logo Colors: Blue (#0055A5), Green (#008F4C), Orange (#F58220) */
             background: linear-gradient(-45deg, #0055A5, #008F4C, #F58220, #0055A5);
             background-size: 400% 400%;
             animation: rcmBgAnim 10s ease infinite;
             z-index: 5000; display: flex; align-items: center; justify-content: center; padding: 25px; 
         }
-        @keyframes rcmBgAnim {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
+        @keyframes rcmBgAnim { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
         .login-card { background: white; width: 100%; max-width: 350px; padding: 30px; border-radius: 25px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.3); border: 1px solid #eee; }
-        
         .lightbox { display: none; position: fixed; inset: 0; z-index: 9999; background: rgba(0,0,0,0.95); align-items: center; justify-content: center; padding: 20px; }
         .lightbox-img { max-width: 100%; max-height: 80vh; border-radius: 10px; }
         .close-lightbox { position: absolute; top: 20px; right: 20px; color: white; font-size: 30px; cursor: pointer; }
@@ -121,6 +115,9 @@
         .full-screen-content { width: 95%; height: 95%; max-width: none; max-height: 95vh; }
         .banner-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #eee; }
         .banner-thumb { width: 50px; height: 30px; object-fit: cover; border-radius: 4px; border: 1px solid #ccc; }
+        
+        /* Project Tag on Card */
+        .project-tag { font-size: 11px; background: #e0f2fe; color: #0369a1; padding: 2px 6px; border-radius: 4px; font-weight: bold; border: 1px solid #bae6fd; display: inline-block; margin-top: 3px; }
     </style>
 </head>
 <body>
@@ -194,6 +191,14 @@
         <div class="controls">
             <input type="text" class="modern-input" id="search" placeholder="🔍 नाव शोधा..." oninput="renderList()">
             <select class="modern-input" id="cityFilter" onchange="renderList()"><option value="All">📍 सर्व शहरे</option></select>
+            <select class="modern-input" id="projectFilter" onchange="renderList()">
+                <option value="All">📂 सर्व प्रोजेक्ट (All Projects)</option>
+                <option value="Arogya">आरोग्य (Arogya)</option>
+                <option value="Jal Sanchay">जल संचय (Jal Sanchay)</option>
+                <option value="Anemia">अनेमिया (Anemia)</option>
+                <option value="Blood Check">ब्लड चेक (Blood Check)</option>
+                <option value="Network">नेटवर्क (Network)</option>
+            </select>
             <select id="teamFilter" class="modern-input" style="display:none;" onchange="renderList()"><option value="All">👥 सर्व टीम (All Team)</option></select>
         </div>
 
@@ -216,7 +221,34 @@
         <button class="fab-qr" onclick="openQR()">🆔</button>
     </div>
 
-    <div class="modal" id="entryModal"><div class="modal-content"><span style="float:right;font-size:24px;cursor:pointer;" onclick="closeModal()">&times;</span><h3 style="margin-top:0;color:#000080;">प्रॉस्पेक्ट डिटेल्स</h3><input type="hidden" id="docId"><div style="display:grid;gap:10px;"><div style="display:flex;gap:8px;"><input type="text" class="modern-input" id="pName" placeholder="पूर्ण नाव" style="flex-grow:1;"><button type="button" onclick="pickContact()" style="background:#e0e7ff;border:1px solid #c7d2fe;border-radius:10px;width:45px;">📒</button></div><input type="number" class="modern-input" id="pMobile" placeholder="मोबाईल नंबर"><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;"><input type="text" class="modern-input" id="pCity" placeholder="शहर / गाव"><input type="text" class="modern-input" id="pOccupation" placeholder="व्यवसाय"></div><label style="font-size:12px;margin-bottom:-5px;color:gray;">जन्मतारीख</label><input type="date" class="modern-input" id="pDob"><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;"><select class="modern-input" id="pCategory"><option value="Cold">Cold ❄️</option><option value="Warm">Warm 🌤️</option><option value="Hot">Hot 🔥</option></select><select class="modern-input" id="pStatus"><option value="New">नवीन</option><option value="Follow Up">फॉलो अप</option><option value="Joined">जॉईन ✅</option></select></div><label style="font-size:12px;margin-bottom:-5px;color:gray;">पुढची तारीख (Next Date)</label><input type="date" class="modern-input" id="pNextDate"><select class="modern-input" id="pProduct"><option value="">-- प्रॉडक्ट --</option><option value="Health">हेल्थ (Nutricharge)</option><option value="Agri">शेती (Agri)</option><option value="FMCG">किराणा (FMCG)</option></select><input type="text" class="modern-input" id="pInterests" placeholder="टीप (Note)"></div><button class="full-btn" id="saveBtn" onclick="saveData()">सेव्ह करा (+2 Pts)</button></div></div>
+    <div class="modal" id="entryModal">
+        <div class="modal-content">
+            <span style="float:right;font-size:24px;cursor:pointer;" onclick="closeModal()">&times;</span>
+            <h3 style="margin-top:0;color:#000080;">प्रॉस्पेक्ट डिटेल्स</h3>
+            <input type="hidden" id="docId">
+            <div style="display:grid;gap:10px;">
+                <div style="display:flex;gap:8px;"><input type="text" class="modern-input" id="pName" placeholder="पूर्ण नाव" style="flex-grow:1;"><button type="button" onclick="pickContact()" style="background:#e0e7ff;border:1px solid #c7d2fe;border-radius:10px;width:45px;">📒</button></div>
+                <input type="number" class="modern-input" id="pMobile" placeholder="मोबाईल नंबर">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;"><input type="text" class="modern-input" id="pCity" placeholder="शहर / गाव"><input type="text" class="modern-input" id="pOccupation" placeholder="व्यवसाय"></div>
+                <label style="font-size:12px;margin-bottom:-5px;color:gray;">जन्मतारीख</label><input type="date" class="modern-input" id="pDob">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;"><select class="modern-input" id="pCategory"><option value="Cold">Cold ❄️</option><option value="Warm">Warm 🌤️</option><option value="Hot">Hot 🔥</option></select><select class="modern-input" id="pStatus"><option value="New">नवीन</option><option value="Follow Up">फॉलो अप</option><option value="Joined">जॉईन ✅</option></select></div>
+                <label style="font-size:12px;margin-bottom:-5px;color:gray;">पुढची तारीख (Next Date)</label><input type="date" class="modern-input" id="pNextDate">
+                
+                <select class="modern-input" id="pProduct">
+                    <option value="">-- प्रोजेक्ट निवडा (Project) --</option>
+                    <option value="Arogya">आरोग्य (Arogya)</option>
+                    <option value="Jal Sanchay">जल संचय (Jal Sanchay)</option>
+                    <option value="Anemia">अनेमिया (Anemia)</option>
+                    <option value="Blood Check">ब्लड चेक (Blood Check)</option>
+                    <option value="Network">नेटवर्क (Network)</option>
+                </select>
+                
+                <input type="text" class="modern-input" id="pInterests" placeholder="टीप (Note)">
+            </div>
+            <button class="full-btn" id="saveBtn" onclick="saveData()">सेव्ह करा (+2 Pts)</button>
+        </div>
+    </div>
+
     <div class="modal" id="bannerModal"><div class="modal-content"><span style="float:right;cursor:pointer;" onclick="document.getElementById('bannerModal').style.display='none'">&times;</span><h3 style="margin-top:0;">🎞️ बॅनर स्लाइडर सेट करा</h3><div class="banner-row"><span>Banner 1:</span><input type="file" id="ban1" style="width:180px;font-size:12px;"><button onclick="uploadBanner(1)" class="bday-btn">Upload</button><button onclick="deleteBanner(1)" style="color:red;border:none;">🗑️</button></div><div class="banner-row"><span>Banner 2:</span><input type="file" id="ban2" style="width:180px;font-size:12px;"><button onclick="uploadBanner(2)" class="bday-btn">Upload</button><button onclick="deleteBanner(2)" style="color:red;border:none;">🗑️</button></div><div class="banner-row"><span>Banner 3:</span><input type="file" id="ban3" style="width:180px;font-size:12px;"><button onclick="uploadBanner(3)" class="bday-btn">Upload</button><button onclick="deleteBanner(3)" style="color:red;border:none;">🗑️</button></div><p style="font-size:12px;color:gray;">(Max 3 images)</p></div></div>
     <div class="modal" id="abhiyanModal"><div class="modal-content"><span style="float:right;font-size:24px;cursor:pointer;" onclick="document.getElementById('abhiyanModal').style.display='none'">&times;</span><h3 style="margin-top:0;color:#16a34a;">📢 GPS फोटो एंट्री</h3><div style="display:grid;gap:10px;"><input type="text" class="modern-input" id="abName" placeholder="प्रॉस्पेक्टचे नाव"><input type="tel" class="modern-input" id="abMobile" placeholder="मोबाईल नंबर" maxlength="10"><input type="text" class="modern-input" id="abProposer" placeholder="प्रपोजर" readonly><div style="background:#f0fdf4;padding:10px;border-radius:10px;text-align:center;border:1px dashed #16a34a;"><label style="font-weight:bold;display:block;margin-bottom:5px;font-size:14px;">📸 फोटो काढा</label><input type="file" id="abPhotoInput" accept="image/*" capture="environment" class="modern-input" onchange="drawGPSImage()"></div><canvas id="gpsCanvas"></canvas><img id="gpsPreview" alt="Preview"></div><button class="full-btn" style="background:#16a34a;" onclick="submitAbhiyan()">सबमिट करा (+5 Pts)</button></div></div>
     <div class="modal" id="abhiyanAdminModal"><div class="modal-content full-screen-content"><span style="float:right;font-size:24px;cursor:pointer;" onclick="document.getElementById('abhiyanAdminModal').style.display='none'">&times;</span><h3 style="margin-top:0;">📊 अभियान रिपोर्ट (Full)</h3><div style="flex-grow:1;overflow-y:auto;margin-bottom:10px;"><table class="top-table"><thead><tr><th>नाव/फोन</th><th>By</th><th>Pic</th></tr></thead><tbody id="abhiyan-list-body"></tbody></table></div><button class="full-btn" style="background:#FF9933;" onclick="downloadAbhiyanPDF()">📄 PDF डाउनलोड करा (with Photos)</button></div></div>
@@ -295,7 +327,7 @@
     }
     function deleteBanner(i){if(confirm("Delete?"))db.collection(colBanners).doc(`slide_${i}`).delete().then(()=>alert("Deleted"))}
 
-    // --- NOTICE LOGIC ---
+    // --- NOTICE ---
     function loadNotice() {
         db.collection(colNotice).doc('main_notice').onSnapshot(doc => {
             if(doc.exists) {
@@ -308,7 +340,7 @@
         });
     }
 
-    // --- CORE LOGIC ---
+    // --- CORE ---
     function checkLoginPoint() {
         const t=new Date().toISOString().split('T')[0], id=currentUser.uid+"_"+t;
         db.collection(colLogins).doc(id).get().then(d=>{if(!d.exists)db.collection(colLogins).doc(id).set({uid:currentUser.uid,name:currentUser.displayName,date:t})});
@@ -329,22 +361,15 @@
     }
     function logout(){auth.signOut()}
     
-    // --- MAIN DATA LOGIC FIXED ---
+    // --- MAIN DATA ---
     function loadData(){
         db.collection(colProspects).orderBy("updatedAt","desc").onSnapshot(s=>{
             prospectsData=[];
             s.forEach(d=>{
                 let da=d.data(); da.id=d.id;
-                if(isAdmin){
-                    prospectsData.push(da);
-                } else if(da.addedBy===currentUser.uid) {
-                    prospectsData.push(da);
-                }
+                if(isAdmin){ prospectsData.push(da); } else if(da.addedBy===currentUser.uid) { prospectsData.push(da); }
             });
-            // Immediately populate team filter if admin
             if(isAdmin) populateTeamFilter();
-            
-            // Load campaigns then render
             loadCampaign(); 
         });
     }
@@ -356,37 +381,19 @@
                 let c=d.data(); c.id=d.id;
                 if(isAdmin || c.uid===currentUser.uid) campaignData.push(c);
             });
-            calculateMyPoints(); 
-            checkBirthdays(); 
-            populateCities();
-            
-            // Render everything now that data is ready
-            renderList();
+            calculateMyPoints(); checkBirthdays(); populateCities(); renderList();
         });
     }
     
     function populateTeamFilter(){
         if(!isAdmin) return;
-        const s = document.getElementById('teamFilter');
-        const oldVal = s.value; // Keep selection
-        
-        // Extract unique names
+        const s = document.getElementById('teamFilter'); const oldVal = s.value; 
         const users = new Set();
-        prospectsData.forEach(p => {
-            let name = p.addedByName || p.addedByMobile || "Unknown";
-            if(name) users.add(name);
-        });
-        
+        prospectsData.forEach(p => { let name = p.addedByName || p.addedByMobile || "Unknown"; if(name) users.add(name); });
         let html = '<option value="All">👥 सर्व टीम (All Team)</option>';
-        users.forEach(u => {
-            html += `<option value="${u}">👤 ${u}</option>`;
-        });
-        
+        users.forEach(u => { html += `<option value="${u}">👤 ${u}</option>`; });
         s.innerHTML = html;
-        // If previous selection exists in new list, keep it
-        if([...users].includes(oldVal) || oldVal === 'All') {
-            s.value = oldVal;
-        }
+        if([...users].includes(oldVal) || oldVal === 'All') s.value = oldVal;
     }
 
     function renderList() {
@@ -394,32 +401,26 @@
         const sVal=document.getElementById('search').value.toLowerCase();
         const cVal=document.getElementById('cityFilter').value;
         const tVal=document.getElementById('teamFilter').value;
+        const pVal=document.getElementById('projectFilter').value;
         
         l.innerHTML='';
         
         const filteredData = prospectsData.filter(p => {
-            // City Filter
             if(cVal !== 'All' && p.city !== cVal) return false;
-            
-            // Team Filter (FIXED LOGIC)
-            if(isAdmin && tVal !== 'All') {
-                let pName = p.addedByName || p.addedByMobile || "Unknown";
-                if(pName !== tVal) return false;
-            }
-            
-            // Search Filter
+            if(isAdmin && tVal !== 'All') { let pName = p.addedByName || p.addedByMobile || "Unknown"; if(pName !== tVal) return false; }
             if(sVal && !p.name.toLowerCase().includes(sVal) && !p.mobile.includes(sVal)) return false;
-            
+            if(pVal !== 'All' && p.product !== pVal) return false; // Project Filter Logic
             return true;
         });
 
-        // Update Dashboard with FILTERED data
         updateDashboard(filteredData);
 
         filteredData.forEach((p, i) => {
             let bd=(isAdmin&&p.addedByName)?`<span class="owner-badge">👤 ${p.addedByName}</span>`:'';
             let del=isAdmin?`<span onclick="delP('${p.id}')" class="act-btn" style="background:#fee2e2;color:red;">🗑️</span>`:'';
-            l.innerHTML+=`<div class="pro-card" style="border-left:5px solid ${p.status==='Joined'?'#16a34a':'#000080'}"><div class="sr-badge">#${i+1}</div>${bd}<div style="padding-left:30px; display:flex; justify-content:space-between;"><div><div style="font-weight:bold; font-size:18px;">${p.name}</div><div style="font-size:13px; color:gray;">📍 ${p.city||'-'} | 📞 ${p.mobile}</div></div><div><span style="font-size:12px; font-weight:bold; background:#f3f4f6; padding:2px 6px; border-radius:5px;">${p.status}</span></div></div><div class="btn-action-group"><a href="tel:${p.mobile}" class="act-btn" style="background:#e0f2fe; color:#0284c7;">📞</a><a href="https://wa.me/91${p.mobile}" class="act-btn" style="background:#dcfce7; color:#16a34a;">💬</a><span onclick="openModal('${p.id}')" class="act-btn" style="background:#f3f4f6; color:#475569;">✏️</span>${del}</div></div>`;
+            // Show Project Tag on Card
+            let projTag = p.product ? `<br><span class="project-tag">📌 ${p.product}</span>` : '';
+            l.innerHTML+=`<div class="pro-card" style="border-left:5px solid ${p.status==='Joined'?'#16a34a':'#000080'}"><div class="sr-badge">#${i+1}</div>${bd}<div style="padding-left:30px; display:flex; justify-content:space-between;"><div><div style="font-weight:bold; font-size:18px;">${p.name}</div><div style="font-size:13px; color:gray;">📍 ${p.city||'-'} | 📞 ${p.mobile}</div>${projTag}</div><div><span style="font-size:12px; font-weight:bold; background:#f3f4f6; padding:2px 6px; border-radius:5px;">${p.status}</span></div></div><div class="btn-action-group"><a href="tel:${p.mobile}" class="act-btn" style="background:#e0f2fe; color:#0284c7;">📞</a><a href="https://wa.me/91${p.mobile}" class="act-btn" style="background:#dcfce7; color:#16a34a;">💬</a><span onclick="openModal('${p.id}')" class="act-btn" style="background:#f3f4f6; color:#475569;">✏️</span>${del}</div></div>`;
         });
     }
     
@@ -465,7 +466,7 @@
     }
     function delP(id){if(confirm("Delete?"))db.collection(colProspects).doc(id).delete()}
     function calculateMyPoints(){let p=0, mp=prospectsData.filter(x=>x.addedBy===currentUser.uid), dc={}; p+=mp.length*2; mp.forEach(x=>{if(x.createdAt){if(!dc[x.createdAt])dc[x.createdAt]=0;dc[x.createdAt]++}}); for(let d in dc)if(dc[d]>=2)p+=5; p+=campaignData.filter(c=>c.uid===currentUser.uid).length*5; p+=loginData.filter(l=>l.uid===currentUser.uid).length; document.getElementById('user-points').innerText=p;}
-    function openModal(id=null){document.getElementById('entryModal').style.display='flex';document.getElementById('pName').value='';document.getElementById('pMobile').value='';document.getElementById('pCity').value='';if(id){const p=prospectsData.find(x=>x.id===id);if(p){document.getElementById('docId').value=id;document.getElementById('pName').value=p.name;document.getElementById('pMobile').value=p.mobile;document.getElementById('pCity').value=p.city;document.getElementById('saveBtn').innerText="Update";}}else{document.getElementById('docId').value='';document.getElementById('saveBtn').innerText="Save";}}
+    function openModal(id=null){document.getElementById('entryModal').style.display='flex';document.getElementById('pName').value='';document.getElementById('pMobile').value='';document.getElementById('pCity').value='';if(id){const p=prospectsData.find(x=>x.id===id);if(p){document.getElementById('docId').value=id;document.getElementById('pName').value=p.name;document.getElementById('pMobile').value=p.mobile;document.getElementById('pCity').value=p.city;document.getElementById('pOccupation').value=p.occupation;document.getElementById('pDob').value=p.dob;document.getElementById('pCategory').value=p.category;document.getElementById('pStatus').value=p.status;document.getElementById('pNextDate').value=p.nextDate;document.getElementById('pProduct').value=p.product;document.getElementById('pInterests').value=p.interests;document.getElementById('saveBtn').innerText="Update";}}else{document.getElementById('docId').value='';document.getElementById('saveBtn').innerText="Save";}}
     function closeModal(){document.getElementById('entryModal').style.display='none'}
     function saveData() { 
         const btn=document.getElementById('saveBtn'); btn.innerText="Saving..."; btn.disabled=true;
@@ -481,8 +482,8 @@
     function checkBirthdays(){/*...*/}
     function populateCities(){const s=document.getElementById('cityFilter');[...new Set(prospectsData.map(p=>p.city).filter(c=>c))].forEach(c=>s.innerHTML+=`<option value="${c}">${c}</option>`)}
     function generateAIReport(){alert("Keep Growing!")}
-    function exportToExcel(){ const d=new Date().toISOString().slice(0,16).replace('T','_').replace(':','-'); const data = prospectsData.map(p => ({"Name":p.name,"Mobile":p.mobile,"City":p.city,"Status":p.status,"Added By":p.addedByName||"-"})); const ws = XLSX.utils.json_to_sheet(data); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Data"); XLSX.writeFile(wb, `RCM_List_${d}.xlsx`); }
-    function exportToPDF(){ const d=new Date().toISOString().slice(0,16).replace('T','_').replace(':','-'); const {jsPDF}=window.jspdf; const doc=new jsPDF(); doc.text("RCM Prospect List",14,20); const tableData = prospectsData.map((p, i) => [i+1, p.name, p.mobile, p.city, p.status, p.addedByName||"-"]); doc.autoTable({head:[["#", "Name", "Mobile", "City", "Status", "Added By"]], body: tableData, startY: 30}); doc.save(`RCM_Report_${d}.pdf`); }
+    function exportToExcel(){ const d=new Date().toISOString().slice(0,16).replace('T','_').replace(':','-'); const data = prospectsData.map(p => ({"Name":p.name,"Mobile":p.mobile,"City":p.city,"Status":p.status,"Project":p.product||"-","Added By":p.addedByName||"-"})); const ws = XLSX.utils.json_to_sheet(data); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Data"); XLSX.writeFile(wb, `RCM_List_${d}.xlsx`); }
+    function exportToPDF(){ const d=new Date().toISOString().slice(0,16).replace('T','_').replace(':','-'); const {jsPDF}=window.jspdf; const doc=new jsPDF(); doc.text("RCM Prospect List",14,20); const tableData = prospectsData.map((p, i) => [i+1, p.name, p.mobile, p.city, p.status, p.product||"-", p.addedByName||"-"]); doc.autoTable({head:[["#", "Name", "Mobile", "City", "Status", "Project", "Added By"]], body: tableData, startY: 30}); doc.save(`RCM_Report_${d}.pdf`); }
     function downloadTopperPDF(){ const d=new Date().toISOString().slice(0,10); const {jsPDF}=window.jspdf; const doc=new jsPDF(); doc.text("Toppers List",14,20); doc.autoTable({html:'.top-table',startY:30}); doc.save(`Toppers_${d}.pdf`); }
     function downloadAbhiyanPDF() { const d=new Date().toISOString().slice(0,10); if(!campaignData.length) return alert("No Data"); const {jsPDF} = window.jspdf; const doc = new jsPDF(); doc.text("Abhiyan Report", 14, 20); doc.autoTable({ head: [["Name", "By", "Photo"]], body: campaignData.map(c => [c.prospectName, c.proposer, c.photo]), bodyStyles: { minCellHeight: 25 }, didDrawCell: function(data) { if (data.column.index === 2 && data.cell.section === 'body') { var img = data.cell.raw; if (img && img.startsWith('data:image')) { doc.addImage(img, 'JPEG', data.cell.x + 2, data.cell.y + 2, 20, 20); data.cell.text = ''; } } }, startY: 30 }); doc.save(`Abhiyan_Report_${d}.pdf`); }
     function openNoticeModal(){if(isAdmin)document.getElementById('noticeModal').style.display='flex'}
