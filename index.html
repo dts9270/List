@@ -28,60 +28,28 @@
         @keyframes tirangaBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         * { box-sizing: border-box; outline: none; }
 
-        /* --- HEADER (AUTO ADJUST BANNER) --- */
+        /* HEADER */
         .header { 
-            position: relative; 
-            height: 180px; 
-            width: 100%;
-            border-radius: 0 0 30px 30px; 
-            overflow: hidden; 
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2); 
-            background: #ffffff;
+            position: relative; height: 180px; width: 100%;
+            border-radius: 0 0 25px 25px; overflow: hidden; 
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); 
+            background: #ffffff; z-index: 10;
         }
-
-        /* Slider Container */
-        .header-slider {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 0;
-        }
-
-        .slide-img {
-            width: 100%; height: 100%;
-            object-fit: cover;
-            object-position: center;
-            position: absolute;
-            top: 0; left: 0;
-            opacity: 0;
-            transition: opacity 1.5s ease-in-out;
-        }
+        .header-slider { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; }
+        .slide-img { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; opacity: 0; transition: opacity 1.5s ease-in-out; }
         .slide-img.active { opacity: 1; }
 
-        /* --- USER INFO BAR --- */
+        /* USER INFO */
         .user-info-bar {
-            background: white;
-            padding: 15px 20px;
-            margin: -20px 15px 20px 15px; 
-            border-radius: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-            position: relative; z-index: 20;
+            background: white; padding: 15px 20px; margin: -15px 15px 20px 15px; 
+            border-radius: 15px; display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08); position: relative; z-index: 20;
         }
-
         .user-name-styled { font-size: 22px; font-weight: 800; margin: 0; color: #000080; }
-        .score-pill-styled { 
-            background: #f0f9ff; padding: 6px 12px; border-radius: 20px; 
-            font-size: 14px; font-weight: bold; color: #0284c7;
-            border: 1px solid #bae6fd; display: inline-flex; align-items: center; gap: 5px;
-        }
-        .btn-logout-styled {
-            background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; 
-            padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer;
-        }
+        .score-pill-styled { background: #f0f9ff; padding: 6px 12px; border-radius: 20px; font-size: 14px; font-weight: bold; color: #0284c7; border: 1px solid #bae6fd; display: inline-flex; align-items: center; gap: 5px; }
+        .btn-logout-styled { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; }
 
-        /* Dashboard Stats */
+        /* DASHBOARD */
         .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 20px; margin-bottom: 20px; position: relative; z-index: 20; }
         .stat-card { padding: 12px; border-radius: 16px; text-align: center; color: white; box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
         .card-red { background: linear-gradient(135deg, #ef4444, #b91c1c); }
@@ -91,19 +59,19 @@
         .stat-num { font-size: 24px; font-weight: 800; font-family: 'Inter', sans-serif; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
         .stat-lbl { font-size: 12px; font-weight: 600; opacity: 0.9; }
 
-        /* UI Elements */
-        .campaign-btn { background: linear-gradient(135deg, #16a34a, #15803d); color: white; padding: 14px; border-radius: 15px; text-align: center; font-weight: bold; margin: 0 20px 20px 20px; box-shadow: 0 8px 20px rgba(22, 163, 74, 0.3); cursor: pointer; font-size: 18px; border: 2px solid #bbf7d0; display:flex; align-items:center; justify-content:center; gap:10px; }
+        /* CONTROLS */
         .core-section { margin: 0 20px 20px 20px; background: white; padding: 15px; border-radius: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         .chk-item { display: flex; align-items: center; gap: 10px; font-size: 16px; padding: 8px 0; border-bottom: 1px solid #f3f4f6; }
         .chk-item input { width: 20px; height: 20px; accent-color: #000080; }
         .controls { padding: 0 20px 10px 20px; display: grid; gap: 10px; }
         .modern-input { width: 100%; padding: 12px; border: 1px solid #e5e7eb; border-radius: 12px; background: white; font-size: 16px; }
-        .admin-controls { padding: 0 20px 10px 20px; display: none; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+        .admin-controls { padding: 0 20px 10px 20px; display: none; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px; }
         .btn-admin { padding: 10px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; color: #374151; font-size: 11px; background: white; border: 1px solid #e5e7eb; }
         .report-actions { padding: 0 20px 20px 20px; display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; }
         .btn-report { padding: 10px; border-radius: 12px; border: none; font-weight: 600; cursor: pointer; color: white; font-size: 12px; display: flex; flex-direction: column; align-items: center; gap: 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
         .btn-excel { background: #138808; } .btn-pdf { background: #FF9933; } .btn-ai { background: #000080; } .btn-gold { background: linear-gradient(135deg, #FDB931, #d4af37); color: black; }
 
+        /* LIST */
         .card-list { padding: 0 20px; }
         .pro-card { background: white; border-radius: 16px; padding: 15px; margin-bottom: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); position: relative; border-left: 5px solid #000080; transition: transform 0.2s; }
         .pro-card.status-joined { border-left-color: #138808; }
@@ -112,31 +80,43 @@
         .btn-action-group { display: flex; gap: 10px; margin-top: 5px; justify-content: flex-end; }
         .act-btn { text-decoration: none; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); cursor: pointer; }
 
+        /* EXTRA */
         .fab { position: fixed; bottom: 25px; right: 20px; width: 60px; height: 60px; background: linear-gradient(135deg, #000080, #1e3a8a); border-radius: 50%; color: white; font-size: 30px; border: none; z-index: 100; box-shadow: 0 10px 25px rgba(0,0,128,0.4); display: grid; place-items: center; }
         .fab-qr { position: fixed; bottom: 25px; left: 20px; width: 50px; height: 50px; background: white; border-radius: 50%; color: #000080; font-size: 24px; border: none; box-shadow: 0 5px 15px rgba(0,0,0,0.1); z-index: 100; display:flex; align-items:center; justify-content:center; }
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
         .modal-content { background: white; width: 90%; max-width: 400px; border-radius: 24px; padding: 25px; max-height: 85vh; overflow-y: auto; position: relative; animation: slideUp 0.3s ease; }
         .full-btn { width: 100%; padding: 14px; background: #000080; color: white; border: none; border-radius: 12px; font-size: 18px; font-weight: 600; margin-top: 15px; box-shadow: 0 5px 15px rgba(0,0,128,0.2); }
-
-        #login-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #ffffff; z-index: 5000; display: flex; align-items: center; justify-content: center; padding: 25px; }
-        .login-card { background: white; width: 100%; max-width: 350px; padding: 30px; border-radius: 25px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,128,0.15); border: 1px solid #eee; }
-        
         .notice-board { background: #fffbeb; border: 1px solid #fcd34d; color: #92400e; padding: 10px 15px; margin: 15px 20px 0 20px; border-radius: 10px; font-size: 14px; display: flex; align-items: center; gap: 10px; }
         .promo-area { margin: 15px 20px; text-align: center; display: none; }
         .promo-img { width: 100%; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border: 2px solid white; max-height: 200px; object-fit: cover; }
         .bday-alert { background: linear-gradient(135deg, #fce7f3, #fbcfe8); padding: 12px; margin: 0 20px 15px 20px; border-radius: 12px; text-align: center; display: none; border: 1px solid #f9a8d4; color: #831843; }
-        
         .top-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         .top-table th { text-align: left; background: #000080; color: white; padding: 10px; font-size: 13px; }
         .top-table td { padding: 10px; border-bottom: 1px solid #eee; font-size: 14px; background: #f9fafb; vertical-align: middle; }
         .act-btn-sm { text-decoration: none; padding: 5px 8px; background: #f1f5f9; border-radius: 6px; margin-right: 5px; color: #334155; font-size: 14px; display: inline-block; }
+        
+        /* --- LOGIN PAGE ANIMATION (RCM COLORS: Blue, Green, Orange) --- */
+        #login-container { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            /* RCM Logo Colors: Blue (#0055A5), Green (#008F4C), Orange (#F58220) */
+            background: linear-gradient(-45deg, #0055A5, #008F4C, #F58220, #0055A5);
+            background-size: 400% 400%;
+            animation: rcmBgAnim 10s ease infinite;
+            z-index: 5000; display: flex; align-items: center; justify-content: center; padding: 25px; 
+        }
+        @keyframes rcmBgAnim {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .login-card { background: white; width: 100%; max-width: 350px; padding: 30px; border-radius: 25px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.3); border: 1px solid #eee; }
         
         .lightbox { display: none; position: fixed; inset: 0; z-index: 9999; background: rgba(0,0,0,0.95); align-items: center; justify-content: center; padding: 20px; }
         .lightbox-img { max-width: 100%; max-height: 80vh; border-radius: 10px; }
         .close-lightbox { position: absolute; top: 20px; right: 20px; color: white; font-size: 30px; cursor: pointer; }
         #gpsCanvas { display: none; }
         #gpsPreview { width: 100%; border-radius: 10px; margin-top: 10px; border: 2px solid #ccc; display: none; }
-
         @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         .full-screen-content { width: 95%; height: 95%; max-width: none; max-height: 95vh; }
         .banner-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #eee; }
@@ -181,9 +161,9 @@
         </div>
 
         <div class="dash-grid">
-            <div class="stat-card card-red"><div class="stat-num" id="d-due">0</div><div class="stat-lbl">🔔 कॉल्स</div></div>
+            <div class="stat-card card-red"><div class="stat-num" id="d-total">0</div><div class="stat-lbl">📋 लिस्ट</div></div>
             <div class="stat-card card-green"><div class="stat-num" id="d-joined">0</div><div class="stat-lbl">✅ जॉईन</div></div>
-            <div class="stat-card card-blue"><div class="stat-num" id="d-total">0</div><div class="stat-lbl">📋 लिस्ट</div></div>
+            <div class="stat-card card-blue"><div class="stat-num" id="d-due">0</div><div class="stat-lbl">🔔 कॉल्स</div></div>
             <div class="stat-card card-orange"><div class="stat-num" id="d-hot">0</div><div class="stat-lbl">🔥 हॉट</div></div>
         </div>
 
@@ -214,7 +194,7 @@
         <div class="controls">
             <input type="text" class="modern-input" id="search" placeholder="🔍 नाव शोधा..." oninput="renderList()">
             <select class="modern-input" id="cityFilter" onchange="renderList()"><option value="All">📍 सर्व शहरे</option></select>
-            <select id="teamFilter" class="modern-input" style="display:none;" onchange="renderList()"><option value="All">👥 सर्व टीम (Admin View)</option></select>
+            <select id="teamFilter" class="modern-input" style="display:none;" onchange="renderList()"><option value="All">👥 सर्व टीम (All Team)</option></select>
         </div>
 
         <div id="admin-panel" class="admin-controls" style="grid-template-columns: 1fr 1fr 1fr 1fr;">
@@ -236,111 +216,13 @@
         <button class="fab-qr" onclick="openQR()">🆔</button>
     </div>
 
-    <div class="modal" id="entryModal">
-        <div class="modal-content">
-            <span style="float:right; font-size:24px; cursor:pointer;" onclick="closeModal()">&times;</span>
-            <h3 style="margin-top:0; color:#000080;">प्रॉस्पेक्ट डिटेल्स</h3>
-            <input type="hidden" id="docId">
-            <div style="display:grid; gap:10px;">
-                <div style="display:flex; gap:8px;">
-                    <input type="text" class="modern-input" id="pName" placeholder="पूर्ण नाव" style="flex-grow:1;">
-                    <button type="button" onclick="pickContact()" style="background:#e0e7ff; border:1px solid #c7d2fe; border-radius:10px; width:45px;">📒</button>
-                </div>
-                <input type="number" class="modern-input" id="pMobile" placeholder="मोबाईल नंबर">
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
-                    <input type="text" class="modern-input" id="pCity" placeholder="शहर / गाव">
-                    <input type="text" class="modern-input" id="pOccupation" placeholder="व्यवसाय">
-                </div>
-                <label style="font-size:12px; margin-bottom:-5px; color:gray;">जन्मतारीख</label>
-                <input type="date" class="modern-input" id="pDob">
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
-                    <select class="modern-input" id="pCategory"><option value="Cold">Cold ❄️</option><option value="Warm">Warm 🌤️</option><option value="Hot">Hot 🔥</option></select>
-                    <select class="modern-input" id="pStatus"><option value="New">नवीन</option><option value="Follow Up">फॉलो अप</option><option value="Joined">जॉईन ✅</option></select>
-                </div>
-                <label style="font-size:12px; margin-bottom:-5px; color:gray;">पुढची तारीख (Next Date)</label>
-                <input type="date" class="modern-input" id="pNextDate">
-                <select class="modern-input" id="pProduct"><option value="">-- प्रॉडक्ट --</option><option value="Health">हेल्थ (Nutricharge)</option><option value="Agri">शेती (Agri)</option><option value="FMCG">किराणा (FMCG)</option></select>
-                <input type="text" class="modern-input" id="pInterests" placeholder="टीप (Note)">
-            </div>
-            <button class="full-btn" id="saveBtn" onclick="saveData()">सेव्ह करा (+2 Pts)</button>
-        </div>
-    </div>
-
-    <div class="modal" id="bannerModal">
-        <div class="modal-content">
-            <span style="float:right; cursor:pointer;" onclick="document.getElementById('bannerModal').style.display='none'">&times;</span>
-            <h3 style="margin-top:0;">🎞️ बॅनर स्लाइडर सेट करा</h3>
-            
-            <div class="banner-row">
-                <span>Banner 1:</span>
-                <input type="file" id="ban1" style="width:180px; font-size:12px;">
-                <button onclick="uploadBanner(1)" class="bday-btn">Upload</button>
-                <button onclick="deleteBanner(1)" style="color:red; border:none; background:none;">🗑️</button>
-            </div>
-            <div class="banner-row">
-                <span>Banner 2:</span>
-                <input type="file" id="ban2" style="width:180px; font-size:12px;">
-                <button onclick="uploadBanner(2)" class="bday-btn">Upload</button>
-                <button onclick="deleteBanner(2)" style="color:red; border:none; background:none;">🗑️</button>
-            </div>
-            <div class="banner-row">
-                <span>Banner 3:</span>
-                <input type="file" id="ban3" style="width:180px; font-size:12px;">
-                <button onclick="uploadBanner(3)" class="bday-btn">Upload</button>
-                <button onclick="deleteBanner(3)" style="color:red; border:none; background:none;">🗑️</button>
-            </div>
-            <p style="font-size:12px; color:gray;">(Max 3 images)</p>
-        </div>
-    </div>
-
-    <div class="modal" id="abhiyanModal">
-        <div class="modal-content">
-            <span style="float:right; font-size:24px; cursor:pointer;" onclick="document.getElementById('abhiyanModal').style.display='none'">&times;</span>
-            <h3 style="margin-top:0; color:#16a34a;">📢 GPS फोटो एंट्री</h3>
-            <div style="display:grid; gap:10px;">
-                <input type="text" class="modern-input" id="abName" placeholder="प्रॉस्पेक्टचे नाव">
-                <input type="tel" class="modern-input" id="abMobile" placeholder="मोबाईल नंबर" maxlength="10">
-                <input type="text" class="modern-input" id="abProposer" placeholder="प्रपोजर" readonly>
-                <div style="background:#f0fdf4; padding:10px; border-radius:10px; text-align:center; border:1px dashed #16a34a;">
-                    <label style="font-weight:bold; display:block; margin-bottom:5px; font-size:14px;">📸 फोटो काढा</label>
-                    <input type="file" id="abPhotoInput" accept="image/*" capture="environment" class="modern-input" onchange="drawGPSImage()">
-                </div>
-                <canvas id="gpsCanvas"></canvas>
-                <img id="gpsPreview" alt="Preview">
-            </div>
-            <button class="full-btn" style="background:#16a34a;" onclick="submitAbhiyan()">सबमिट करा (+5 Pts)</button>
-        </div>
-    </div>
-
-    <div class="modal" id="abhiyanAdminModal">
-        <div class="modal-content full-screen-content">
-            <span style="float:right; font-size:24px; cursor:pointer;" onclick="document.getElementById('abhiyanAdminModal').style.display='none'">&times;</span>
-            <h3 style="margin-top:0;">📊 अभियान रिपोर्ट (Full)</h3>
-            <div style="flex-grow:1; overflow-y:auto; margin-bottom:10px;">
-                <table class="top-table">
-                    <thead><tr><th>नाव/फोन</th><th>By</th><th>Pic</th></tr></thead>
-                    <tbody id="abhiyan-list-body"></tbody>
-                </table>
-            </div>
-            <button class="full-btn" style="background:#FF9933;" onclick="downloadAbhiyanPDF()">📄 PDF डाउनलोड करा (with Photos)</button>
-        </div>
-    </div>
-
-    <div class="modal" id="noticeModal"><div class="modal-content"><h3>महत्वाची सूचना</h3><textarea id="noticeInput" class="modern-input" rows="3"></textarea><button class="full-btn" onclick="saveNotice()">पोस्ट करा</button><button class="full-btn" style="background:gray; margin-top:5px;" onclick="document.getElementById('noticeModal').style.display='none'">बंद करा</button></div></div>
-    <div class="modal" id="imageModal"><div class="modal-content"><h3>इमेज सेटिंग</h3><input type="file" id="imgInput" accept="image/*" class="modern-input"><div style="margin:10px 0;"><label><input type="radio" name="imgDisplay" value="embedded" checked> नेहमी दाखवा</label> <label><input type="radio" name="imgDisplay" value="popup"> पॉप-अप</label></div><button class="full-btn" onclick="processImage()">अपलोड</button><button class="full-btn" style="background:#ef4444; margin-top:5px;" onclick="deleteImage()">डिलीट</button><button class="full-btn" style="background:gray; margin-top:5px;" onclick="document.getElementById('imageModal').style.display='none'">बंद करा</button></div></div>
-    <div class="modal" id="topperModal">
-        <div class="modal-content">
-            <span style="float:right; cursor:pointer;" onclick="document.getElementById('topperModal').style.display='none'">&times;</span>
-            <h3 style="margin-top:0; color:#d4af37;">🏆 टॉपर्स लिस्ट</h3>
-            <div style="max-height:300px; overflow-y:auto;">
-                <table class="top-table">
-                    <thead><tr><th>#</th><th>नाव</th><th>Pts</th><th>गिफ्ट</th></tr></thead>
-                    <tbody id="topper-list"></tbody>
-                </table>
-            </div>
-            <button class="full-btn" style="margin-top:10px; background:#FF9933;" onclick="downloadTopperPDF()">📄 PDF रिपोर्ट</button>
-        </div>
-    </div>
+    <div class="modal" id="entryModal"><div class="modal-content"><span style="float:right;font-size:24px;cursor:pointer;" onclick="closeModal()">&times;</span><h3 style="margin-top:0;color:#000080;">प्रॉस्पेक्ट डिटेल्स</h3><input type="hidden" id="docId"><div style="display:grid;gap:10px;"><div style="display:flex;gap:8px;"><input type="text" class="modern-input" id="pName" placeholder="पूर्ण नाव" style="flex-grow:1;"><button type="button" onclick="pickContact()" style="background:#e0e7ff;border:1px solid #c7d2fe;border-radius:10px;width:45px;">📒</button></div><input type="number" class="modern-input" id="pMobile" placeholder="मोबाईल नंबर"><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;"><input type="text" class="modern-input" id="pCity" placeholder="शहर / गाव"><input type="text" class="modern-input" id="pOccupation" placeholder="व्यवसाय"></div><label style="font-size:12px;margin-bottom:-5px;color:gray;">जन्मतारीख</label><input type="date" class="modern-input" id="pDob"><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;"><select class="modern-input" id="pCategory"><option value="Cold">Cold ❄️</option><option value="Warm">Warm 🌤️</option><option value="Hot">Hot 🔥</option></select><select class="modern-input" id="pStatus"><option value="New">नवीन</option><option value="Follow Up">फॉलो अप</option><option value="Joined">जॉईन ✅</option></select></div><label style="font-size:12px;margin-bottom:-5px;color:gray;">पुढची तारीख (Next Date)</label><input type="date" class="modern-input" id="pNextDate"><select class="modern-input" id="pProduct"><option value="">-- प्रॉडक्ट --</option><option value="Health">हेल्थ (Nutricharge)</option><option value="Agri">शेती (Agri)</option><option value="FMCG">किराणा (FMCG)</option></select><input type="text" class="modern-input" id="pInterests" placeholder="टीप (Note)"></div><button class="full-btn" id="saveBtn" onclick="saveData()">सेव्ह करा (+2 Pts)</button></div></div>
+    <div class="modal" id="bannerModal"><div class="modal-content"><span style="float:right;cursor:pointer;" onclick="document.getElementById('bannerModal').style.display='none'">&times;</span><h3 style="margin-top:0;">🎞️ बॅनर स्लाइडर सेट करा</h3><div class="banner-row"><span>Banner 1:</span><input type="file" id="ban1" style="width:180px;font-size:12px;"><button onclick="uploadBanner(1)" class="bday-btn">Upload</button><button onclick="deleteBanner(1)" style="color:red;border:none;">🗑️</button></div><div class="banner-row"><span>Banner 2:</span><input type="file" id="ban2" style="width:180px;font-size:12px;"><button onclick="uploadBanner(2)" class="bday-btn">Upload</button><button onclick="deleteBanner(2)" style="color:red;border:none;">🗑️</button></div><div class="banner-row"><span>Banner 3:</span><input type="file" id="ban3" style="width:180px;font-size:12px;"><button onclick="uploadBanner(3)" class="bday-btn">Upload</button><button onclick="deleteBanner(3)" style="color:red;border:none;">🗑️</button></div><p style="font-size:12px;color:gray;">(Max 3 images)</p></div></div>
+    <div class="modal" id="abhiyanModal"><div class="modal-content"><span style="float:right;font-size:24px;cursor:pointer;" onclick="document.getElementById('abhiyanModal').style.display='none'">&times;</span><h3 style="margin-top:0;color:#16a34a;">📢 GPS फोटो एंट्री</h3><div style="display:grid;gap:10px;"><input type="text" class="modern-input" id="abName" placeholder="प्रॉस्पेक्टचे नाव"><input type="tel" class="modern-input" id="abMobile" placeholder="मोबाईल नंबर" maxlength="10"><input type="text" class="modern-input" id="abProposer" placeholder="प्रपोजर" readonly><div style="background:#f0fdf4;padding:10px;border-radius:10px;text-align:center;border:1px dashed #16a34a;"><label style="font-weight:bold;display:block;margin-bottom:5px;font-size:14px;">📸 फोटो काढा</label><input type="file" id="abPhotoInput" accept="image/*" capture="environment" class="modern-input" onchange="drawGPSImage()"></div><canvas id="gpsCanvas"></canvas><img id="gpsPreview" alt="Preview"></div><button class="full-btn" style="background:#16a34a;" onclick="submitAbhiyan()">सबमिट करा (+5 Pts)</button></div></div>
+    <div class="modal" id="abhiyanAdminModal"><div class="modal-content full-screen-content"><span style="float:right;font-size:24px;cursor:pointer;" onclick="document.getElementById('abhiyanAdminModal').style.display='none'">&times;</span><h3 style="margin-top:0;">📊 अभियान रिपोर्ट (Full)</h3><div style="flex-grow:1;overflow-y:auto;margin-bottom:10px;"><table class="top-table"><thead><tr><th>नाव/फोन</th><th>By</th><th>Pic</th></tr></thead><tbody id="abhiyan-list-body"></tbody></table></div><button class="full-btn" style="background:#FF9933;" onclick="downloadAbhiyanPDF()">📄 PDF डाउनलोड करा (with Photos)</button></div></div>
+    <div class="modal" id="noticeModal"><div class="modal-content"><h3>महत्वाची सूचना</h3><textarea id="noticeInput" class="modern-input" rows="3"></textarea><button class="full-btn" onclick="saveNotice()">पोस्ट करा</button><button class="full-btn" style="background:gray;margin-top:5px;" onclick="document.getElementById('noticeModal').style.display='none'">बंद करा</button></div></div>
+    <div class="modal" id="imageModal"><div class="modal-content"><h3>इमेज सेटिंग</h3><input type="file" id="imgInput" accept="image/*" class="modern-input"><div style="margin:10px 0;"><label><input type="radio" name="imgDisplay" value="embedded" checked> नेहमी दाखवा</label> <label><input type="radio" name="imgDisplay" value="popup"> पॉप-अप</label></div><button class="full-btn" onclick="processImage()">अपलोड</button><button class="full-btn" style="background:#ef4444;margin-top:5px;" onclick="deleteImage()">डिलीट</button><button class="full-btn" style="background:gray;margin-top:5px;" onclick="document.getElementById('imageModal').style.display='none'">बंद करा</button></div></div>
+    <div class="modal" id="topperModal"><div class="modal-content"><span style="float:right;cursor:pointer;" onclick="document.getElementById('topperModal').style.display='none'">&times;</span><h3 style="margin-top:0;color:#d4af37;">🏆 टॉपर्स लिस्ट</h3><div style="max-height:300px;overflow-y:auto;"><table class="top-table"><thead><tr><th>#</th><th>नाव</th><th>Pts</th><th>गिफ्ट</th></tr></thead><tbody id="topper-list"></tbody></table></div><button class="full-btn" style="margin-top:10px;background:#FF9933;" onclick="downloadTopperPDF()">📄 PDF रिपोर्ट</button></div></div>
     <div class="modal" id="qrModal"><div class="modal-content" style="text-align:center;"><div id="qrcode" style="display:inline-block;"></div><br><button class="full-btn" onclick="document.getElementById('qrModal').style.display='none'">बंद करा</button></div></div>
 
 <script>
@@ -387,163 +269,161 @@
         }
     });
 
-    // --- BANNER SLIDER LOGIC ---
-    function loadBanners() {
-        db.collection(colBanners).onSnapshot(snap => {
-            bannerImages = [];
-            snap.forEach(doc => { if(doc.data().image) bannerImages.push(doc.data().image); });
-            renderSlider();
-        });
-    }
-
+    // --- BANNER ---
+    function loadBanners() { db.collection(colBanners).onSnapshot(s => { bannerImages=[]; s.forEach(d => { if(d.data().image) bannerImages.push(d.data().image); }); renderSlider(); }); }
     function renderSlider() {
-        const container = document.getElementById('header-slider');
-        if(bannerImages.length === 0) { container.innerHTML = ''; return; }
-        let html = '';
-        bannerImages.forEach((img, index) => { html += `<img src="${img}" class="slide-img ${index === 0 ? 'active' : ''}" id="slide-${index}">`; });
-        container.innerHTML = html;
-        currentSlide = 0;
-        if(window.sliderInterval) clearInterval(window.sliderInterval);
-        if(bannerImages.length > 1) { window.sliderInterval = setInterval(nextSlide, 4000); }
+        const c=document.getElementById('header-slider'); if(!bannerImages.length){c.innerHTML='';return;}
+        let h=''; bannerImages.forEach((m,i)=>h+=`<img src="${m}" class="slide-img ${i===0?'active':''}" id="slide-${i}">`); c.innerHTML=h;
+        currentSlide=0; if(window.sliderInterval) clearInterval(window.sliderInterval); if(bannerImages.length>1) window.sliderInterval=setInterval(nextSlide,4000);
     }
-
     function nextSlide() {
         document.getElementById(`slide-${currentSlide}`).classList.remove('active');
-        currentSlide = (currentSlide + 1) % bannerImages.length;
+        currentSlide=(currentSlide+1)%bannerImages.length;
         document.getElementById(`slide-${currentSlide}`).classList.add('active');
     }
-
-    // --- ADMIN BANNER FUNCTIONS ---
-    function openBannerModal() { document.getElementById('bannerModal').style.display = 'flex'; }
-    
-    function uploadBanner(index) {
-        const file = document.getElementById(`ban${index}`).files[0];
-        if(!file) return alert("फाईल निवडा");
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const img = new Image(); img.src = e.target.result;
-            img.onload = function() {
-                const canvas = document.createElement('canvas'); const ctx = canvas.getContext('2d');
-                const maxWidth = 800; const scale = maxWidth / img.width;
-                canvas.width = maxWidth; canvas.height = img.height * scale;
-                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                db.collection(colBanners).doc(`slide_${index}`).set({ image: canvas.toDataURL('image/jpeg', 0.7) }).then(() => alert(`Banner ${index} Updated!`));
-            }
-        }
-        reader.readAsDataURL(file);
-    }
-
-    function deleteBanner(index) {
-        if(confirm("Delete?")) { db.collection(colBanners).doc(`slide_${index}`).delete().then(() => alert("Deleted")); }
-    }
-
-    // --- LOGIC: POPUP vs EMBEDDED NOTICE ---
-    function loadNotice() {
-        db.collection(colNotice).doc('main_notice').onSnapshot(doc => {
-            if(doc.exists) {
-                const d = doc.data();
-                document.getElementById('notice-text').innerText = d.text || "";
-                
-                const area = document.getElementById('promo-area');
-                const img = document.getElementById('promo-img');
-
-                if (d.image) {
-                    if (d.displayType === 'popup') {
-                        area.style.display = 'none'; 
-                        openLightbox(d.image);
-                    } else {
-                        area.style.display = 'block';
-                        img.src = d.image;
-                        closeLightbox(); 
-                    }
-                } else {
-                    area.style.display = 'none';
-                }
-            }
-        });
-    }
-
-    // --- EXISTING FUNCTIONS ---
-    function checkLoginPoint() {
-        const t = new Date().toISOString().split('T')[0]; const dId = currentUser.uid + "_" + t;
-        db.collection(colLogins).doc(dId).get().then(d => { if(!d.exists) db.collection(colLogins).doc(dId).set({uid:currentUser.uid, name:currentUser.displayName, date:t}); });
-    }
-    function loadLogins() { db.collection(colLogins).onSnapshot(s => { loginData=[]; s.forEach(d=>loginData.push(d.data())); calculateMyPoints(); }); }
-    
-    function toggleAuthMode() { isRegisterMode = !isRegisterMode; document.getElementById('name-field-container').style.display = isRegisterMode?'block':'none'; document.getElementById('btn-auth-action').innerText=isRegisterMode?'रजिस्टर करा':'लॉगिन करा'; document.getElementById('toggle-text').innerText=isRegisterMode?'लॉगिन करा':'नवीन अकाउंट बनवा'; }
-    function handleAuth() {
-        const btn=document.getElementById('btn-auth-action'), n=document.getElementById('uName').value, m=document.getElementById('uMobile').value, p=document.getElementById('uPin').value;
-        if(m.length!==10 || p.length!==4) return alert("चेक नंबर/पिन");
-        btn.innerText="थांबा..."; btn.disabled=true;
-        const em=m+SECRET_SUFFIX, pw=p+PIN_SALT;
-        if(isRegisterMode) {
-            if(!n) { btn.innerText="रजिस्टर"; btn.disabled=false; return alert("नाव टाका"); }
-            auth.createUserWithEmailAndPassword(em,pw).then(c=>c.user.updateProfile({displayName:n})).catch(e=>{alert(e.message);btn.disabled=false;});
-        } else {
-            auth.signInWithEmailAndPassword(em,pw).catch(e=>{alert(e.message);btn.innerText="लॉगिन";btn.disabled=false;});
-        }
-    }
-    function logout(){auth.signOut()}
-    function loadData() { db.collection(colProspects).orderBy("updatedAt", "desc").onSnapshot(s => { prospectsData=[]; const ts=new Set(); s.forEach(d => { let da=d.data(); da.id=d.id; if(isAdmin) { prospectsData.push(da); if(da.addedByName) ts.add(da.addedByName); } else if(da.addedBy===currentUser.uid) prospectsData.push(da); }); loadCampaign(); }); }
-    function loadCampaign() { db.collection(colCampaign).orderBy("timestamp", "desc").onSnapshot(s => { campaignData=[]; s.forEach(d => { let c=d.data(); c.id=d.id; if(isAdmin || c.uid===currentUser.uid) campaignData.push(c); }); calculateMyPoints(); checkBirthdays(); updateDashboard(prospectsData); populateCities(); renderList(); if(isAdmin) populateTeamFilter(); }); }
-    
-    function openAbhiyanModal() { document.getElementById('abProposer').value = currentUser.displayName || "User"; document.getElementById('abhiyanModal').style.display = 'flex'; processedCampaignImage = null; document.getElementById('gpsPreview').style.display = 'none'; document.getElementById('abPhotoInput').value = ""; }
-    function drawGPSImage() {
-        const f = document.getElementById('abPhotoInput').files[0]; if(!f) return;
-        if(navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(p => {
-                const lat=p.coords.latitude.toFixed(5), long=p.coords.longitude.toFixed(5);
-                fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${long}`).then(r=>r.json()).then(d=>{
-                    const a=d.address, v=a.village||a.town||a.city||"Unknown", s=a.state||"";
-                    processCanvas(f, lat, long, `${v}, ${s}`);
-                }).catch(()=>processCanvas(f, lat, long, "Net Err"));
-            }, ()=>processCanvas(f, "No Loc", "No Loc", "Denied"));
-        } else processCanvas(f, "No GPS", "No GPS", "Err");
-    }
-    function processCanvas(f, lat, long, addr) {
-        const r = new FileReader(); r.onload = e => {
-            const i = new Image(); i.src = e.target.result;
-            i.onload = () => {
-                const c=document.getElementById('gpsCanvas'), x=c.getContext('2d'), mw=800, s=mw/i.width; c.width=mw; c.height=i.height*s;
-                x.drawImage(i,0,0,c.width,c.height);
-                x.fillStyle="rgba(0,0,0,0.6)"; x.fillRect(0,c.height-80,c.width,80);
-                x.fillStyle="white"; x.font="bold 16px sans-serif";
-                x.fillText(`🏠 ${addr}`, 20, c.height-50); x.fillText(`📅 ${new Date().toLocaleString()}`, 20, c.height-25);
-                processedCampaignImage = c.toDataURL('image/jpeg', 0.7);
-                const p=document.getElementById('gpsPreview'); p.src=processedCampaignImage; p.style.display='block';
+    function openBannerModal(){document.getElementById('bannerModal').style.display='flex'}
+    function uploadBanner(i){
+        const f=document.getElementById(`ban${i}`).files[0]; if(!f)return alert("File Select");
+        const r=new FileReader(); r.onload=e=>{
+            const im=new Image(); im.src=e.target.result;
+            im.onload=()=>{
+                const c=document.createElement('canvas'), x=c.getContext('2d'), mw=800, s=mw/im.width; c.width=mw; c.height=im.height*s;
+                x.drawImage(im,0,0,c.width,c.height);
+                db.collection(colBanners).doc(`slide_${i}`).set({image:c.toDataURL('image/jpeg',0.7)}).then(()=>alert("Uploaded!"));
             }
         }; r.readAsDataURL(f);
     }
-    function submitAbhiyan() {
-        if(!document.getElementById('abName').value) return alert("नाव टाका"); if(!processedCampaignImage) return alert("फोटो घ्या");
-        db.collection(colCampaign).add({ prospectName: document.getElementById('abName').value, mobile: document.getElementById('abMobile').value, proposer: document.getElementById('abProposer').value, uid: currentUser.uid, photo: processedCampaignImage, timestamp: new Date().toISOString() }).then(() => { alert("सेव्ह झाले! (+5 Pts)"); document.getElementById('abhiyanModal').style.display='none'; });
+    function deleteBanner(i){if(confirm("Delete?"))db.collection(colBanners).doc(`slide_${i}`).delete().then(()=>alert("Deleted"))}
+
+    // --- NOTICE LOGIC ---
+    function loadNotice() {
+        db.collection(colNotice).doc('main_notice').onSnapshot(doc => {
+            if(doc.exists) {
+                const d = doc.data(); document.getElementById('notice-text').innerText = d.text || "";
+                if (d.image) {
+                    if (d.displayType === 'popup') { document.getElementById('promo-area').style.display='none'; openLightbox(d.image); } 
+                    else { document.getElementById('promo-area').style.display='block'; document.getElementById('promo-img').src=d.image; closeLightbox(); }
+                } else { document.getElementById('promo-area').style.display='none'; }
+            }
+        });
+    }
+
+    // --- CORE LOGIC ---
+    function checkLoginPoint() {
+        const t=new Date().toISOString().split('T')[0], id=currentUser.uid+"_"+t;
+        db.collection(colLogins).doc(id).get().then(d=>{if(!d.exists)db.collection(colLogins).doc(id).set({uid:currentUser.uid,name:currentUser.displayName,date:t})});
+    }
+    function loadLogins(){db.collection(colLogins).onSnapshot(s=>{loginData=[];s.forEach(d=>loginData.push(d.data()));calculateMyPoints()})}
+    function toggleAuthMode(){isRegisterMode=!isRegisterMode;document.getElementById('name-field-container').style.display=isRegisterMode?'block':'none';document.getElementById('btn-auth-action').innerText=isRegisterMode?'Register':'Login';document.getElementById('toggle-text').innerText=isRegisterMode?'Login':'Create Account'}
+    function handleAuth(){
+        const btn=document.getElementById('btn-auth-action'), n=document.getElementById('uName').value, m=document.getElementById('uMobile').value, p=document.getElementById('uPin').value;
+        if(m.length!==10||p.length!==4)return alert("Check Number/PIN");
+        btn.innerText="Wait..."; btn.disabled=true;
+        const em=m+SECRET_SUFFIX, pw=p+PIN_SALT;
+        if(isRegisterMode){
+            if(!n){btn.innerText="Register";btn.disabled=false;return alert("Enter Name");}
+            auth.createUserWithEmailAndPassword(em,pw).then(c=>c.user.updateProfile({displayName:n})).catch(e=>{alert(e.message);btn.innerText="Register";btn.disabled=false});
+        }else{
+            auth.signInWithEmailAndPassword(em,pw).catch(e=>{alert(e.message);btn.innerText="Login";btn.disabled=false});
+        }
+    }
+    function logout(){auth.signOut()}
+    
+    // --- MAIN DATA LOGIC FIXED ---
+    function loadData(){
+        db.collection(colProspects).orderBy("updatedAt","desc").onSnapshot(s=>{
+            prospectsData=[];
+            s.forEach(d=>{
+                let da=d.data(); da.id=d.id;
+                if(isAdmin){
+                    prospectsData.push(da);
+                } else if(da.addedBy===currentUser.uid) {
+                    prospectsData.push(da);
+                }
+            });
+            // Immediately populate team filter if admin
+            if(isAdmin) populateTeamFilter();
+            
+            // Load campaigns then render
+            loadCampaign(); 
+        });
+    }
+
+    function loadCampaign(){
+        db.collection(colCampaign).orderBy("timestamp","desc").onSnapshot(s=>{
+            campaignData=[];
+            s.forEach(d=>{
+                let c=d.data(); c.id=d.id;
+                if(isAdmin || c.uid===currentUser.uid) campaignData.push(c);
+            });
+            calculateMyPoints(); 
+            checkBirthdays(); 
+            populateCities();
+            
+            // Render everything now that data is ready
+            renderList();
+        });
+    }
+    
+    function populateTeamFilter(){
+        if(!isAdmin) return;
+        const s = document.getElementById('teamFilter');
+        const oldVal = s.value; // Keep selection
+        
+        // Extract unique names
+        const users = new Set();
+        prospectsData.forEach(p => {
+            let name = p.addedByName || p.addedByMobile || "Unknown";
+            if(name) users.add(name);
+        });
+        
+        let html = '<option value="All">👥 सर्व टीम (All Team)</option>';
+        users.forEach(u => {
+            html += `<option value="${u}">👤 ${u}</option>`;
+        });
+        
+        s.innerHTML = html;
+        // If previous selection exists in new list, keep it
+        if([...users].includes(oldVal) || oldVal === 'All') {
+            s.value = oldVal;
+        }
     }
 
     function renderList() {
-        const l=document.getElementById('list'), s=document.getElementById('search').value.toLowerCase(), c=document.getElementById('cityFilter').value, tf=document.getElementById('teamFilter').value;
-        l.innerHTML = '';
+        const l=document.getElementById('list');
+        const sVal=document.getElementById('search').value.toLowerCase();
+        const cVal=document.getElementById('cityFilter').value;
+        const tVal=document.getElementById('teamFilter').value;
         
-        // Filter Data based on Search, City, and Team (Admin)
+        l.innerHTML='';
+        
         const filteredData = prospectsData.filter(p => {
-            if(c !== 'All' && p.city !== c) return false;
-            if(isAdmin && tf !== 'All' && p.addedByName !== tf) return false;
-            if(s && !p.name.toLowerCase().includes(s)) return false;
+            // City Filter
+            if(cVal !== 'All' && p.city !== cVal) return false;
+            
+            // Team Filter (FIXED LOGIC)
+            if(isAdmin && tVal !== 'All') {
+                let pName = p.addedByName || p.addedByMobile || "Unknown";
+                if(pName !== tVal) return false;
+            }
+            
+            // Search Filter
+            if(sVal && !p.name.toLowerCase().includes(sVal) && !p.mobile.includes(sVal)) return false;
+            
             return true;
         });
 
-        // Update Dashboard Stats dynamically based on filtered data (REPORT MODE)
+        // Update Dashboard with FILTERED data
         updateDashboard(filteredData);
 
-        // Render Cards
         filteredData.forEach((p, i) => {
             let bd=(isAdmin&&p.addedByName)?`<span class="owner-badge">👤 ${p.addedByName}</span>`:'';
             let del=isAdmin?`<span onclick="delP('${p.id}')" class="act-btn" style="background:#fee2e2;color:red;">🗑️</span>`:'';
-            l.innerHTML += `<div class="pro-card" style="border-left:5px solid ${p.status==='Joined'?'#16a34a':'#000080'}"><div class="sr-badge">#${i+1}</div>${bd}<div style="padding-left:30px; display:flex; justify-content:space-between;"><div><div style="font-weight:bold; font-size:18px;">${p.name}</div><div style="font-size:13px; color:gray;">📍 ${p.city||'-'} | 📞 ${p.mobile}</div></div><div><span style="font-size:12px; font-weight:bold; background:#f3f4f6; padding:2px 6px; border-radius:5px;">${p.status}</span></div></div><div class="btn-action-group"><a href="tel:${p.mobile}" class="act-btn" style="background:#e0f2fe; color:#0284c7;">📞</a><a href="https://wa.me/91${p.mobile}" class="act-btn" style="background:#dcfce7; color:#16a34a;">💬</a><span onclick="openModal('${p.id}')" class="act-btn" style="background:#f3f4f6; color:#475569;">✏️</span>${del}</div></div>`;
+            l.innerHTML+=`<div class="pro-card" style="border-left:5px solid ${p.status==='Joined'?'#16a34a':'#000080'}"><div class="sr-badge">#${i+1}</div>${bd}<div style="padding-left:30px; display:flex; justify-content:space-between;"><div><div style="font-weight:bold; font-size:18px;">${p.name}</div><div style="font-size:13px; color:gray;">📍 ${p.city||'-'} | 📞 ${p.mobile}</div></div><div><span style="font-size:12px; font-weight:bold; background:#f3f4f6; padding:2px 6px; border-radius:5px;">${p.status}</span></div></div><div class="btn-action-group"><a href="tel:${p.mobile}" class="act-btn" style="background:#e0f2fe; color:#0284c7;">📞</a><a href="https://wa.me/91${p.mobile}" class="act-btn" style="background:#dcfce7; color:#16a34a;">💬</a><span onclick="openModal('${p.id}')" class="act-btn" style="background:#f3f4f6; color:#475569;">✏️</span>${del}</div></div>`;
         });
     }
     
     function updateDashboard(data) {
-        // Stats are now based on whatever data is passed (Filtered or Full)
         const t = new Date().toISOString().split('T')[0];
         document.getElementById('d-total').innerText = data.length;
         document.getElementById('d-joined').innerText = data.filter(p => p.status === 'Joined').length;
@@ -551,37 +431,60 @@
         document.getElementById('d-due').innerText = data.filter(p => p.nextDate && p.nextDate <= t).length;
     }
 
+    // --- OTHER FUNCS ---
+    function openAbhiyanModal(){document.getElementById('abProposer').value=currentUser.displayName||"User";document.getElementById('abhiyanModal').style.display='flex';processedCampaignImage=null;document.getElementById('gpsPreview').style.display='none';document.getElementById('abPhotoInput').value=""}
+    function drawGPSImage(){
+        const f=document.getElementById('abPhotoInput').files[0];if(!f)return;
+        if(navigator.geolocation){
+            navigator.geolocation.getCurrentPosition(p=>{
+                const lat=p.coords.latitude.toFixed(5), long=p.coords.longitude.toFixed(5);
+                fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${long}`).then(r=>r.json()).then(d=>{
+                    const a=d.address, v=a.village||a.town||a.city||"Unknown", s=a.state||"";
+                    processCanvas(f,lat,long,`${v}, ${s}`);
+                }).catch(()=>processCanvas(f,lat,long,"Net Err"));
+            },()=>processCanvas(f,"No Loc","No Loc","Denied"));
+        }else processCanvas(f,"No GPS","No GPS","Err");
+    }
+    function processCanvas(f, lat, long, addr) {
+        const r=new FileReader(); r.onload=e=>{
+            const i=new Image(); i.src=e.target.result;
+            i.onload=()=>{
+                const c=document.getElementById('gpsCanvas'), x=c.getContext('2d'), mw=800, s=mw/i.width; c.width=mw; c.height=i.height*s;
+                x.drawImage(i,0,0,c.width,c.height);
+                x.fillStyle="rgba(0,0,0,0.6)"; x.fillRect(0,c.height-80,c.width,80);
+                x.fillStyle="white"; x.font="bold 16px sans-serif";
+                x.fillText(`🏠 ${addr}`, 20, c.height-50); x.fillText(`📅 ${new Date().toLocaleString()}`, 20, c.height-25);
+                processedCampaignImage=c.toDataURL('image/jpeg',0.7);
+                document.getElementById('gpsPreview').src=processedCampaignImage; document.getElementById('gpsPreview').style.display='block';
+            }
+        }; r.readAsDataURL(f);
+    }
+    function submitAbhiyan(){
+        if(!document.getElementById('abName').value)return alert("Enter Name");if(!processedCampaignImage)return alert("Take Photo");
+        db.collection(colCampaign).add({prospectName:document.getElementById('abName').value,mobile:document.getElementById('abMobile').value,proposer:document.getElementById('abProposer').value,uid:currentUser.uid,photo:processedCampaignImage,timestamp:new Date().toISOString()}).then(()=>{alert("Saved! (+5 Pts)");document.getElementById('abhiyanModal').style.display='none'});
+    }
     function delP(id){if(confirm("Delete?"))db.collection(colProspects).doc(id).delete()}
-    
-    function calculateMyPoints(){ let p=0, mp=prospectsData.filter(x=>x.addedBy===currentUser.uid), dc={}; p+=mp.length*2; mp.forEach(x=>{if(x.createdAt){if(!dc[x.createdAt])dc[x.createdAt]=0;dc[x.createdAt]++}}); for(let d in dc)if(dc[d]>=2)p+=5; p+=campaignData.filter(c=>c.uid===currentUser.uid).length*5; p+=loginData.filter(l=>l.uid===currentUser.uid).length; document.getElementById('user-points').innerText=p; }
-    
+    function calculateMyPoints(){let p=0, mp=prospectsData.filter(x=>x.addedBy===currentUser.uid), dc={}; p+=mp.length*2; mp.forEach(x=>{if(x.createdAt){if(!dc[x.createdAt])dc[x.createdAt]=0;dc[x.createdAt]++}}); for(let d in dc)if(dc[d]>=2)p+=5; p+=campaignData.filter(c=>c.uid===currentUser.uid).length*5; p+=loginData.filter(l=>l.uid===currentUser.uid).length; document.getElementById('user-points').innerText=p;}
     function openModal(id=null){document.getElementById('entryModal').style.display='flex';document.getElementById('pName').value='';document.getElementById('pMobile').value='';document.getElementById('pCity').value='';if(id){const p=prospectsData.find(x=>x.id===id);if(p){document.getElementById('docId').value=id;document.getElementById('pName').value=p.name;document.getElementById('pMobile').value=p.mobile;document.getElementById('pCity').value=p.city;document.getElementById('saveBtn').innerText="Update";}}else{document.getElementById('docId').value='';document.getElementById('saveBtn').innerText="Save";}}
     function closeModal(){document.getElementById('entryModal').style.display='none'}
     function saveData() { 
-        const btn = document.getElementById('saveBtn'); btn.innerText="Saving..."; btn.disabled=true;
+        const btn=document.getElementById('saveBtn'); btn.innerText="Saving..."; btn.disabled=true;
         const n=document.getElementById('pName').value, m=document.getElementById('pMobile').value; 
-        if(!n){ btn.disabled=false; return alert("नाव आवश्यक आहे."); } 
+        if(!n){btn.innerText="Save"; btn.disabled=false; return alert("Enter Name");} 
         const d={name:n, mobile:m, city:document.getElementById('pCity').value, occupation:document.getElementById('pOccupation').value, category:document.getElementById('pCategory').value, status:document.getElementById('pStatus').value, nextDate:document.getElementById('pNextDate').value, product:document.getElementById('pProduct').value, interests:document.getElementById('pInterests').value, dob:document.getElementById('pDob').value, updatedAt:new Date().toISOString(), addedBy:currentUser.uid, addedByMobile:currentUser.email.split('@')[0], addedByName:currentUser.displayName}; 
         const id=document.getElementById('docId').value; if(!id)d.createdAt=new Date().toISOString().split('T')[0]; 
-        (id?db.collection(colProspects).doc(id).update(d):db.collection(colProspects).add(d)).then(()=>{closeModal(); btn.disabled=false;}); 
+        (id?db.collection(colProspects).doc(id).update(d):db.collection(colProspects).add(d)).then(()=>{closeModal();btn.disabled=false;}); 
     }
-
-    // --- UTILS ---
     function openQR(){document.getElementById('qrModal').style.display='flex';new QRCode(document.getElementById('qrcode'),{text:`RCM:${currentUser.displayName}`,width:120,height:120})}
     function saveCore(e){localStorage.setItem('rcm_'+e.id,e.checked)}
     function loadCore(){for(let i=1;i<=4;i++)if(localStorage.getItem('rcm_core'+i)=='true')document.getElementById('core'+i).checked=true}
     function checkBirthdays(){/*...*/}
     function populateCities(){const s=document.getElementById('cityFilter');[...new Set(prospectsData.map(p=>p.city).filter(c=>c))].forEach(c=>s.innerHTML+=`<option value="${c}">${c}</option>`)}
-    function populateTeamFilter(){if(!isAdmin)return;const s=document.getElementById('teamFilter'),n=new Set();prospectsData.forEach(p=>{if(p.addedByName)n.add(p.addedByName)});campaignData.forEach(c=>{if(c.proposer)n.add(c.proposer)});s.innerHTML='<option value="All">👥 सर्व टीम</option>';n.forEach(m=>s.innerHTML+=`<option value="${m}">${m}</option>`)}
-    
-    // --- REPORTS ---
     function generateAIReport(){alert("Keep Growing!")}
-    function exportToExcel(){ const data = prospectsData.map(p => ({"Name":p.name,"Mobile":p.mobile,"City":p.city,"Status":p.status})); const ws = XLSX.utils.json_to_sheet(data); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Data"); XLSX.writeFile(wb, `RCM_List_${new Date().toISOString().slice(0,16).replace('T','_').replace(':','-')}.xlsx`); }
-    function exportToPDF(){ const {jsPDF}=window.jspdf; const doc=new jsPDF(); doc.text("RCM List",14,20); doc.autoTable({head:[["Name","Mobile","City"]], body:prospectsData.map(p=>[p.name,p.mobile,p.city]), startY:30}); doc.save(`RCM_Report_${new Date().toISOString().slice(0,16).replace('T','_').replace(':','-')}.pdf`); }
-    function downloadTopperPDF(){ const {jsPDF}=window.jspdf; const doc=new jsPDF(); doc.text("Toppers List",14,20); doc.autoTable({html:'.top-table',startY:30}); doc.save(`Toppers_${new Date().toISOString().slice(0,10)}.pdf`); }
-    function downloadAbhiyanPDF() { if(!campaignData.length) return alert("No Data"); const {jsPDF} = window.jspdf; const doc = new jsPDF(); doc.text("Abhiyan Report", 14, 20); doc.autoTable({ head: [["Name", "By", "Photo"]], body: campaignData.map(c => [c.prospectName, c.proposer, c.photo]), bodyStyles: { minCellHeight: 25 }, didDrawCell: function(data) { if (data.column.index === 2 && data.cell.section === 'body') { var img = data.cell.raw; if (img && img.startsWith('data:image')) { doc.addImage(img, 'JPEG', data.cell.x + 2, data.cell.y + 2, 20, 20); data.cell.text = ''; } } }, startY: 30 }); doc.save(`Abhiyan_Report_${new Date().toISOString().slice(0,10)}.pdf`); }
-    
-    // Notice & Modals
+    function exportToExcel(){ const d=new Date().toISOString().slice(0,16).replace('T','_').replace(':','-'); const data = prospectsData.map(p => ({"Name":p.name,"Mobile":p.mobile,"City":p.city,"Status":p.status,"Added By":p.addedByName||"-"})); const ws = XLSX.utils.json_to_sheet(data); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Data"); XLSX.writeFile(wb, `RCM_List_${d}.xlsx`); }
+    function exportToPDF(){ const d=new Date().toISOString().slice(0,16).replace('T','_').replace(':','-'); const {jsPDF}=window.jspdf; const doc=new jsPDF(); doc.text("RCM Prospect List",14,20); const tableData = prospectsData.map((p, i) => [i+1, p.name, p.mobile, p.city, p.status, p.addedByName||"-"]); doc.autoTable({head:[["#", "Name", "Mobile", "City", "Status", "Added By"]], body: tableData, startY: 30}); doc.save(`RCM_Report_${d}.pdf`); }
+    function downloadTopperPDF(){ const d=new Date().toISOString().slice(0,10); const {jsPDF}=window.jspdf; const doc=new jsPDF(); doc.text("Toppers List",14,20); doc.autoTable({html:'.top-table',startY:30}); doc.save(`Toppers_${d}.pdf`); }
+    function downloadAbhiyanPDF() { const d=new Date().toISOString().slice(0,10); if(!campaignData.length) return alert("No Data"); const {jsPDF} = window.jspdf; const doc = new jsPDF(); doc.text("Abhiyan Report", 14, 20); doc.autoTable({ head: [["Name", "By", "Photo"]], body: campaignData.map(c => [c.prospectName, c.proposer, c.photo]), bodyStyles: { minCellHeight: 25 }, didDrawCell: function(data) { if (data.column.index === 2 && data.cell.section === 'body') { var img = data.cell.raw; if (img && img.startsWith('data:image')) { doc.addImage(img, 'JPEG', data.cell.x + 2, data.cell.y + 2, 20, 20); data.cell.text = ''; } } }, startY: 30 }); doc.save(`Abhiyan_Report_${d}.pdf`); }
     function openNoticeModal(){if(isAdmin)document.getElementById('noticeModal').style.display='flex'}
     function openImageModal(){if(isAdmin)document.getElementById('imageModal').style.display='flex'}
     function saveNotice(){if(!isAdmin)return;db.collection(colNotice).doc('main_notice').set({text:document.getElementById('noticeInput').value},{merge:true}).then(()=>{alert("Posted");document.getElementById('noticeModal').style.display='none'})}
