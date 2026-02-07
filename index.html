@@ -28,7 +28,7 @@
         @keyframes tirangaBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         * { box-sizing: border-box; outline: none; }
 
-        /* --- HEADER (CLEAN BANNER) --- */
+        /* --- HEADER --- */
         .header { 
             position: relative; 
             height: 180px; 
@@ -36,17 +36,24 @@
             border-radius: 0 0 30px 30px; 
             overflow: hidden; 
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2); 
-            background: #ffffff;
+            /* डीफॉल्ट बॅकग्राउंड (जर बॅनर नसेल तर) */
+            background: linear-gradient(135deg, #000080, #1e3a8a); 
         }
 
-        .header-slider { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; }
+        /* Slider Container */
+        .header-slider {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 0;
+        }
 
         .slide-img {
             width: 100%; height: 100%;
-            object-fit: cover; /* Photo clear disel */
-            object-position: center;
-            position: absolute; top: 0; left: 0;
-            opacity: 0; transition: opacity 1.5s ease-in-out;
+            object-fit: cover;
+            position: absolute;
+            top: 0; left: 0;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
         }
         .slide-img.active { opacity: 1; }
 
@@ -64,17 +71,19 @@
         }
 
         .user-name-styled { font-size: 22px; font-weight: 800; margin: 0; color: #000080; }
+        
         .score-pill-styled { 
             background: #f0f9ff; padding: 6px 12px; border-radius: 20px; 
             font-size: 14px; font-weight: bold; color: #0284c7;
             border: 1px solid #bae6fd; display: inline-flex; align-items: center; gap: 5px;
         }
+
         .btn-logout-styled {
             background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; 
             padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer;
         }
 
-        /* Stats */
+        /* Dashboard Stats */
         .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 20px; margin-bottom: 20px; position: relative; z-index: 20; }
         .stat-card { padding: 12px; border-radius: 16px; text-align: center; color: white; box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
         .card-red { background: linear-gradient(135deg, #ef4444, #b91c1c); }
@@ -282,7 +291,7 @@
                 <button onclick="uploadBanner(3)" class="bday-btn">Upload</button>
                 <button onclick="deleteBanner(3)" style="color:red; border:none; background:none;">🗑️</button>
             </div>
-            <p style="font-size:12px; color:gray;">(Max 3 images)</p>
+            <p style="font-size:12px; color:gray;">(Max 3 images. They will slide automatically)</p>
         </div>
     </div>
 
@@ -380,6 +389,7 @@
         }
     });
 
+    // --- BANNER SLIDER LOGIC ---
     function loadBanners() {
         db.collection(colBanners).onSnapshot(snap => {
             bannerImages = [];
@@ -405,11 +415,13 @@
         document.getElementById(`slide-${currentSlide}`).classList.add('active');
     }
 
+    // --- ADMIN BANNER FUNCTIONS ---
     function openBannerModal() { document.getElementById('bannerModal').style.display = 'flex'; }
     
     function uploadBanner(index) {
         const file = document.getElementById(`ban${index}`).files[0];
         if(!file) return alert("फाईल निवडा");
+        
         const reader = new FileReader();
         reader.onload = function(e) {
             const img = new Image(); img.src = e.target.result;
@@ -440,18 +452,12 @@
 
                 if (d.image) {
                     if (d.displayType === 'popup') {
-                        // If type is POPUP, Hide Embedded Area
                         area.style.display = 'none'; 
-                        
-                        // Open Popup (Lightbox)
-                        // Simple Logic: Open it. If you want once per session, we can add sessionStorage check.
-                        // For now, as per request, just make sure it DOES NOT show in embedded area.
                         openLightbox(d.image);
                     } else {
-                        // If type is EMBEDDED (Continue), Show Area, Hide Popup logic
                         area.style.display = 'block';
                         img.src = d.image;
-                        closeLightbox(); // Ensure popup is closed
+                        closeLightbox(); 
                     }
                 } else {
                     area.style.display = 'none';
@@ -532,7 +538,14 @@
     
     function openModal(id=null){document.getElementById('entryModal').style.display='flex';document.getElementById('pName').value='';document.getElementById('pMobile').value='';document.getElementById('pCity').value='';if(id){const p=prospectsData.find(x=>x.id===id);if(p){document.getElementById('docId').value=id;document.getElementById('pName').value=p.name;document.getElementById('pMobile').value=p.mobile;document.getElementById('pCity').value=p.city;document.getElementById('saveBtn').innerText="Update";}}else{document.getElementById('docId').value='';document.getElementById('saveBtn').innerText="Save";}}
     function closeModal(){document.getElementById('entryModal').style.display='none'}
-    function saveData() { const n=document.getElementById('pName').value, m=document.getElementById('pMobile').value; if(!n)return alert("नाव आवश्यक आहे."); const d={name:n, mobile:m, city:document.getElementById('pCity').value, occupation:document.getElementById('pOccupation').value, category:document.getElementById('pCategory').value, status:document.getElementById('pStatus').value, nextDate:document.getElementById('pNextDate').value, product:document.getElementById('pProduct').value, interests:document.getElementById('pInterests').value, dob:document.getElementById('pDob').value, updatedAt:new Date().toISOString(), addedBy:currentUser.uid, addedByMobile:currentUser.email.split('@')[0], addedByName:currentUser.displayName}; const id=document.getElementById('docId').value; if(!id)d.createdAt=new Date().toISOString().split('T')[0]; (id?db.collection(colProspects).doc(id).update(d):db.collection(colProspects).add(d)).then(()=>{closeModal()}); }
+    function saveData() { 
+        const btn = document.getElementById('saveBtn'); btn.innerText="Saving..."; btn.disabled=true;
+        const n=document.getElementById('pName').value, m=document.getElementById('pMobile').value; 
+        if(!n){ btn.disabled=false; return alert("नाव आवश्यक आहे."); } 
+        const d={name:n, mobile:m, city:document.getElementById('pCity').value, occupation:document.getElementById('pOccupation').value, category:document.getElementById('pCategory').value, status:document.getElementById('pStatus').value, nextDate:document.getElementById('pNextDate').value, product:document.getElementById('pProduct').value, interests:document.getElementById('pInterests').value, dob:document.getElementById('pDob').value, updatedAt:new Date().toISOString(), addedBy:currentUser.uid, addedByMobile:currentUser.email.split('@')[0], addedByName:currentUser.displayName}; 
+        const id=document.getElementById('docId').value; if(!id)d.createdAt=new Date().toISOString().split('T')[0]; 
+        (id?db.collection(colProspects).doc(id).update(d):db.collection(colProspects).add(d)).then(()=>{closeModal(); btn.disabled=false;}); 
+    }
 
     // --- UTILS ---
     function openQR(){document.getElementById('qrModal').style.display='flex';new QRCode(document.getElementById('qrcode'),{text:`RCM:${currentUser.displayName}`,width:120,height:120})}
@@ -554,7 +567,12 @@
     function openImageModal(){if(isAdmin)document.getElementById('imageModal').style.display='flex'}
     function saveNotice(){if(!isAdmin)return;db.collection(colNotice).doc('main_notice').set({text:document.getElementById('noticeInput').value},{merge:true}).then(()=>{alert("Posted");document.getElementById('noticeModal').style.display='none'})}
     function processImage(){const f=document.getElementById('imgInput').files[0];if(!f)return;const r=new FileReader();r.onload=e=>{const i=new Image();i.src=e.target.result;i.onload=()=>{const c=document.createElement('canvas'),x=c.getContext('2d'),s=800/i.width;c.width=800;c.height=i.height*s;x.drawImage(i,0,0,c.width,c.height);db.collection(colNotice).doc('main_notice').set({image:c.toDataURL('image/jpeg',0.6),displayType:document.querySelector('input[name="imgDisplay"]:checked').value},{merge:true}).then(()=>{alert("Uploaded");document.getElementById('imageModal').style.display='none'})}};r.readAsDataURL(f)}
-    function deleteImage(){db.collection(colNotice).doc('main_notice').update({image:firebase.firestore.FieldValue.delete()}).then(()=>alert("Deleted"))}
+    function deleteImage(){db.collection(colNotice).doc('main_notice').update({image:firebase.firestore.FieldValue.delete(),displayType:firebase.firestore.FieldValue.delete()}).then(()=>alert("Deleted"))}
     function openTopperModal(){ let lb={}; [...prospectsData].forEach(d=>{let n=d.addedByName||"User"; if(!lb[n])lb[n]=0; lb[n]+=2;}); [...campaignData].forEach(d=>{let n=d.proposer||"User"; if(!lb[n])lb[n]=0; lb[n]+=5;}); [...loginData].forEach(d=>{let n=d.name||"User"; if(!lb[n])lb[n]=0; lb[n]+=1;}); let s=Object.keys(lb).map(k=>({n:k,p:lb[k]})).sort((a,b)=>b.p-a.p); document.getElementById('topper-list').innerHTML=s.map((u,i)=>`<tr><td>${i+1}</td><td>${u.n}</td><td>${u.p}</td><td>${u.p>=50?'🎁':''}</td></tr>`).join(''); document.getElementById('topperModal').style.display='flex'; }
     function openAbhiyanAdminModal(){const b=document.getElementById('abhiyan-list-body');b.innerHTML='';campaignData.forEach(c=>{let a=c.mobile?`<a href="tel:${c.mobile}" class="act-btn-sm">📞</a>`:'-';b.innerHTML+=`<tr><td>${c.prospectName}<br><small>${c.mobile||''}</small></td><td>${c.proposer}</td><td><img src="${c.photo}" style="width:40px;height:40px;border-radius:5px;" onclick="openLightbox(this.src)"></td></tr>`});document.getElementById('abhiyanAdminModal').style.display='flex'}
-    function openLightbox(s){document.getElementById('lightbox-img').src=s;document.getElementById('lightbox').
+    function openLightbox(s){document.getElementById('lightbox-img').src=s;document.getElementById('lightbox').style.display='flex'}
+    function closeLightbox(){document.getElementById('lightbox').style.display='none'}
+    async function pickContact(){try{const c=await navigator.contacts.select(['name','tel'],{multiple:false});if(c.length){document.getElementById('pName').value=c[0].name[0];document.getElementById('pMobile').value=c[0].tel[0].replace(/\D/g,'')}}catch(e){}}
+</script>
+</body>
+</html>
