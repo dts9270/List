@@ -135,7 +135,6 @@
         .top-table td { padding: 10px; border-bottom: 1px solid #eee; font-size: 14px; background: #f9fafb; vertical-align: middle; }
         .act-btn-sm { text-decoration: none; padding: 5px 8px; background: #f1f5f9; border-radius: 6px; margin-right: 5px; color: #334155; font-size: 14px; display: inline-block; }
         
-        /* --- LOGIN PAGE ANIMATION (Sky Blue, Orange, Green) --- */
         #login-container { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
             background: linear-gradient(-45deg, #87CEEB, #FF8C00, #008000, #87CEEB);
@@ -239,6 +238,7 @@
             <select class="modern-input" id="projectFilter" onchange="renderList()">
                 <option value="All">📂 सर्व प्रोजेक्ट (All Projects)</option>
                 <option value="Arogya">आरोग्य (Arogya)</option>
+                <option value="Dinesh Chaudhary Seminar">दिनेश चौधरी सर परभणी सेमिनार</option>
                 <option value="Jal Sanchay">जल संचय (Jal Sanchay)</option>
                 <option value="Anemia">अनेमिया (Anemia)</option>
                 <option value="Blood Check">ब्लड चेक (Blood Check)</option>
@@ -282,6 +282,7 @@
                 <select class="modern-input" id="pProduct">
                     <option value="">-- प्रोजेक्ट निवडा (Project) --</option>
                     <option value="Arogya">आरोग्य (Arogya)</option>
+                    <option value="Dinesh Chaudhary Seminar">दिनेश चौधरी सर परभणी सेमिनार</option>
                     <option value="Jal Sanchay">जल संचय (Jal Sanchay)</option>
                     <option value="Anemia">अनेमिया (Anemia)</option>
                     <option value="Blood Check">ब्लड चेक (Blood Check)</option>
@@ -371,7 +372,6 @@
         }
     });
 
-    // --- BANNER SLIDER ---
     function loadBanners() { db.collection(colBanners).onSnapshot(s => { bannerImages=[]; s.forEach(d => { if(d.data().image) bannerImages.push(d.data().image); }); renderSlider(); }); }
     function renderSlider() {
         const c=document.getElementById('header-slider'); if(!bannerImages.length){c.innerHTML='';return;}
@@ -386,17 +386,14 @@
     }
     function deleteBanner(i){if(confirm("Delete?"))db.collection(colBanners).doc(`slide_${i}`).delete().then(()=>alert("Deleted"))}
 
-    // --- NOTICE ---
     function loadNotice() { db.collection(colNotice).doc('main_notice').onSnapshot(doc => { if(doc.exists) { const d = doc.data(); document.getElementById('notice-text').innerText = d.text || ""; if (d.image) { if (d.displayType === 'popup') { document.getElementById('promo-area').style.display='none'; openLightbox(d.image); } else { document.getElementById('promo-area').style.display='block'; document.getElementById('promo-img').src=d.image; closeLightbox(); } } else { document.getElementById('promo-area').style.display='none'; } } }); }
 
-    // --- CORE ---
     function checkLoginPoint() { const t=new Date().toISOString().split('T')[0], id=currentUser.uid+"_"+t; db.collection(colLogins).doc(id).get().then(d=>{if(!d.exists)db.collection(colLogins).doc(id).set({uid:currentUser.uid,name:currentUser.displayName,date:t})}); }
     function loadLogins(){db.collection(colLogins).onSnapshot(s=>{loginData=[];s.forEach(d=>loginData.push(d.data()));calculateMyPoints()})}
     function toggleAuthMode(){isRegisterMode=!isRegisterMode;document.getElementById('name-field-container').style.display=isRegisterMode?'block':'none';document.getElementById('btn-auth-action').innerText=isRegisterMode?'Register':'Login';document.getElementById('toggle-text').innerText=isRegisterMode?'Login':'Create Account'}
     function handleAuth(){ const btn=document.getElementById('btn-auth-action'), n=document.getElementById('uName').value, m=document.getElementById('uMobile').value, p=document.getElementById('uPin').value; if(m.length!==10||p.length!==4)return alert("Check Number/PIN"); btn.innerText="Wait..."; btn.disabled=true; const em=m+SECRET_SUFFIX, pw=p+PIN_SALT; if(isRegisterMode){ if(!n){btn.innerText="Register";btn.disabled=false;return alert("Enter Name");} auth.createUserWithEmailAndPassword(em,pw).then(c=>c.user.updateProfile({displayName:n})).catch(e=>{alert(e.message);btn.innerText="Register";btn.disabled=false}); }else{ auth.signInWithEmailAndPassword(em,pw).catch(e=>{alert(e.message);btn.innerText="Login";btn.disabled=false}); } }
     function logout(){auth.signOut()}
     
-    // --- MAIN DATA ---
     function loadData(){ db.collection(colProspects).orderBy("updatedAt","desc").onSnapshot(s=>{ prospectsData=[]; s.forEach(d=>{ let da=d.data(); da.id=d.id; if(isAdmin){ prospectsData.push(da); } else if(da.addedBy===currentUser.uid) { prospectsData.push(da); } }); if(isAdmin) populateTeamFilter(); loadCampaign(); }); }
     function loadCampaign(){ db.collection(colCampaign).orderBy("timestamp","desc").onSnapshot(s=>{ campaignData=[]; s.forEach(d=>{ let c=d.data(); c.id=d.id; if(isAdmin || c.uid===currentUser.uid) campaignData.push(c); }); calculateMyPoints(); checkBirthdays(); populateCities(); renderList(); }); }
     
@@ -412,7 +409,6 @@
     
     function updateDashboard(data) { const t = new Date().toISOString().split('T')[0]; document.getElementById('d-total').innerText = data.length; document.getElementById('d-joined').innerText = data.filter(p => p.status === 'Joined').length; document.getElementById('d-hot').innerText = data.filter(p => p.category === 'Hot').length; document.getElementById('d-due').innerText = data.filter(p => p.nextDate && p.nextDate <= t).length; }
 
-    // --- OTHER FUNCS ---
     function openAbhiyanModal(){document.getElementById('abProposer').value=currentUser.displayName||"User";document.getElementById('abhiyanModal').style.display='flex';processedCampaignImage=null;document.getElementById('gpsPreview').style.display='none';document.getElementById('abPhotoInput').value=""}
     function drawGPSImage(){ const f=document.getElementById('abPhotoInput').files[0];if(!f)return; if(navigator.geolocation){ navigator.geolocation.getCurrentPosition(p=>{ const lat=p.coords.latitude.toFixed(5), long=p.coords.longitude.toFixed(5); fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${long}`).then(r=>r.json()).then(d=>{ const a=d.address, v=a.village||a.town||a.city||"Unknown", s=a.state||""; processCanvas(f,lat,long,`${v}, ${s}`); }).catch(()=>processCanvas(f,lat,long,"Net Err")); },()=>processCanvas(f,"No Loc","No Loc","Denied")); }else processCanvas(f,"No GPS","No GPS","Err"); }
     function processCanvas(f, lat, long, addr) { const r=new FileReader(); r.onload=e=>{ const i=new Image(); i.src=e.target.result; i.onload=()=>{ const c=document.getElementById('gpsCanvas'), x=c.getContext('2d'), mw=800, s=mw/i.width; c.width=mw; c.height=i.height*s; x.drawImage(i,0,0,c.width,c.height); x.fillStyle="rgba(0,0,0,0.6)"; x.fillRect(0,c.height-80,c.width,80); x.fillStyle="white"; x.font="bold 16px sans-serif"; x.fillText(`🏠 ${addr}`, 20, c.height-50); x.fillText(`📅 ${new Date().toLocaleString()}`, 20, c.height-25); processedCampaignImage=c.toDataURL('image/jpeg',0.7); document.getElementById('gpsPreview').src=processedCampaignImage; document.getElementById('gpsPreview').style.display='block'; } }; r.readAsDataURL(f); }
@@ -423,7 +419,6 @@
     function closeModal(){document.getElementById('entryModal').style.display='none'}
     function saveData() { const btn=document.getElementById('saveBtn'); btn.innerText="Saving..."; btn.disabled=true; const n=document.getElementById('pName').value, m=document.getElementById('pMobile').value; if(!n){btn.innerText="Save"; btn.disabled=false; return alert("Enter Name");} const d={name:n, mobile:m, city:document.getElementById('pCity').value, occupation:document.getElementById('pOccupation').value, category:document.getElementById('pCategory').value, status:document.getElementById('pStatus').value, nextDate:document.getElementById('pNextDate').value, product:document.getElementById('pProduct').value, interests:document.getElementById('pInterests').value, dob:document.getElementById('pDob').value, updatedAt:new Date().toISOString(), addedBy:currentUser.uid, addedByMobile:currentUser.email.split('@')[0], addedByName:currentUser.displayName}; const id=document.getElementById('docId').value; if(!id)d.createdAt=new Date().toISOString().split('T')[0]; (id?db.collection(colProspects).doc(id).update(d):db.collection(colProspects).add(d)).then(()=>{closeModal();btn.disabled=false;}); }
     
-    // --- UPDATED QR CODE FUNCTION ---
     function openQR(){
         document.getElementById('qrModal').style.display='flex';
         document.getElementById('qrcode').innerHTML='';
