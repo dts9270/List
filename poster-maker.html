@@ -1,0 +1,219 @@
+<!DOCTYPE html><html lang="mr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>HD Poster Maker - 100+ Designs</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<!-- Firebase optional आहे. Firebase save/load हवे असल्यास खाली config add करू. -->
+<style>
+:root{--bg:#f3efe7;--brown:#a8734e;--dark:#1f2937;--muted:#6b7280;--white:#fff;--line:#eadfd3}
+*{box-sizing:border-box}
+body{margin:0;font-family:Poppins,'Baloo 2',sans-serif;background:var(--bg);color:var(--dark)}
+.app{max-width:1200px;margin:auto;padding:14px}
+.header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+.header h1{margin:0;font-size:22px;font-weight:800;color:#2b211b}
+.header small{color:var(--muted);font-weight:600}
+.grid{display:grid;grid-template-columns:380px 1fr;gap:16px;align-items:start}
+.panel{background:#fff;border-radius:24px;padding:16px;box-shadow:0 10px 30px rgba(55,37,24,.10);border:1px solid #fff}
+.sectionTitle{font-weight:800;color:#a8734e;letter-spacing:2px;text-transform:uppercase;font-size:13px;margin:16px 0 8px}
+.field{display:flex;align-items:center;gap:10px;background:#fbfaf7;border:1px solid var(--line);border-radius:16px;padding:12px;margin:8px 0}
+.field span{font-size:20px;color:#a8734e;width:24px;text-align:center}
+input,select,textarea{width:100%;border:0;outline:0;background:transparent;font-family:inherit;font-size:14px;color:#222}
+textarea{min-height:70px;resize:vertical}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.btns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+button{border:0;border-radius:16px;padding:13px 14px;font-family:inherit;font-weight:800;cursor:pointer;background:#a8734e;color:#fff;box-shadow:0 8px 18px rgba(168,115,78,.28)}
+button.secondary{background:#1f2937}
+button.green{background:#138808}
+button.orange{background:#ff8a00}
+.previewWrap{display:flex;flex-direction:column;align-items:center;gap:12px;overflow:auto}
+.poster{width:720px;height:1080px;position:relative;overflow:hidden;background:#fff;box-shadow:0 18px 45px rgba(0,0,0,.18);font-family:'Baloo 2',Poppins,sans-serif}
+.poster *{position:relative;z-index:2}
+.bgLayer{position:absolute;inset:0;z-index:0}
+.pattern{position:absolute;inset:0;z-index:1;opacity:.14;background-image:radial-gradient(circle at 20% 20%,#fff 0 4px,transparent 5px),radial-gradient(circle at 80% 70%,#fff 0 5px,transparent 6px);background-size:42px 42px}
+.topBadge{display:inline-block;padding:8px 22px;border-radius:999px;font-weight:800;font-size:26px;margin:42px 0 0 42px;background:rgba(255,255,255,.9);color:#111}
+.mainTitle{font-size:64px;line-height:1.02;font-weight:800;margin:22px 42px 8px;color:#fff;text-shadow:0 4px 14px rgba(0,0,0,.28)}
+.subTitle{font-size:32px;line-height:1.2;font-weight:700;margin:0 42px;color:#fff;text-shadow:0 3px 10px rgba(0,0,0,.26)}
+.photoBox{width:300px;height:300px;border-radius:50%;overflow:hidden;border:10px solid rgba(255,255,255,.95);box-shadow:0 14px 35px rgba(0,0,0,.30);margin:36px auto 18px;background:#eee;display:flex;align-items:center;justify-content:center;color:#777;font-weight:800;font-size:28px;text-align:center}
+.photoBox img{width:100%;height:100%;object-fit:cover}
+.speakerName{text-align:center;color:#fff;font-size:42px;font-weight:800;text-shadow:0 4px 12px rgba(0,0,0,.35);padding:0 32px}
+.infoCard{margin:28px 46px 0;background:rgba(255,255,255,.94);border-radius:28px;padding:24px;box-shadow:0 14px 32px rgba(0,0,0,.18)}
+.infoLine{display:flex;gap:12px;align-items:flex-start;font-size:25px;font-weight:800;color:#2b211b;margin:10px 0;line-height:1.2}
+.infoLine b{color:#a8734e;min-width:34px;font-size:28px}
+.host{position:absolute;left:46px;right:46px;bottom:34px;background:rgba(0,0,0,.55);color:#fff;border-radius:24px;padding:16px 22px;font-size:23px;font-weight:800;display:flex;justify-content:space-between;gap:12px;align-items:center}
+.logoText{position:absolute;top:20px;right:30px;color:#fff;font-size:24px;font-weight:800;text-shadow:0 3px 10px rgba(0,0,0,.3)}
+.designBar{display:flex;gap:8px;flex-wrap:wrap;max-height:180px;overflow:auto;padding:8px;background:#fff;border-radius:20px}
+.chip{padding:8px 11px;border-radius:999px;background:#f4eadf;color:#7a4d31;font-size:12px;font-weight:800;cursor:pointer;border:2px solid transparent}.chip.active{background:#a8734e;color:#fff}
+.hint{font-size:12px;color:#6b7280;text-align:center}
+@media(max-width:900px){.grid{grid-template-columns:1fr}.poster{width:360px;height:540px}.topBadge{font-size:13px;margin:21px 0 0 21px;padding:4px 11px}.mainTitle{font-size:32px;margin:11px 21px 4px}.subTitle{font-size:16px;margin:0 21px}.photoBox{width:150px;height:150px;border-width:5px;margin:18px auto 9px;font-size:14px}.speakerName{font-size:21px;padding:0 16px}.infoCard{margin:14px 23px 0;border-radius:14px;padding:12px}.infoLine{font-size:12.5px;margin:5px 0;gap:6px}.infoLine b{font-size:14px;min-width:17px}.host{left:23px;right:23px;bottom:17px;border-radius:12px;padding:8px 11px;font-size:11.5px}.logoText{top:10px;right:15px;font-size:12px}.row,.btns{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div><h1>HD Poster Maker</h1><small>Info भरा आणि 100+ design मधून poster download करा</small></div>
+    <button onclick="downloadPoster()">📥 HD Download</button>
+  </div>
+  <div class="grid">
+    <div class="panel">
+      <div class="sectionTitle">Speaker Information</div>
+      <div class="field"><span>👤</span><input id="speaker" placeholder="Leader / Key Speaker Name" value="दिनेश राजपूत सर"></div>
+      <div class="field"><span>📸</span><input id="photo" type="file" accept="image/*"></div><div class="sectionTitle">Poster Text</div>
+  <div class="field"><span>🏷️</span><input id="badge" placeholder="Top Badge" value="RCM BUSINESS SEMINAR"></div>
+  <div class="field"><span>🔥</span><input id="title" placeholder="Main Title" value="RCM नये भारत का निर्माण"></div>
+  <div class="field"><span>✨</span><textarea id="subtitle" placeholder="Subtitle">स्मार्ट बचत, आरोग्य आणि उत्पन्नाची सुवर्णसंधी</textarea></div>
+
+  <div class="sectionTitle">Schedule</div>
+  <div class="row">
+    <div class="field"><span>📅</span><input id="date" placeholder="Date" value="26 एप्रिल 2026"></div>
+    <div class="field"><span>⏰</span><input id="time" placeholder="Time" value="सकाळी 9:30 वा."></div>
+  </div>
+
+  <div class="sectionTitle">Meeting Details</div>
+  <div class="field"><span>🎤</span><select id="type"><option>Business Seminar</option><option>Product Training</option><option>Opportunity Meeting</option><option>Health Camp</option><option>Team Meeting</option></select></div>
+  <div class="field"><span>📍</span><textarea id="venue" placeholder="Venue / Location">कृष्णाई RCM सेवा केंद्र, स्नेह शारदा नगर, वसमत रोड, परभणी</textarea></div>
+  <div class="field"><span>🏢</span><select id="locationType"><option>Offline / In-person</option><option>Online Zoom Meeting</option><option>Google Meet</option><option>Hybrid Meeting</option></select></div>
+
+  <div class="sectionTitle">Host Details</div>
+  <div class="field"><span>🪪</span><input id="host" placeholder="Host Name" value="DS WORLD TEAM"></div>
+  <div class="field"><span>📞</span><input id="mobile" placeholder="Host Mobile No." value="9876543210"></div>
+
+  <div class="sectionTitle">Design Choose Option</div>
+  <div class="field"><span>🎨</span>
+    <select id="designSelect" onchange="selectDesign(this.value)">
+      <option value="">Choose Design</option>
+    </select>
+  </div>
+  <div class="field"><span>🏷️</span>
+    <select id="categorySelect" onchange="filterDesigns(this.value)">
+      <option value="all">All Designs</option>
+      <option value="rcm">RCM / Tricolor</option>
+      <option value="business">Business Blue</option>
+      <option value="premium">Premium Gold</option>
+      <option value="health">Health Green</option>
+      <option value="modern">Modern Dark</option>
+    </select>
+  </div>
+  <div class="designBar" id="designBar"></div>
+  <div class="btns">
+    <button class="secondary" onclick="randomDesign()">🎲 Random</button>
+    <button class="green" onclick="applyData()">✅ Update Poster</button>
+    <button class="orange" onclick="downloadPoster()">📥 HD PNG</button>
+    <button onclick="resetData()">🔄 Reset</button>
+  </div>
+</div>
+
+<div class="panel previewWrap">
+  <div class="poster" id="poster">
+    <div class="bgLayer" id="bgLayer"></div><div class="pattern"></div>
+    <div class="logoText" id="pLogo">DS WORLD</div>
+    <div class="topBadge" id="pBadge"></div>
+    <div class="mainTitle" id="pTitle"></div>
+    <div class="subTitle" id="pSubtitle"></div>
+    <div class="photoBox" id="pPhoto">Speaker<br>Photo</div>
+    <div class="speakerName" id="pSpeaker"></div>
+    <div class="infoCard">
+      <div class="infoLine"><b>📅</b><span id="pDate"></span></div>
+      <div class="infoLine"><b>⏰</b><span id="pTime"></span></div>
+      <div class="infoLine"><b>🎤</b><span id="pType"></span></div>
+      <div class="infoLine"><b>📍</b><span id="pVenue"></span></div>
+      <div class="infoLine"><b>🏢</b><span id="pLocationType"></span></div>
+    </div>
+    <div class="host"><span id="pHost"></span><span id="pMobile"></span></div>
+  </div>
+  <div class="hint">मोबाईलवर preview छोटा दिसेल, पण download HD 1080x1620 PNG मध्ये होईल.</div>
+</div>
+
+  </div>
+</div><script>
+let currentDesign=1, photoData='';
+const gradients=[];
+const colors=[['#ff7a00','#ffffff','#138808'],['#0f172a','#2563eb','#06b6d4'],['#7c2d12','#f97316','#fde68a'],['#3b0764','#a855f7','#f0abfc'],['#052e16','#16a34a','#bbf7d0'],['#111827','#ef4444','#fbbf24'],['#1e1b4b','#4f46e5','#c7d2fe'],['#581c87','#db2777','#fef3c7'],['#0c4a6e','#0284c7','#e0f2fe'],['#422006','#a16207','#fef9c3']];
+for(let i=0;i<120;i++){let c=colors[i%colors.length];let angle=(i*23)%360;gradients.push(`linear-gradient(${angle}deg, ${c[0]} 0%, ${c[1]} 48%, ${c[2]} 100%)`)}
+function designCategory(i){
+  if(i%5===1) return 'rcm';
+  if(i%5===2) return 'business';
+  if(i%5===3) return 'premium';
+  if(i%5===4) return 'health';
+  return 'modern';
+}
+function categoryName(cat){return {rcm:'RCM / Tricolor',business:'Business Blue',premium:'Premium Gold',health:'Health Green',modern:'Modern Dark'}[cat]||'Design'}
+function loadDesignSelect(filter='all'){
+  const sel=document.getElementById('designSelect');
+  sel.innerHTML='<option value="">Choose Design</option>';
+  for(let i=1;i<=120;i++){
+    const cat=designCategory(i);
+    if(filter!=='all' && cat!==filter) continue;
+    const opt=document.createElement('option');
+    opt.value=i;
+    opt.textContent=`Design ${i} - ${categoryName(cat)}`;
+    if(i===currentDesign) opt.selected=true;
+    sel.appendChild(opt);
+  }
+}
+function filterDesigns(cat){loadDesignSelect(cat);makeChips(cat)}
+function selectDesign(val){if(!val)return;currentDesign=parseInt(val);applyDesign();makeChips(document.getElementById('categorySelect').value)}
+function makeChips(filter='all'){
+  const bar=document.getElementById('designBar');bar.innerHTML='';
+  for(let i=1;i<=120;i++){
+    const cat=designCategory(i);
+    if(filter!=='all' && cat!==filter) continue;
+    let d=document.createElement('div');
+    d.className='chip'+(i===currentDesign?' active':'');
+    d.textContent='Design '+i;
+    d.title=categoryName(cat);
+    d.onclick=()=>{currentDesign=i;applyDesign();loadDesignSelect(document.getElementById('categorySelect').value);makeChips(document.getElementById('categorySelect').value)};
+    bar.appendChild(d)
+  }
+}
+function applyDesign(){document.getElementById('bgLayer').style.background=gradients[currentDesign-1];const p=document.getElementById('poster');p.style.borderRadius=(currentDesign%3===0?'0':'8px');document.querySelector('.infoCard').style.borderRadius=(currentDesign%5===0?'6px':'28px');document.querySelector('.photoBox').style.borderRadius=(currentDesign%4===0?'28px':'50%');document.querySelector('.topBadge').style.background=(currentDesign%2===0?'rgba(0,0,0,.55)':'rgba(255,255,255,.9)');document.querySelector('.topBadge').style.color=(currentDesign%2===0?'#fff':'#111')}
+function applyData(){['Badge','Title','Subtitle','Speaker','Date','Time','Venue','Host','Mobile'].forEach(x=>{});pBadge.textContent=badge.value;pTitle.textContent=title.value;pSubtitle.textContent=subtitle.value;pSpeaker.textContent=speaker.value;pDate.textContent=date.value;pTime.textContent=time.value;pType.textContent=type.value;pVenue.textContent=venue.value;pLocationType.textContent=locationType.value;pHost.textContent='Host: '+host.value;pMobile.textContent='☎ '+mobile.value;applyDesign()}
+photo.onchange=e=>{
+  const file=e.target.files[0];
+  if(!file)return;
+  if(!file.type.startsWith('image/')){alert('कृपया फक्त image upload करा.');return;}
+  const r=new FileReader();
+  r.onload=()=>{
+    photoData=r.result;
+    pPhoto.innerHTML=`<img id="speakerImg" src="${photoData}" alt="Speaker Photo">`;
+    localStorage.setItem('poster_speaker_photo',photoData);
+  };
+  r.readAsDataURL(file);
+}
+window.addEventListener('load',()=>{
+  const savedPhoto=localStorage.getItem('poster_speaker_photo');
+  if(savedPhoto){photoData=savedPhoto;pPhoto.innerHTML=`<img id="speakerImg" src="${photoData}" alt="Speaker Photo">`;}
+});
+function randomDesign(){currentDesign=Math.floor(Math.random()*120)+1;applyDesign();loadDesignSelect(document.getElementById('categorySelect').value);makeChips(document.getElementById('categorySelect').value)}
+function resetData(){badge.value='RCM BUSINESS SEMINAR';title.value='RCM नये भारत का निर्माण';subtitle.value='स्मार्ट बचत, आरोग्य आणि उत्पन्नाची सुवर्णसंधी';speaker.value='दिनेश राजपूत सर';date.value='26 एप्रिल 2026';time.value='सकाळी 9:30 वा.';venue.value='कृष्णाई RCM सेवा केंद्र, स्नेह शारदा नगर, वसमत रोड, परभणी';host.value='DS WORLD TEAM';mobile.value='9876543210';applyData()}
+async function downloadPoster(){
+  applyData();
+  const poster=document.getElementById('poster');
+  const oldText=document.querySelector('button[onclick="downloadPoster()"]')?.textContent;
+  try{
+    await document.fonts.ready;
+    const canvas=await html2canvas(poster,{
+      scale:4,
+      useCORS:true,
+      allowTaint:true,
+      backgroundColor:null,
+      width:720,
+      height:1080,
+      scrollX:0,
+      scrollY:0
+    });
+    const a=document.createElement('a');
+    a.download='HD-RCM-Poster-'+Date.now()+'.png';
+    a.href=canvas.toDataURL('image/png',1.0);
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  }catch(err){
+    alert('Download मध्ये issue आला. कृपया Chrome browser मध्ये open करून पुन्हा try करा.');
+    console.error(err);
+  }
+}
+loadDesignSelect();makeChips();applyData();
+</script></body>
+</html>
