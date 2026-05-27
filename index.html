@@ -397,7 +397,40 @@ function updateDashboard(data) { const t = new Date().toISOString().split('T')[0
 
 function openAbhiyanModal(){ document.getElementById('abProposer').value=currentUser.displayName||"User"; document.getElementById('abhiyanModal').style.display='flex'; processedCampaignImage=null; document.getElementById('gpsPreview').style.display='none'; document.getElementById('abPhotoInput').value=""; }
 function drawGPSImage(){ const f=document.getElementById('abPhotoInput').files[0];if(!f)return; if(navigator.geolocation){ navigator.geolocation.getCurrentPosition(p=>{ const lat=p.coords.latitude.toFixed(5), long=p.coords.longitude.toFixed(5); fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${long}`).then(r=>r.json()).then(d=>{ const a=d.address || {}, v=a.village||a.town||a.city||"Unknown", s=a.state||""; processCanvas(f,lat,long,`${v}, ${s}`); }).catch(()=>processCanvas(f,lat,long,"Net Err")); },()=>processCanvas(f,"No Loc","No Loc","Denied")); }else processCanvas(f,"No GPS","No GPS","Err"); }
-function processCanvas(f, lat, long, addr) { const r=new FileReader(); r.onload=e=>{ const i=new Image(); i.src=e.target.result; i.onload=()=>{ const c=document.getElementById('gpsCanvas'), x=c.getContext('2d'), mw=900, s=mw/i.width; c.width=mw; c.height=i.height*s; x.drawImage(i,0,0,c.width,c.height); x.fillStyle="rgba(0,0,0,0.62)"; x.fillRect(0,c.height-92,c.width,92); x.fillStyle="white"; x.font="bold 18px sans-serif"; x.fillText(`👩‍🎓 Women’s Academy Registration`, 20, c.height-62); x.font="bold 15px sans-serif"; x.fillText(`🏠 ${addr}`, 20, c.height-38); x.fillText(`📅 ${new Date().toLocaleString()}`, 20, c.height-16); processedCampaignImage=c.toDataURL('image/jpeg',0.78); document.getElementById('gpsPreview').src=processedCampaignImage; document.getElementById('gpsPreview').style.display='block'; } }; r.readAsDataURL(f); }
+function processCanvas(f, lat, long, addr) {
+    const r=new FileReader();
+    r.onload=e=>{
+        const i=new Image();
+        i.src=e.target.result;
+        i.onload=()=>{
+            const c=document.getElementById('gpsCanvas');
+            const x=c.getContext('2d');
+
+            /* Full HD quality: form/photo readable in PDF */
+            const maxW = 1600;
+            const scale = i.width > maxW ? maxW / i.width : 1;
+            c.width = Math.round(i.width * scale);
+            c.height = Math.round(i.height * scale);
+            x.drawImage(i,0,0,c.width,c.height);
+
+            /* Small footer only, so uploaded form text remains visible */
+            const footerH = Math.max(86, Math.round(c.height * 0.075));
+            x.fillStyle="rgba(0,0,0,0.55)";
+            x.fillRect(0,c.height-footerH,c.width,footerH);
+            x.fillStyle="white";
+            x.font=`bold ${Math.max(22, Math.round(c.width*0.018))}px sans-serif`;
+            x.fillText(`👩‍🎓 Women’s Academy Registration`, 24, c.height-footerH+30);
+            x.font=`bold ${Math.max(16, Math.round(c.width*0.013))}px sans-serif`;
+            x.fillText(`🏠 ${addr}`, 24, c.height-footerH+56);
+            x.fillText(`📅 ${new Date().toLocaleString()}`, 24, c.height-footerH+78);
+
+            processedCampaignImage=c.toDataURL('image/jpeg',0.92);
+            document.getElementById('gpsPreview').src=processedCampaignImage;
+            document.getElementById('gpsPreview').style.display='block';
+        }
+    };
+    r.readAsDataURL(f);
+}
 function submitAbhiyan(){
     const name = document.getElementById('abName').value.trim();
     const mobile = document.getElementById('abMobile').value.trim();
@@ -443,7 +476,7 @@ function downloadAbhiyanPDF() {
     const d=new Date().toISOString().slice(0,10);
     if(!campaignData.length) return alert("No Registration Data");
     const {jsPDF} = window.jspdf;
-    const doc = new jsPDF();
+    const doc = new jsPDF('p','mm','a4');
     doc.setFontSize(15);
     doc.text("Women Academy Registration Report", 14, 16);
     doc.setFontSize(10);
@@ -459,13 +492,15 @@ function downloadAbhiyanPDF() {
             c.timestamp ? c.timestamp.split('T')[0] : '-',
             c.photo
         ]),
-        bodyStyles: { minCellHeight: 30, fontSize: 8 },
+        bodyStyles: { minCellHeight: 38, fontSize: 8 },
         headStyles: { fillColor: [0,0,128] },
         didDrawCell: function(data) {
             if (data.column.index === 5 && data.cell.section === 'body') {
                 var img = data.cell.raw;
                 if (img && img.startsWith('data:image')) {
-                    doc.addImage(img, 'JPEG', data.cell.x + 2, data.cell.y + 2, 26, 26);
+                    try {
+                        doc.addImage(img, 'JPEG', data.cell.x + 2, data.cell.y + 2, 34, 34, undefined, 'FAST');
+                    } catch(e) {}
                     data.cell.text = '';
                 }
             }
@@ -513,7 +548,9 @@ function downloadSingleWomenPDF(id){
     const c = campaignData.find(x => x.id === id);
     if(!c) return alert('Data not found');
     const {jsPDF} = window.jspdf;
-    const doc = new jsPDF();
+    const doc = new jsPDF('p','mm','a4');
+    const pageW = doc.internal.pageSize.getWidth();
+    const pageH = doc.internal.pageSize.getHeight();
     const dateTxt = c.timestamp ? new Date(c.timestamp).toLocaleString('en-IN') : '-';
 
     doc.setFontSize(16);
@@ -535,10 +572,21 @@ function downloadSingleWomenPDF(id){
     });
 
     if(c.photo && c.photo.startsWith('data:image')){
+        let y = doc.lastAutoTable.finalY + 12;
         doc.setFontSize(12);
-        doc.text('Registration Photo Proof', 14, doc.lastAutoTable.finalY + 12);
+        doc.text('Registration Form / Photo Proof', 14, y);
+        y += 6;
+
+        const img = new Image();
+        img.src = c.photo;
+        const imgRatio = img.width && img.height ? img.width / img.height : 0.75;
+        let imgW = pageW - 28;
+        let imgH = imgW / imgRatio;
+        const maxH = pageH - y - 12;
+        if(imgH > maxH){ imgH = maxH; imgW = imgH * imgRatio; }
+
         try {
-            doc.addImage(c.photo, 'JPEG', 14, doc.lastAutoTable.finalY + 18, 80, 80);
+            doc.addImage(c.photo, 'JPEG', 14, y, imgW, imgH, undefined, 'FAST');
         } catch(e) {}
     }
 
