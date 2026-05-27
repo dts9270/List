@@ -277,7 +277,7 @@
         <h3 style="margin-top:0;">📊 Women’s Academy Registration Report</h3>
         <div style="flex-grow:1;overflow-y:auto;margin-bottom:10px;">
             <table class="top-table">
-                <thead><tr><th>Participant</th><th>Registered By</th><th>Clear Image</th></tr></thead>
+                <thead><tr><th>Participant</th><th>Registered By</th><th>Clear Image</th><th>Action</th></tr></thead>
                 <tbody id="abhiyan-list-body"></tbody>
             </table>
         </div>
@@ -485,7 +485,7 @@ function openAbhiyanAdminModal(){
     const b=document.getElementById('abhiyan-list-body');
     b.innerHTML='';
     if(!campaignData.length){
-        b.innerHTML='<tr><td colspan="3" style="text-align:center;color:gray;">No Registration Data</td></tr>';
+        b.innerHTML='<tr><td colspan="4" style="text-align:center;color:gray;">No Registration Data</td></tr>';
     }
     campaignData.forEach((c,i)=>{
         const dateTxt = c.timestamp ? new Date(c.timestamp).toLocaleDateString('en-IN') : '';
@@ -500,9 +500,73 @@ function openAbhiyanAdminModal(){
                     <small>${c.type || 'Women Academy Registration'}</small>
                 </td>
                 <td>${c.photo ? `<img src="${c.photo}" class="wa-admin-img" onclick="openLightbox(this.src)">` : '-'}</td>
+                <td>
+                    <button onclick="downloadSingleWomenPDF('${c.id}')" style="border:none;background:#dbeafe;color:#1d4ed8;border-radius:8px;padding:7px 8px;font-weight:800;margin-bottom:5px;cursor:pointer;">📄 PDF</button><br>
+                    <button onclick="deleteWomenRegistration('${c.id}')" style="border:none;background:#fee2e2;color:#b91c1c;border-radius:8px;padding:7px 8px;font-weight:800;cursor:pointer;">🗑️ Delete</button>
+                </td>
             </tr>`;
     });
     document.getElementById('abhiyanAdminModal').style.display='flex';
+}
+
+function downloadSingleWomenPDF(id){
+    const c = campaignData.find(x => x.id === id);
+    if(!c) return alert('Data not found');
+    const {jsPDF} = window.jspdf;
+    const doc = new jsPDF();
+    const dateTxt = c.timestamp ? new Date(c.timestamp).toLocaleString('en-IN') : '-';
+
+    doc.setFontSize(16);
+    doc.text('Women Academy Individual Registration Report', 14, 18);
+    doc.setFontSize(10);
+    doc.text('Generated from RCM Abhiyan System', 14, 25);
+
+    doc.autoTable({
+        startY: 34,
+        head: [['Field', 'Details']],
+        body: [
+            ['Participant Name', c.prospectName || '-'],
+            ['Mobile Number', c.mobile || '-'],
+            ['Registered By', c.proposer || '-'],
+            ['Registration Type', c.type || 'Women Academy Registration'],
+            ['Date & Time', dateTxt]
+        ],
+        headStyles: { fillColor: [0,0,128] }
+    });
+
+    if(c.photo && c.photo.startsWith('data:image')){
+        doc.setFontSize(12);
+        doc.text('Registration Photo Proof', 14, doc.lastAutoTable.finalY + 12);
+        try {
+            doc.addImage(c.photo, 'JPEG', 14, doc.lastAutoTable.finalY + 18, 80, 80);
+        } catch(e) {}
+    }
+
+    const safeName = (c.prospectName || 'Registration').replace(/[^a-zA-Z0-9]/g,'_');
+    doc.save(`Women_Academy_${safeName}.pdf`);
+}
+
+async function deleteWomenRegistration(id){
+    if(!isAdmin) return alert('Only admin can delete');
+    const c = campaignData.find(x => x.id === id);
+    if(!c) return alert('Data not found');
+
+    const firstConfirm = confirm(`Delete करायचे आहे का?
+
+Name: ${c.prospectName || '-'}
+Registered By: ${c.proposer || '-'}
+
+ही action undo होणार नाही.`);
+    if(!firstConfirm) return;
+
+    const code = prompt('Final confirmation साठी security code टाका:');
+    if(code !== '9270') return alert('Wrong code. Delete cancel झाले.');
+
+    const secondConfirm = confirm('Final confirm: हा Women Academy registration permanent delete करायचा आहे का?');
+    if(!secondConfirm) return;
+
+    await db.collection(colCampaign).doc(id).delete();
+    alert('Registration deleted successfully.');
 }
 function openLightbox(s){document.getElementById('lightbox-img').src=s;document.getElementById('lightbox').style.display='flex'}
 function closeLightbox(){document.getElementById('lightbox').style.display='none'}
