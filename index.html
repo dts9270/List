@@ -1,242 +1,242 @@
-<!DOCTYPE html>
-<html lang="mr">
+<!DOCTYPE html><html lang="mr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>RCM अभियान सिस्टम</title>
-    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"><script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
-    <style>
-        :root { --primary: #000080; --text-main: #111827; }
-        
-        body { 
-            font-family: 'Mukta', sans-serif; 
-            color: var(--text-main); margin: 0; padding-bottom: 100px; min-height: 100vh;
-            background: linear-gradient(-45deg, #ff9933, #ffffff, #ffffff, #138808);
-            background-size: 400% 400%;
-            animation: tirangaBG 10s ease infinite;
-        }
-        @keyframes tirangaBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-        * { box-sizing: border-box; outline: none; }
+<style>
+    :root { --primary: #000080; --text-main: #111827; }
+    body {
+        font-family: 'Mukta', sans-serif;
+        color: var(--text-main); margin: 0; padding-bottom: 100px; min-height: 100vh;
+        background: linear-gradient(-45deg, #ff9933, #ffffff, #ffffff, #138808);
+        background-size: 400% 400%; animation: tirangaBG 10s ease infinite;
+    }
+    @keyframes tirangaBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+    * { box-sizing: border-box; outline: none; }
 
-        /* HEADER */
-        .header { 
-            position: relative; height: 180px; width: 100%;
-            border-radius: 0 0 25px 25px; overflow: hidden; 
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); 
-            background: #ffffff; z-index: 10;
-        }
-        .header-slider { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; }
-        .slide-img { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; opacity: 0; transition: opacity 1.5s ease-in-out; }
-        .slide-img.active { opacity: 1; }
+    .header { position: relative; height: 180px; width: 100%; border-radius: 0 0 25px 25px; overflow: hidden; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); background: #ffffff; z-index: 10; }
+    .header-slider { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; }
+    .slide-img { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; opacity: 0; transition: opacity 1.5s ease-in-out; }
+    .slide-img.active { opacity: 1; }
 
-        /* USER INFO */
-        .user-info-bar {
-            background: white; padding: 15px 20px; margin: -20px 15px 20px 15px; 
-            border-radius: 15px; display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08); position: relative; z-index: 20;
-        }
-        .user-name-styled { font-size: 22px; font-weight: 800; margin: 0; color: #000080; }
-        .score-pill-styled { background: #f0f9ff; padding: 6px 12px; border-radius: 20px; font-size: 14px; font-weight: bold; color: #0284c7; border: 1px solid #bae6fd; display: inline-flex; align-items: center; gap: 5px; }
-        .btn-logout-styled { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; }
+    .user-info-bar { background: white; padding: 15px 20px; margin: -20px 15px 20px 15px; border-radius: 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 5px 15px rgba(0,0,0,0.08); position: relative; z-index: 20; }
+    .user-name-styled { font-size: 22px; font-weight: 800; margin: 0; color: #000080; }
+    .score-pill-styled { background: #f0f9ff; padding: 6px 12px; border-radius: 20px; font-size: 14px; font-weight: bold; color: #0284c7; border: 1px solid #bae6fd; display: inline-flex; align-items: center; gap: 5px; }
+    .btn-logout-styled { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; }
 
-        /* DASHBOARD */
-        .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 20px; margin-bottom: 20px; position: relative; z-index: 20; }
-        .stat-card { padding: 12px; border-radius: 16px; text-align: center; color: white; box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
-        .card-red { background: linear-gradient(135deg, #ef4444, #b91c1c); }
-        .card-green { background: linear-gradient(135deg, #22c55e, #15803d); }
-        .card-blue { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
-        .card-orange { background: linear-gradient(135deg, #f97316, #c2410c); }
-        .stat-num { font-size: 24px; font-weight: 800; font-family: 'Inter', sans-serif; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-        .stat-lbl { font-size: 12px; font-weight: 600; opacity: 0.9; }
+    .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 20px; margin-bottom: 20px; position: relative; z-index: 20; }
+    .stat-card { padding: 12px; border-radius: 16px; text-align: center; color: white; box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
+    .card-red { background: linear-gradient(135deg, #ef4444, #b91c1c); }
+    .card-green { background: linear-gradient(135deg, #22c55e, #15803d); }
+    .card-blue { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
+    .card-orange { background: linear-gradient(135deg, #f97316, #c2410c); }
+    .stat-num { font-size: 24px; font-weight: 800; font-family: 'Inter', sans-serif; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+    .stat-lbl { font-size: 12px; font-weight: 600; opacity: 0.9; }
 
-        /* ABHIYAN CARD */
-        .abhiyan-card {
-            background: linear-gradient(135deg, #ecfccb, #f7fee7); border: 2px dashed #65a30d;
-            border-radius: 20px; padding: 15px; margin: 0 20px 20px 20px;
-            display: flex; align-items: center; justify-content: space-between;
-            cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: transform 0.2s;
-        }
-        .abhiyan-card:active { transform: scale(0.98); }
-        .abhiyan-icon { font-size: 32px; background: #fff; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .abhiyan-info h3 { margin: 0; color: #365314; font-size: 18px; font-weight: 800; }
-        .abhiyan-info p { margin: 0; color: #4d7c0f; font-size: 12px; font-weight: 600; }
-        .abhiyan-arrow { font-size: 24px; color: #65a30d; }
+    .abhiyan-card { background: linear-gradient(135deg, #ecfccb, #f7fee7); border: 2px dashed #65a30d; border-radius: 20px; padding: 15px; margin: 0 20px 20px 20px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: transform 0.2s; }
+    .abhiyan-card:active { transform: scale(0.98); }
+    .abhiyan-icon { font-size: 32px; background: #fff; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    .abhiyan-info h3 { margin: 0; color: #365314; font-size: 18px; font-weight: 800; }
+    .abhiyan-info p { margin: 0; color: #4d7c0f; font-size: 12px; font-weight: 600; }
+    .abhiyan-arrow { font-size: 24px; color: #65a30d; }
 
-        /* UPLOAD UI */
-        .upload-box { background: #f8fafc; border: 2px dashed #cbd5e1; border-radius: 16px; padding: 25px; text-align: center; position: relative; margin-top: 10px; cursor: pointer; }
-        .upload-icon-large { font-size: 40px; color: #94a3b8; display: block; margin-bottom: 5px; }
-        .upload-text { color: #64748b; font-size: 14px; font-weight: bold; }
+    .upload-box { background: #f8fafc; border: 2px dashed #cbd5e1; border-radius: 16px; padding: 25px; text-align: center; position: relative; margin-top: 10px; cursor: pointer; }
+    .upload-icon-large { font-size: 40px; color: #94a3b8; display: block; margin-bottom: 5px; }
+    .upload-text { color: #64748b; font-size: 14px; font-weight: bold; }
 
-        /* --- COLORFUL QR CODE CSS --- */
-        .qr-frame {
-            position: relative;
-            padding: 6px;
-            background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
-            background-size: 400%;
-            border-radius: 20px;
-            animation: glowing 20s linear infinite;
-            box-shadow: 0 0 25px rgba(0,0,0,0.3);
-            display: inline-block;
-        }
-        .qr-inner {
-            background: white;
-            padding: 15px;
-            border-radius: 16px;
-        }
-        @keyframes glowing {
-            0% { background-position: 0 0; }
-            50% { background-position: 400% 0; }
-            100% { background-position: 0 0; }
-        }
+    .qr-frame { position: relative; padding: 6px; background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000); background-size: 400%; border-radius: 20px; animation: glowing 20s linear infinite; box-shadow: 0 0 25px rgba(0,0,0,0.3); display: inline-block; }
+    .qr-inner { background: white; padding: 15px; border-radius: 16px; }
+    @keyframes glowing { 0% { background-position: 0 0; } 50% { background-position: 400% 0; } 100% { background-position: 0 0; } }
 
-        /* CONTROLS */
-        .core-section { margin: 0 20px 20px 20px; background: white; padding: 15px; border-radius: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        .chk-item { display: flex; align-items: center; gap: 10px; font-size: 16px; padding: 8px 0; border-bottom: 1px solid #f3f4f6; }
-        .chk-item input { width: 20px; height: 20px; accent-color: #000080; }
-        .controls { padding: 0 20px 10px 20px; display: grid; gap: 10px; }
-        .modern-input { width: 100%; padding: 12px; border: 1px solid #e5e7eb; border-radius: 12px; background: white; font-size: 16px; }
-        .admin-controls { padding: 0 20px 10px 20px; display: none; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px; }
-        .btn-admin { padding: 10px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; color: #374151; font-size: 11px; background: white; border: 1px solid #e5e7eb; }
-        .report-actions { padding: 0 20px 20px 20px; display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; }
-        .btn-report { padding: 10px; border-radius: 12px; border: none; font-weight: 600; cursor: pointer; color: white; font-size: 12px; display: flex; flex-direction: column; align-items: center; gap: 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
-        .btn-excel { background: #138808; } .btn-pdf { background: #FF9933; } .btn-ai { background: #000080; } .btn-gold { background: linear-gradient(135deg, #FDB931, #d4af37); color: black; }
+    .core-section { margin: 0 20px 20px 20px; background: white; padding: 15px; border-radius: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+    .chk-item { display: flex; align-items: center; gap: 10px; font-size: 16px; padding: 8px 0; border-bottom: 1px solid #f3f4f6; }
+    .chk-item input { width: 20px; height: 20px; accent-color: #000080; }
+    .controls { padding: 0 20px 10px 20px; display: grid; gap: 10px; }
+    .modern-input { width: 100%; padding: 12px; border: 1px solid #e5e7eb; border-radius: 12px; background: white; font-size: 16px; }
+    .admin-controls { padding: 0 20px 10px 20px; display: none; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px; }
+    .btn-admin { padding: 10px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; color: #374151; font-size: 11px; background: white; border: 1px solid #e5e7eb; }
+    .report-actions { padding: 0 20px 20px 20px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+    .btn-report { padding: 10px; border-radius: 12px; border: none; font-weight: 600; cursor: pointer; color: white; font-size: 12px; display: flex; flex-direction: column; align-items: center; gap: 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+    .btn-excel { background: #138808; } .btn-pdf { background: #FF9933; } .btn-ai { background: #000080; } .btn-gold { background: linear-gradient(135deg, #FDB931, #d4af37); color: black; }
 
-        /* LIST */
-        .card-list { padding: 0 20px; }
-        .pro-card { background: white; border-radius: 16px; padding: 15px; margin-bottom: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); position: relative; border-left: 5px solid #000080; transition: transform 0.2s; }
-        .pro-card.status-joined { border-left-color: #138808; }
-        .owner-badge { position: absolute; top: 10px; right: 10px; background: #e0e7ff; color: #3730a3; padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; }
-        .sr-badge { position: absolute; top: 10px; left: 10px; background: #f3f4f6; color: #64748b; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; border: 1px solid #e2e8f0; }
-        .btn-action-group { display: flex; gap: 10px; margin-top: 5px; justify-content: flex-end; }
-        .act-btn { text-decoration: none; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); cursor: pointer; }
+    .card-list { padding: 0 20px; }
+    .pro-card { background: white; border-radius: 16px; padding: 15px; margin-bottom: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); position: relative; border-left: 5px solid #000080; transition: transform 0.2s; }
+    .pro-card.status-joined { border-left-color: #138808; }
+    .owner-badge { position: absolute; top: 10px; right: 10px; background: #e0e7ff; color: #3730a3; padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; }
+    .sr-badge { position: absolute; top: 10px; left: 10px; background: #f3f4f6; color: #64748b; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; border: 1px solid #e2e8f0; }
+    .btn-action-group { display: flex; gap: 10px; margin-top: 5px; justify-content: flex-end; }
+    .act-btn { text-decoration: none; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); cursor: pointer; }
 
-        /* EXTRA */
-        .fab { position: fixed; bottom: 25px; right: 20px; width: 60px; height: 60px; background: linear-gradient(135deg, #000080, #1e3a8a); border-radius: 50%; color: white; font-size: 30px; border: none; z-index: 100; box-shadow: 0 10px 25px rgba(0,0,128,0.4); display: grid; place-items: center; }
-        .fab-qr { position: fixed; bottom: 25px; left: 20px; width: 50px; height: 50px; background: white; border-radius: 50%; color: #000080; font-size: 24px; border: none; box-shadow: 0 5px 15px rgba(0,0,0,0.1); z-index: 100; display:flex; align-items:center; justify-content:center; }
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
-        .modal-content { background: white; width: 90%; max-width: 400px; border-radius: 24px; padding: 25px; max-height: 85vh; overflow-y: auto; position: relative; animation: slideUp 0.3s ease; }
-        .full-btn { width: 100%; padding: 14px; background: #000080; color: white; border: none; border-radius: 12px; font-size: 18px; font-weight: 600; margin-top: 15px; box-shadow: 0 5px 15px rgba(0,0,128,0.2); }
-        .notice-board { background: #fffbeb; border: 1px solid #fcd34d; color: #92400e; padding: 10px 15px; margin: 15px 20px 0 20px; border-radius: 10px; font-size: 14px; display: flex; align-items: center; gap: 10px; }
-        .promo-area { margin: 15px 20px; text-align: center; display: none; }
-        .promo-img { width: 100%; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border: 2px solid white; max-height: 200px; object-fit: cover; }
-        .bday-alert { background: linear-gradient(135deg, #fce7f3, #fbcfe8); padding: 12px; margin: 0 20px 15px 20px; border-radius: 12px; text-align: center; display: none; border: 1px solid #f9a8d4; color: #831843; }
-        .top-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        .top-table th { text-align: left; background: #000080; color: white; padding: 10px; font-size: 13px; }
-        .top-table td { padding: 10px; border-bottom: 1px solid #eee; font-size: 14px; background: #f9fafb; vertical-align: middle; }
-        .act-btn-sm { text-decoration: none; padding: 5px 8px; background: #f1f5f9; border-radius: 6px; margin-right: 5px; color: #334155; font-size: 14px; display: inline-block; }
-        
-        #login-container { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: linear-gradient(-45deg, #87CEEB, #FF8C00, #008000, #87CEEB);
-            background-size: 400% 400%;
-            animation: rcmBgAnim 10s ease infinite;
-            z-index: 5000; display: flex; align-items: center; justify-content: center; padding: 25px; 
-        }
-        @keyframes rcmBgAnim { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+    .fab { position: fixed; bottom: 25px; right: 20px; width: 60px; height: 60px; background: linear-gradient(135deg, #000080, #1e3a8a); border-radius: 50%; color: white; font-size: 30px; border: none; z-index: 100; box-shadow: 0 10px 25px rgba(0,0,128,0.4); display: grid; place-items: center; }
+    .fab-qr { position: fixed; bottom: 25px; left: 20px; width: 50px; height: 50px; background: white; border-radius: 50%; color: #000080; font-size: 24px; border: none; box-shadow: 0 5px 15px rgba(0,0,0,0.1); z-index: 100; display:flex; align-items:center; justify-content:center; }
+    .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+    .modal-content { background: white; width: 90%; max-width: 400px; border-radius: 24px; padding: 25px; max-height: 85vh; overflow-y: auto; position: relative; animation: slideUp 0.3s ease; }
+    .full-btn { width: 100%; padding: 14px; background: #000080; color: white; border: none; border-radius: 12px; font-size: 18px; font-weight: 600; margin-top: 15px; box-shadow: 0 5px 15px rgba(0,0,128,0.2); cursor:pointer; }
+    .notice-board { background: #fffbeb; border: 1px solid #fcd34d; color: #92400e; padding: 10px 15px; margin: 15px 20px 0 20px; border-radius: 10px; font-size: 14px; display: flex; align-items: center; gap: 10px; }
+    .promo-area { margin: 15px 20px; text-align: center; display: none; }
+    .promo-img { width: 100%; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border: 2px solid white; max-height: 200px; object-fit: cover; }
+    .bday-alert { background: linear-gradient(135deg, #fce7f3, #fbcfe8); padding: 12px; margin: 0 20px 15px 20px; border-radius: 12px; text-align: center; display: none; border: 1px solid #f9a8d4; color: #831843; }
+    .top-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    .top-table th { text-align: left; background: #000080; color: white; padding: 10px; font-size: 13px; }
+    .top-table td { padding: 10px; border-bottom: 1px solid #eee; font-size: 14px; background: #f9fafb; vertical-align: middle; }
+    .act-btn-sm { text-decoration: none; padding: 5px 8px; background: #f1f5f9; border-radius: 6px; margin-right: 5px; color: #334155; font-size: 14px; display: inline-block; }
 
-        .login-card { background: white; width: 100%; max-width: 350px; padding: 30px; border-radius: 25px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.3); border: 1px solid #eee; }
-        .lightbox { display: none; position: fixed; inset: 0; z-index: 9999; background: rgba(0,0,0,0.95); align-items: center; justify-content: center; padding: 20px; }
-        .lightbox-img { max-width: 100%; max-height: 80vh; border-radius: 10px; }
-        .close-lightbox { position: absolute; top: 20px; right: 20px; color: white; font-size: 30px; cursor: pointer; }
-        #gpsCanvas { display: none; }
-        #gpsPreview { width: 100%; border-radius: 10px; margin-top: 10px; border: 2px solid #ccc; display: none; }
-        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        .full-screen-content { width: 95%; height: 95%; max-width: none; max-height: 95vh; }
-        .banner-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #eee; }
-        .banner-thumb { width: 50px; height: 30px; object-fit: cover; border-radius: 4px; border: 1px solid #ccc; }
-        .project-tag { font-size: 11px; background: #e0f2fe; color: #0369a1; padding: 2px 6px; border-radius: 4px; font-weight: bold; border: 1px solid #bae6fd; display: inline-block; margin-top: 3px; }
-    </style>
+    #login-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(-45deg, #87CEEB, #FF8C00, #008000, #87CEEB); background-size: 400% 400%; animation: rcmBgAnim 10s ease infinite; z-index: 5000; display: flex; align-items: center; justify-content: center; padding: 25px; }
+    @keyframes rcmBgAnim { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+    .login-card { background: white; width: 100%; max-width: 350px; padding: 30px; border-radius: 25px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.3); border: 1px solid #eee; }
+    .lightbox { display: none; position: fixed; inset: 0; z-index: 9999; background: rgba(0,0,0,0.95); align-items: center; justify-content: center; padding: 20px; }
+    .lightbox-img { max-width: 100%; max-height: 80vh; border-radius: 10px; }
+    .close-lightbox { position: absolute; top: 20px; right: 20px; color: white; font-size: 30px; cursor: pointer; }
+    #gpsCanvas { display: none; }
+    #gpsPreview { width: 100%; border-radius: 10px; margin-top: 10px; border: 2px solid #ccc; display: none; }
+    @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    .full-screen-content { width: 95%; height: 95%; max-width: none; max-height: 95vh; }
+    .banner-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #eee; gap:6px; }
+    .project-tag { font-size: 11px; background: #e0f2fe; color: #0369a1; padding: 2px 6px; border-radius: 4px; font-weight: bold; border: 1px solid #bae6fd; display: inline-block; margin-top: 3px; }
+    .wa-admin-img { width: 74px; height: 74px; border-radius: 10px; object-fit: cover; border: 2px solid #ddd; cursor:pointer; box-shadow:0 3px 8px rgba(0,0,0,.12); }
+    @media(max-width:420px){ .report-actions{grid-template-columns:repeat(5,1fr);gap:5px}.btn-report{font-size:10px;padding:8px 4px}.admin-controls{grid-template-columns:1fr 1fr!important}.admin-controls .wide-admin{grid-column:span 2!important;} }
+</style>
+
 </head>
-<body>
-
-    <div class="lightbox" id="lightbox">
-        <span class="close-lightbox" onclick="closeLightbox()">&times;</span>
-        <img id="lightbox-img" class="lightbox-img" src="">
+<body><div class="lightbox" id="lightbox">
+    <span class="close-lightbox" onclick="closeLightbox()">&times;</span>
+    <img id="lightbox-img" class="lightbox-img" src="">
+</div><div id="login-container">
+    <div class="login-card">
+        <h2 style="color:#000080; margin:0 0 5px 0;">पुन्हा स्वागत आहे!</h2>
+        <p style="color:gray;">RCM अभियान सिस्टम</p>
+        <div id="name-field-container" style="display:none;"><input type="text" id="uName" class="modern-input" placeholder="पूर्ण नाव (Name)"></div>
+        <input type="tel" id="uMobile" class="modern-input" placeholder="📱 मोबाईल नंबर" maxlength="10" style="margin-bottom:10px;">
+        <input type="password" id="uPin" class="modern-input" placeholder="🔒 पिन (PIN)" maxlength="4" style="letter-spacing: 5px;">
+        <button class="full-btn" id="btn-auth-action" onclick="handleAuth()">लॉगिन (Login)</button>
+        <div style="margin-top:20px; color:#000080; cursor:pointer; text-decoration:underline;" onclick="toggleAuthMode()" id="toggle-text">नवीन आहात? अकाउंट बनवा (Register)</div>
     </div>
+</div><div id="app-container">
+    <div class="header"><div id="header-slider" class="header-slider"></div></div><div class="user-info-bar">
+    <div><p style="margin:0; font-size:12px; color:gray;">नमस्कार,</p><h2 class="user-name-styled" id="user-display">User</h2></div>
+    <div style="display: flex; align-items: center; gap: 10px;"><div class="score-pill-styled">🏆 <span id="user-points">0</span></div><button onclick="logout()" class="btn-logout-styled">बाहेर पडा</button></div>
+</div>
 
-    <div id="login-container">
-        <div class="login-card">
-            <h2 style="color:#000080; margin:0 0 5px 0;">पुन्हा स्वागत आहे!</h2>
-            <p style="color:gray;">RCM अभियान सिस्टम</p>
-            <div id="name-field-container" style="display:none;">
-                <input type="text" id="uName" class="modern-input" placeholder="पूर्ण नाव (Name)">
-            </div>
-            <input type="tel" id="uMobile" class="modern-input" placeholder="📱 मोबाईल नंबर" maxlength="10" style="margin-bottom:10px;">
-            <input type="password" id="uPin" class="modern-input" placeholder="🔒 पिन (PIN)" maxlength="4" style="letter-spacing: 5px;">
-            <button class="full-btn" id="btn-auth-action" onclick="handleAuth()">लॉगिन (Login)</button>
-            <div style="margin-top:20px; color:#000080; cursor:pointer; text-decoration:underline;" onclick="toggleAuthMode()" id="toggle-text">नवीन आहात? अकाउंट बनवा (Register)</div>
+<div class="dash-grid">
+    <div class="stat-card card-red"><div class="stat-num" id="d-total">0</div><div class="stat-lbl">📋 लिस्ट</div></div>
+    <div class="stat-card card-green"><div class="stat-num" id="d-joined">0</div><div class="stat-lbl">✅ जॉईन</div></div>
+    <div class="stat-card card-blue"><div class="stat-num" id="d-due">0</div><div class="stat-lbl">🔔 कॉल्स</div></div>
+    <div class="stat-card card-orange"><div class="stat-num" id="d-hot">0</div><div class="stat-lbl">🔥 हॉट</div></div>
+</div>
+
+<div class="notice-board" id="notice-board"><span style="font-size:18px;">📢</span><marquee id="notice-text" scrollamount="4">RCM अभियान सिस्टम मध्ये स्वागत आहे!</marquee></div>
+<div class="promo-area" id="promo-area"><img id="promo-img" class="promo-img" src="" onclick="openLightbox(this.src)"></div>
+<div class="bday-alert" id="bday-alert"><h4 style="margin:0;">🎂 आजचा वाढदिवस</h4><div id="bday-names" style="margin:5px 0; font-weight:bold;"></div></div>
+
+<div class="core-section" style="background:linear-gradient(135deg,#fff7ed,#ffffff);border:1px solid #fed7aa;">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px;">
+        <div>
+            <div style="font-size:12px;color:#9a3412;font-weight:800;letter-spacing:.4px;">PREMIUM REGISTRATION DESK</div>
+            <h3 style="margin:2px 0 0 0;color:#000080;font-size:20px;line-height:1.15;">👩‍🎓 Women’s Academy 2026</h3>
+            <p style="margin:2px 0 0 0;color:#64748b;font-size:12px;font-weight:700;">Registration tracking • Upload proof • Team leaderboard</p>
+        </div>
+        <button onclick="openAbhiyanModal()" style="border:none;background:linear-gradient(135deg,#16a34a,#15803d);color:white;padding:10px 12px;border-radius:14px;font-weight:800;box-shadow:0 8px 18px rgba(22,163,74,.25);">+ Register</button>
+    </div>
+    <div class="dash-grid" style="padding:0;margin:0 0 12px 0;">
+        <div class="stat-card card-green"><div class="stat-num" id="wa-total">0</div><div class="stat-lbl">👩‍🎓 Total Registration</div></div>
+        <div class="stat-card card-orange"><div class="stat-num" id="wa-today">0</div><div class="stat-lbl">📅 आजचे Registration</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:14px;padding:10px;text-align:center;">
+            <div id="wa-my-count" style="font-family:Inter,sans-serif;font-size:22px;font-weight:900;color:#000080;">0</div>
+            <div style="font-size:12px;font-weight:800;color:#64748b;">माझे Uploads</div>
+        </div>
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:14px;padding:10px;text-align:center;">
+            <div id="wa-team-count" style="font-family:Inter,sans-serif;font-size:22px;font-weight:900;color:#16a34a;">0</div>
+            <div style="font-size:12px;font-weight:800;color:#64748b;">Active Users</div>
         </div>
     </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+        <h4 style="margin:0;color:#000080;">🏆 Women’s Academy Leaderboard</h4>
+        <button onclick="openAbhiyanAdminModal()" style="border:1px solid #bfdbfe;background:#eff6ff;color:#1d4ed8;border-radius:10px;padding:6px 9px;font-size:12px;font-weight:800;">Report</button>
+    </div>
+    <table class="top-table">
+        <thead><tr><th>#</th><th>नाव</th><th>Uploads</th></tr></thead>
+        <tbody id="wa-leaderboard"></tbody>
+    </table>
+</div>
 
-    <div id="app-container">
-        <div class="header">
-            <div id="header-slider" class="header-slider"></div>
-        </div>
+<div class="abhiyan-card" onclick="openAbhiyanModal()">
+    <div style="display:flex; align-items:center; gap:15px;">
+        <div class="abhiyan-icon">👩‍🎓</div>
+        <div class="abhiyan-info"><h3>Women’s Academy Registration</h3><p>Registration फोटो / डिटेल्स अपलोड करा</p></div>
+    </div>
+    <div class="abhiyan-arrow">➔</div>
+</div>
 
-        <div class="user-info-bar">
-            <div>
-                <p style="margin:0; font-size:12px; color:gray;">नमस्कार,</p>
-                <h2 class="user-name-styled" id="user-display">User</h2>
-            </div>
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <div class="score-pill-styled">🏆 <span id="user-points">0</span></div>
-                <button onclick="logout()" class="btn-logout-styled">बाहेर पडा</button>
-            </div>
-        </div>
+<div class="core-section">
+    <h4 style="margin:0 0 10px 0; color:#000080;">📝 आजचे काम (Daily Core)</h4>
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+        <label class="chk-item"><input type="checkbox" onclick="saveCore(this)" id="core1"> <span>5 कॉल्स</span></label>
+        <label class="chk-item"><input type="checkbox" onclick="saveCore(this)" id="core2"> <span>1 प्लान</span></label>
+        <label class="chk-item"><input type="checkbox" onclick="saveCore(this)" id="core3"> <span>वाचन</span></label>
+        <label class="chk-item"><input type="checkbox" onclick="saveCore(this)" id="core4"> <span>व्हिडिओ</span></label>
+    </div>
+</div>
 
-        <div class="dash-grid">
-            <div class="stat-card card-red"><div class="stat-num" id="d-total">0</div><div class="stat-lbl">📋 लिस्ट</div></div>
-            <div class="stat-card card-green"><div class="stat-num" id="d-joined">0</div><div class="stat-lbl">✅ जॉईन</div></div>
-            <div class="stat-card card-blue"><div class="stat-num" id="d-due">0</div><div class="stat-lbl">🔔 कॉल्स</div></div>
-            <div class="stat-card card-orange"><div class="stat-num" id="d-hot">0</div><div class="stat-lbl">🔥 हॉट</div></div>
-        </div>
+<div class="controls">
+    <input type="text" class="modern-input" id="search" placeholder="🔍 नाव शोधा..." oninput="renderList()">
+    <select class="modern-input" id="cityFilter" onchange="renderList()"><option value="All">📍 सर्व शहरे</option></select>
+    <select class="modern-input" id="projectFilter" onchange="renderList()">
+        <option value="All">📂 सर्व प्रोजेक्ट (All Projects)</option>
+        <option value="Arogya">आरोग्य (Arogya)</option>
+        <option value="World Health Day Camp Parli Vaijnath">जागतिक आरोग्य दिन शिबिर परळी वैजनाथ</option>
+        <option value="Jal Sanchay">जल संचय (Jal Sanchay)</option>
+        <option value="Anemia">अनेमिया (Anemia)</option>
+        <option value="Blood Check">ब्लड चेक (Blood Check)</option>
+        <option value="Network">नेटवर्क (Network)</option>
+    </select>
+    <select id="teamFilter" class="modern-input" style="display:none;" onchange="renderList()"><option value="All">👥 सर्व टीम (All Team)</option></select>
+</div>
 
-        <div class="notice-board" id="notice-board">
-            <span style="font-size:18px;">📢</span><marquee id="notice-text" scrollamount="4">RCM अभियान सिस्टम मध्ये स्वागत आहे!</marquee>
-        </div>
-        <div class="promo-area" id="promo-area">
-            <img id="promo-img" class="promo-img" src="" onclick="openLightbox(this.src)">
-        </div>
-        <div class="bday-alert" id="bday-alert">
-            <h4 style="margin:0;">🎂 आजचा वाढदिवस</h4><div id="bday-names" style="margin:5px 0; font-weight:bold;"></div>
-        </div>
+<div id="admin-panel" class="admin-controls" style="grid-template-columns: 1fr 1fr 1fr 1fr;">
+    <button class="btn-admin" onclick="openNoticeModal()">📢 नोटीस</button>
+    <button class="btn-admin" onclick="openImageModal()">🖼️ फोटो</button>
+    <button class="btn-admin" style="background:#dcfce7; color:#15803d;" onclick="openAbhiyanAdminModal()">👩‍🎓 WA Report</button>
+    <button class="btn-admin" style="background:#e0f2fe; color:#0284c7;" onclick="openBannerModal()">🎞️ बॅनर</button>
+    <button class="btn-admin wide-admin" style="background:#fee2e2; color:red; grid-column: span 4;" onclick="clearAllPoints()">⚠️ Clear Points</button>
+</div>
 
-        <div class="abhiyan-card" onclick="openAbhiyanModal()">
-            <div style="display:flex; align-items:center; gap:15px;">
-                <div class="abhiyan-icon">📸</div>
-                <div class="abhiyan-info">
-                    <h3>अभियान प्रचार</h3>
-                    <p>GPS फोटो अपलोड करा</p>
-                </div>
-            </div>
-            <div class="abhiyan-arrow">➔</div>
-        </div>
+<div class="report-actions">
+    <button class="btn-report btn-gold" onclick="openTopperModal()">🏆<br>टॉपर्स</button>
+    <button class="btn-report btn-excel" onclick="exportToExcel()">📊<br>एक्सेल</button>
+    <button class="btn-report btn-pdf" onclick="exportToPDF()">📄<br>PDF</button>
+    <button class="btn-report btn-ai" onclick="generateAIReport()">🤖<br>सल्ला</button>
+    <button class="btn-report btn-gold" onclick="openPosterGenerator()">🎨<br>पोस्टर</button>
+</div>
 
-        <div class="core-section">
-            <h4 style="margin:0 0 10px 0; color:#000080;">📝 आजचे काम (Daily Core)</h4>
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
-                <label class="chk-item"><input type="checkbox" onclick="saveCore(this)" id="core1"> <span>5 कॉल्स</span></label>
-                <label class="chk-item"><input type="checkbox" onclick="saveCore(this)" id="core2"> <span>1 प्लान</span></label>
-                <label class="chk-item"><input type="checkbox" onclick="saveCore(this)" id="core3"> <span>वाचन</span></label>
-                <label class="chk-item"><input type="checkbox" onclick="saveCore(this)" id="core4"> <span>व्हिडिओ</span></label>
-            </div>
-        </div>
+<div id="list" class="card-list"></div>
+<button class="fab" onclick="openModal()">+</button>
+<button class="fab-qr" onclick="openQR()">🆔</button>
 
-        <div class="controls">
-            <input type="text" class="modern-input" id="search" placeholder="🔍 नाव शोधा..." oninput="renderList()">
-            <select class="modern-input" id="cityFilter" onchange="renderList()"><option value="All">📍 सर्व शहरे</option></select>
-            <select class="modern-input" id="projectFilter" onchange="renderList()">
-                <option value="All">📂 सर्व प्रोजेक्ट (All Projects)</option>
+</div><div class="modal" id="entryModal">
+    <div class="modal-content">
+        <span style="float:right;font-size:24px;cursor:pointer;" onclick="closeModal()">&times;</span>
+        <h3 style="margin-top:0;color:#000080;">प्रॉस्पेक्ट डिटेल्स</h3>
+        <input type="hidden" id="docId">
+        <div style="display:grid;gap:10px;">
+            <div style="display:flex;gap:8px;"><input type="text" class="modern-input" id="pName" placeholder="पूर्ण नाव" style="flex-grow:1;"><button type="button" onclick="pickContact()" style="background:#e0e7ff;border:1px solid #c7d2fe;border-radius:10px;width:45px;">📒</button></div>
+            <input type="number" class="modern-input" id="pMobile" placeholder="मोबाईल नंबर">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;"><input type="text" class="modern-input" id="pCity" placeholder="शहर / गाव"><input type="text" class="modern-input" id="pOccupation" placeholder="व्यवसाय"></div>
+            <label style="font-size:12px;margin-bottom:-5px;color:gray;">जन्मतारीख</label><input type="date" class="modern-input" id="pDob">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;"><select class="modern-input" id="pCategory"><option value="Cold">Cold ❄️</option><option value="Warm">Warm 🌤️</option><option value="Hot">Hot 🔥</option></select><select class="modern-input" id="pStatus"><option value="New">नवीन</option><option value="Follow Up">फॉलो अप</option><option value="Joined">जॉईन ✅</option></select></div>
+            <label style="font-size:12px;margin-bottom:-5px;color:gray;">पुढची तारीख (Next Date)</label><input type="date" class="modern-input" id="pNextDate">
+            <select class="modern-input" id="pProduct">
+                <option value="">-- प्रोजेक्ट निवडा (Project) --</option>
                 <option value="Arogya">आरोग्य (Arogya)</option>
                 <option value="World Health Day Camp Parli Vaijnath">जागतिक आरोग्य दिन शिबिर परळी वैजनाथ</option>
                 <option value="Jal Sanchay">जल संचय (Jal Sanchay)</option>
@@ -244,231 +244,268 @@
                 <option value="Blood Check">ब्लड चेक (Blood Check)</option>
                 <option value="Network">नेटवर्क (Network)</option>
             </select>
-            <select id="teamFilter" class="modern-input" style="display:none;" onchange="renderList()"><option value="All">👥 सर्व टीम (All Team)</option></select>
+            <input type="text" class="modern-input" id="pInterests" placeholder="टीप (Note)">
         </div>
-
-        <div id="admin-panel" class="admin-controls" style="grid-template-columns: 1fr 1fr 1fr 1fr;">
-            <button class="btn-admin" onclick="openNoticeModal()">📢 नोटीस</button>
-            <button class="btn-admin" onclick="openImageModal()">🖼️ फोटो</button>
-            <button class="btn-admin" style="background:#dcfce7; color:#15803d;" onclick="openAbhiyanAdminModal()">📸 रिपोर्ट</button>
-            <button class="btn-admin" style="background:#e0f2fe; color:#0284c7;" onclick="openBannerModal()">🎞️ बॅनर</button>
-            <button class="btn-admin" style="background:#fee2e2; color:red; grid-column: span 4;" onclick="clearAllPoints()">⚠️ Clear Points</button>
-        </div>
-
-        <div class="report-actions">
-            <button class="btn-report btn-gold" onclick="openTopperModal()">🏆<br>टॉपर्स</button>
-            <button class="btn-report btn-excel" onclick="exportToExcel()">📊<br>एक्सेल</button>
-            <button class="btn-report btn-pdf" onclick="exportToPDF()">📄<br>PDF</button>
-            <button class="btn-report btn-ai" onclick="generateAIReport()">🤖<br>सल्ला
-<button class="btn-report btn-gold" onclick="openPosterGenerator()">🎨<br>पोस्टर</button>
-</button>
-            
-        </div>
-
-        <div id="list" class="card-list"></div>
-        <button class="fab" onclick="openModal()">+</button>
-        <button class="fab-qr" onclick="openQR()">🆔</button>
+        <button class="full-btn" id="saveBtn" onclick="saveData()">सेव्ह करा (+2 Pts)</button>
     </div>
-
-    <div class="modal" id="entryModal">
-        <div class="modal-content">
-            <span style="float:right;font-size:24px;cursor:pointer;" onclick="closeModal()">&times;</span>
-            <h3 style="margin-top:0;color:#000080;">प्रॉस्पेक्ट डिटेल्स</h3>
-            <input type="hidden" id="docId">
-            <div style="display:grid;gap:10px;">
-                <div style="display:flex;gap:8px;"><input type="text" class="modern-input" id="pName" placeholder="पूर्ण नाव" style="flex-grow:1;"><button type="button" onclick="pickContact()" style="background:#e0e7ff;border:1px solid #c7d2fe;border-radius:10px;width:45px;">📒</button></div>
-                <input type="number" class="modern-input" id="pMobile" placeholder="मोबाईल नंबर">
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;"><input type="text" class="modern-input" id="pCity" placeholder="शहर / गाव"><input type="text" class="modern-input" id="pOccupation" placeholder="व्यवसाय"></div>
-                <label style="font-size:12px;margin-bottom:-5px;color:gray;">जन्मतारीख</label><input type="date" class="modern-input" id="pDob">
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;"><select class="modern-input" id="pCategory"><option value="Cold">Cold ❄️</option><option value="Warm">Warm 🌤️</option><option value="Hot">Hot 🔥</option></select><select class="modern-input" id="pStatus"><option value="New">नवीन</option><option value="Follow Up">फॉलो अप</option><option value="Joined">जॉईन ✅</option></select></div>
-                <label style="font-size:12px;margin-bottom:-5px;color:gray;">पुढची तारीख (Next Date)</label><input type="date" class="modern-input" id="pNextDate">
-                <select class="modern-input" id="pProduct">
-                    <option value="">-- प्रोजेक्ट निवडा (Project) --</option>
-                    <option value="Arogya">आरोग्य (Arogya)</option>
-                    <option value="World Health Day Camp Parli Vaijnath">जागतिक आरोग्य दिन शिबिर परळी वैजनाथ</option>
-                    <option value="Jal Sanchay">जल संचय (Jal Sanchay)</option>
-                    <option value="Anemia">अनेमिया (Anemia)</option>
-                    <option value="Blood Check">ब्लड चेक (Blood Check)</option>
-                    <option value="Network">नेटवर्क (Network)</option>
-                </select>
-                <input type="text" class="modern-input" id="pInterests" placeholder="टीप (Note)">
+</div><div class="modal" id="bannerModal"><div class="modal-content"><span style="float:right;cursor:pointer;" onclick="document.getElementById('bannerModal').style.display='none'">&times;</span><h3 style="margin-top:0;">🎞️ बॅनर स्लाइडर सेट करा</h3><div class="banner-row"><span>Banner 1:</span><input type="file" id="ban1" style="width:180px;font-size:12px;"><button onclick="uploadBanner(1)" class="bday-btn">Upload</button><button onclick="deleteBanner(1)" style="color:red;border:none;">🗑️</button></div><div class="banner-row"><span>Banner 2:</span><input type="file" id="ban2" style="width:180px;font-size:12px;"><button onclick="uploadBanner(2)" class="bday-btn">Upload</button><button onclick="deleteBanner(2)" style="color:red;border:none;">🗑️</button></div><div class="banner-row"><span>Banner 3:</span><input type="file" id="ban3" style="width:180px;font-size:12px;"><button onclick="uploadBanner(3)" class="bday-btn">Upload</button><button onclick="deleteBanner(3)" style="color:red;border:none;">🗑️</button></div><p style="font-size:12px;color:gray;">(Max 3 images)</p></div></div><div class="modal" id="abhiyanModal">
+    <div class="modal-content">
+        <span style="float:right;font-size:24px;cursor:pointer;" onclick="document.getElementById('abhiyanModal').style.display='none'">&times;</span>
+        <div style="text-align:center;margin-bottom:14px;">
+            <div style="width:58px;height:58px;margin:0 auto 8px auto;border-radius:20px;background:linear-gradient(135deg,#16a34a,#f97316);display:grid;place-items:center;color:white;font-size:30px;box-shadow:0 10px 25px rgba(22,163,74,.25);">👩‍🎓</div>
+            <h3 style="margin:0;color:#000080;line-height:1.15;">Women’s Academy Registration</h3>
+            <p style="margin:4px 0 0 0;color:#64748b;font-size:13px;font-weight:700;">Participant details + clear proof photo</p>
+        </div>
+        <div style="display:grid;gap:10px;">
+            <input type="text" class="modern-input" id="abName" placeholder="Participant / महिलेचे पूर्ण नाव">
+            <input type="tel" class="modern-input" id="abMobile" placeholder="मोबाईल नंबर" maxlength="10">
+            <input type="text" class="modern-input" id="abProposer" placeholder="Registration By" readonly>
+            <div class="upload-box" onclick="document.getElementById('abPhotoInput').click()" style="background:linear-gradient(135deg,#f8fafc,#fff7ed);border-color:#fdba74;">
+                <span class="upload-icon-large">📷</span>
+                <span class="upload-text">Clear Registration / उपस्थिती फोटो अपलोड करा</span>
+                <div style="font-size:11px;color:#94a3b8;margin-top:4px;font-weight:700;">GPS + Date stamp automatic add होईल</div>
+                <input type="file" id="abPhotoInput" accept="image/*" capture="environment" style="display:none;" onchange="drawGPSImage()">
             </div>
-            <button class="full-btn" id="saveBtn" onclick="saveData()">सेव्ह करा (+2 Pts)</button>
+            <canvas id="gpsCanvas"></canvas>
+            <img id="gpsPreview" alt="Preview">
         </div>
+        <button class="full-btn" style="background:linear-gradient(135deg,#16a34a,#15803d); margin-top:15px;" onclick="submitAbhiyan()">Registration Save करा (+5 Pts)</button>
     </div>
-
-    <div class="modal" id="bannerModal"><div class="modal-content"><span style="float:right;cursor:pointer;" onclick="document.getElementById('bannerModal').style.display='none'">&times;</span><h3 style="margin-top:0;">🎞️ बॅनर स्लाइडर सेट करा</h3><div class="banner-row"><span>Banner 1:</span><input type="file" id="ban1" style="width:180px;font-size:12px;"><button onclick="uploadBanner(1)" class="bday-btn">Upload</button><button onclick="deleteBanner(1)" style="color:red;border:none;">🗑️</button></div><div class="banner-row"><span>Banner 2:</span><input type="file" id="ban2" style="width:180px;font-size:12px;"><button onclick="uploadBanner(2)" class="bday-btn">Upload</button><button onclick="deleteBanner(2)" style="color:red;border:none;">🗑️</button></div><div class="banner-row"><span>Banner 3:</span><input type="file" id="ban3" style="width:180px;font-size:12px;"><button onclick="uploadBanner(3)" class="bday-btn">Upload</button><button onclick="deleteBanner(3)" style="color:red;border:none;">🗑️</button></div><p style="font-size:12px;color:gray;">(Max 3 images)</p></div></div>
-    
-    <div class="modal" id="abhiyanModal">
-        <div class="modal-content">
-            <span style="float:right;font-size:24px;cursor:pointer;" onclick="document.getElementById('abhiyanModal').style.display='none'">&times;</span>
-            <h3 style="margin-top:0;color:#16a34a;">📢 अभियान फोटो अपलोड</h3>
-            <div style="display:grid;gap:10px;">
-                <input type="text" class="modern-input" id="abName" placeholder="प्रॉस्पेक्टचे नाव (Name)">
-                <input type="tel" class="modern-input" id="abMobile" placeholder="मोबाईल नंबर (Mobile)" maxlength="10">
-                <input type="text" class="modern-input" id="abProposer" placeholder="प्रपोजर" readonly>
-                <div class="upload-box" onclick="document.getElementById('abPhotoInput').click()">
-                    <span class="upload-icon-large">📷</span>
-                    <span class="upload-text">येथे क्लिक करून फोटो काढा</span>
-                    <input type="file" id="abPhotoInput" accept="image/*" capture="environment" style="display:none;" onchange="drawGPSImage()">
-                </div>
-                <canvas id="gpsCanvas"></canvas>
-                <img id="gpsPreview" alt="Preview">
-            </div>
-            <button class="full-btn" style="background:#16a34a; margin-top:15px;" onclick="submitAbhiyan()">सबमिट करा (+5 Pts)</button>
+</div><div class="modal" id="abhiyanAdminModal">
+    <div class="modal-content full-screen-content">
+        <span style="float:right;font-size:24px;cursor:pointer;" onclick="document.getElementById('abhiyanAdminModal').style.display='none'">&times;</span>
+        <h3 style="margin-top:0;">📊 Women’s Academy Registration Report</h3>
+        <div style="flex-grow:1;overflow-y:auto;margin-bottom:10px;">
+            <table class="top-table">
+                <thead><tr><th>Participant</th><th>Registered By</th><th>Clear Image</th></tr></thead>
+                <tbody id="abhiyan-list-body"></tbody>
+            </table>
         </div>
+        <button class="full-btn" style="background:#FF9933;" onclick="downloadAbhiyanPDF()">📄 PDF डाउनलोड करा (with Photos)</button>
     </div>
+</div><div class="modal" id="noticeModal"><div class="modal-content"><h3>महत्वाची सूचना</h3><textarea id="noticeInput" class="modern-input" rows="3"></textarea><button class="full-btn" onclick="saveNotice()">पोस्ट करा</button><button class="full-btn" style="background:gray;margin-top:5px;" onclick="document.getElementById('noticeModal').style.display='none'">बंद करा</button></div></div>
+<div class="modal" id="imageModal"><div class="modal-content"><h3>इमेज सेटिंग</h3><input type="file" id="imgInput" accept="image/*" class="modern-input"><div style="margin:10px 0;"><label><input type="radio" name="imgDisplay" value="embedded" checked> नेहमी दाखवा</label> <label><input type="radio" name="imgDisplay" value="popup"> पॉप-अप</label></div><button class="full-btn" onclick="processImage()">अपलोड</button><button class="full-btn" style="background:#ef4444;margin-top:5px;" onclick="deleteImage()">डिलीट</button><button class="full-btn" style="background:gray;margin-top:5px;" onclick="document.getElementById('imageModal').style.display='none'">बंद करा</button></div></div>
+<div class="modal" id="topperModal"><div class="modal-content"><span style="float:right;cursor:pointer;" onclick="document.getElementById('topperModal').style.display='none'">&times;</span><h3 style="margin-top:0;color:#d4af37;">🏆 टॉपर्स लिस्ट</h3><div style="max-height:300px;overflow-y:auto;"><table class="top-table"><thead><tr><th>#</th><th>नाव</th><th>Pts</th><th>गिफ्ट</th></tr></thead><tbody id="topper-list"></tbody></table></div><button class="full-btn" style="margin-top:10px;background:#FF9933;" onclick="downloadTopperPDF()">📄 PDF रिपोर्ट</button></div></div><div class="modal" id="posterGeneratorModal"><div class="modal-content full-screen-content"><span style="float:right;font-size:28px;cursor:pointer;" onclick="document.getElementById('posterGeneratorModal').style.display='none'">&times;</span><iframe src="poster-maker.html" style="width:100%;height:92vh;border:0;border-radius:16px;"></iframe></div></div><div class="modal" id="qrModal"><div class="modal-content" style="background:transparent; box-shadow:none; border:none; display:flex; flex-direction:column; align-items:center;"><div class="qr-frame"><div id="qrcode" class="qr-inner"></div></div><button class="full-btn" onclick="document.getElementById('qrModal').style.display='none'" style="margin-top:20px; width:200px; background:white; color:#000080;">बंद करा (Close)</button></div></div><script>
+const ADMIN_MOBILE = "7020970727";
+const SECRET_SUFFIX = "@rcm.com";
+const PIN_SALT = "rcm2026";
 
-    <div class="modal" id="abhiyanAdminModal"><div class="modal-content full-screen-content"><span style="float:right;font-size:24px;cursor:pointer;" onclick="document.getElementById('abhiyanAdminModal').style.display='none'">&times;</span><h3 style="margin-top:0;">📊 अभियान रिपोर्ट (Full)</h3><div style="flex-grow:1;overflow-y:auto;margin-bottom:10px;"><table class="top-table"><thead><tr><th>नाव/फोन</th><th>By</th><th>Pic</th></tr></thead><tbody id="abhiyan-list-body"></tbody></table></div><button class="full-btn" style="background:#FF9933;" onclick="downloadAbhiyanPDF()">📄 PDF डाउनलोड करा (with Photos)</button></div></div>
-    <div class="modal" id="noticeModal"><div class="modal-content"><h3>महत्वाची सूचना</h3><textarea id="noticeInput" class="modern-input" rows="3"></textarea><button class="full-btn" onclick="saveNotice()">पोस्ट करा</button><button class="full-btn" style="background:gray;margin-top:5px;" onclick="document.getElementById('noticeModal').style.display='none'">बंद करा</button></div></div>
-    <div class="modal" id="imageModal"><div class="modal-content"><h3>इमेज सेटिंग</h3><input type="file" id="imgInput" accept="image/*" class="modern-input"><div style="margin:10px 0;"><label><input type="radio" name="imgDisplay" value="embedded" checked> नेहमी दाखवा</label> <label><input type="radio" name="imgDisplay" value="popup"> पॉप-अप</label></div><button class="full-btn" onclick="processImage()">अपलोड</button><button class="full-btn" style="background:#ef4444;margin-top:5px;" onclick="deleteImage()">डिलीट</button><button class="full-btn" style="background:gray;margin-top:5px;" onclick="document.getElementById('imageModal').style.display='none'">बंद करा</button></div></div>
-    <div class="modal" id="topperModal"><div class="modal-content"><span style="float:right;cursor:pointer;" onclick="document.getElementById('topperModal').style.display='none'">&times;</span><h3 style="margin-top:0;color:#d4af37;">🏆 टॉपर्स लिस्ट</h3><div style="max-height:300px;overflow-y:auto;"><table class="top-table"><thead><tr><th>#</th><th>नाव</th><th>Pts</th><th>गिफ्ट</th></tr></thead><tbody id="topper-list"></tbody></table></div><button class="full-btn" style="margin-top:10px;background:#FF9933;" onclick="downloadTopperPDF()">📄 PDF रिपोर्ट</button></div></div>
-    
-    <div class="modal" id="qrModal">
-      <div class="modal" id="posterGeneratorModal">
-  <div class="modal-content full-screen-content">
-    
-    <span style="float:right;font-size:28px;cursor:pointer;"
-      onclick="document.getElementById('posterGeneratorModal').style.display='none'">
-      &times;
-    </span>
+const firebaseConfig = {
+  apiKey: "AIzaSyB-AA1oAWceBEr6NCDbXATdpKdO8ks7jks",
+  authDomain: "list-b182e.firebaseapp.com",
+  projectId: "list-b182e",
+  storageBucket: "list-b182e.firebasestorage.app",
+  messagingSenderId: "996772285132",
+  appId: "1:996772285132:web:cad03cafda172833f59069"
+};
 
-    <iframe 
-      src="poster-maker.html"
-      style="width:100%;height:92vh;border:0;border-radius:16px;">
-    </iframe>
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const auth = firebase.auth();
+const colProspects = "rcm_prospects";
+const colCampaign = "rcm_campaign";
+const colNotice = "rcm_notices";
+const colLogins = "rcm_daily_logins";
+const colBanners = "rcm_banners";
 
-  </div>
-</div>
-        <div class="modal-content" style="background:transparent; box-shadow:none; border:none; display:flex; flex-direction:column; align-items:center;">
-            <div class="qr-frame"><div id="qrcode" class="qr-inner"></div></div>
-            <button class="full-btn" onclick="document.getElementById('qrModal').style.display='none'" style="margin-top:20px; width:200px; background:white; color:#000080;">बंद करा (Close)</button>
-        </div>
-    </div>
+let prospectsData = [];
+let campaignData = [];
+let loginData = [];
+let currentUser = null;
+let isAdmin = false;
+let isRegisterMode = false;
+let processedCampaignImage = null;
+let bannerImages = [];
+let currentSlide = 0;
 
-<script>
-    const ADMIN_MOBILE = "7020970727";
-    const SECRET_SUFFIX = "@rcm.com";
-    const PIN_SALT = "rcm2026";
-    
-    const firebaseConfig = {
-      apiKey: "AIzaSyB-AA1oAWceBEr6NCDbXATdpKdO8ks7jks",
-      authDomain: "list-b182e.firebaseapp.com",
-      projectId: "list-b182e",
-      storageBucket: "list-b182e.firebasestorage.app",
-      messagingSenderId: "996772285132",
-      appId: "1:996772285132:web:cad03cafda172833f59069"
-    };
+function openPosterGenerator(){ document.getElementById('posterGeneratorModal').style.display = 'flex'; }
 
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-    const auth = firebase.auth();
-    const colProspects = "rcm_prospects"; 
-    const colCampaign = "rcm_campaign";
-    const colNotice = "rcm_notices";
-    const colLogins = "rcm_daily_logins";
-    const colBanners = "rcm_banners";
+auth.onAuthStateChanged((user) => {
+    if (user) {
+        currentUser = user;
+        let mobile = user.email.split('@')[0];
+        isAdmin = (mobile.trim() === ADMIN_MOBILE);
+        document.getElementById('login-container').style.display = 'none';
+        document.getElementById('app-container').style.display = 'block';
+        document.getElementById('user-display').innerText = user.displayName || mobile;
+        if(isAdmin) { document.getElementById('teamFilter').style.display='block'; document.getElementById('admin-panel').style.display='grid'; }
+        else { document.getElementById('teamFilter').style.display='none'; document.getElementById('admin-panel').style.display='none'; }
+        checkLoginPoint(); loadCore(); loadData(); loadNotice(); loadLogins(); loadBanners();
+    } else {
+        currentUser = null;
+        document.getElementById('login-container').style.display = 'flex';
+        document.getElementById('app-container').style.display = 'none';
+    }
+});
 
-    let prospectsData = []; let campaignData = []; let loginData = []; let currentUser = null; let isAdmin = false; let isRegisterMode = false; let processedCampaignImage = null;
-    let bannerImages = []; let currentSlide = 0;
-    function openPosterGenerator(){
-  document.getElementById('posterGeneratorModal').style.display = 'flex';
-}
+function loadBanners() { db.collection(colBanners).onSnapshot(s => { bannerImages=[]; s.forEach(d => { if(d.data().image) bannerImages.push(d.data().image); }); renderSlider(); }); }
+function renderSlider() { const c=document.getElementById('header-slider'); if(!bannerImages.length){c.innerHTML='';return;} let h=''; bannerImages.forEach((m,i)=>h+=`<img src="${m}" class="slide-img ${i===0?'active':''}" id="slide-${i}">`); c.innerHTML=h; currentSlide=0; if(window.sliderInterval) clearInterval(window.sliderInterval); if(bannerImages.length>1) window.sliderInterval=setInterval(nextSlide,4000); }
+function nextSlide() { const old=document.getElementById(`slide-${currentSlide}`); if(old) old.classList.remove('active'); currentSlide=(currentSlide+1)%bannerImages.length; const nw=document.getElementById(`slide-${currentSlide}`); if(nw) nw.classList.add('active'); }
+function openBannerModal(){document.getElementById('bannerModal').style.display='flex'}
+function uploadBanner(i){ const f=document.getElementById(`ban${i}`).files[0]; if(!f)return alert("File Select"); const r=new FileReader(); r.onload=e=>{ const im=new Image(); im.src=e.target.result; im.onload=()=>{ const c=document.createElement('canvas'), x=c.getContext('2d'), mw=800, s=mw/im.width; c.width=mw; c.height=im.height*s; x.drawImage(im,0,0,c.width,c.height); db.collection(colBanners).doc(`slide_${i}`).set({image:c.toDataURL('image/jpeg',0.7)}).then(()=>alert("Uploaded!")); } }; r.readAsDataURL(f); }
+function deleteBanner(i){if(confirm("Delete?"))db.collection(colBanners).doc(`slide_${i}`).delete().then(()=>alert("Deleted"))}
 
-    auth.onAuthStateChanged((user) => {
-        if (user) {
-            currentUser = user;
-            let mobile = user.email.split('@')[0];
-            isAdmin = (mobile.trim() === ADMIN_MOBILE);
-            document.getElementById('login-container').style.display = 'none';
-            document.getElementById('app-container').style.display = 'block';
-            document.getElementById('user-display').innerText = user.displayName || mobile;
-            if(isAdmin) { document.getElementById('teamFilter').style.display='block'; document.getElementById('admin-panel').style.display='grid'; } 
-            else { document.getElementById('teamFilter').style.display='none'; document.getElementById('admin-panel').style.display='none'; }
-            
-            checkLoginPoint();
-            loadCore(); loadData(); loadNotice(); loadLogins(); loadBanners();
-        } else {
-            currentUser = null; document.getElementById('login-container').style.display = 'flex'; document.getElementById('app-container').style.display = 'none';
-        }
+function loadNotice() { db.collection(colNotice).doc('main_notice').onSnapshot(doc => { if(doc.exists) { const d = doc.data(); document.getElementById('notice-text').innerText = d.text || ""; if (d.image) { if (d.displayType === 'popup') { document.getElementById('promo-area').style.display='none'; openLightbox(d.image); } else { document.getElementById('promo-area').style.display='block'; document.getElementById('promo-img').src=d.image; closeLightbox(); } } else { document.getElementById('promo-area').style.display='none'; } } }); }
+function checkLoginPoint() { const t=new Date().toISOString().split('T')[0], id=currentUser.uid+"_"+t; db.collection(colLogins).doc(id).get().then(d=>{if(!d.exists)db.collection(colLogins).doc(id).set({uid:currentUser.uid,name:currentUser.displayName,date:t})}); }
+function loadLogins(){db.collection(colLogins).onSnapshot(s=>{loginData=[];s.forEach(d=>loginData.push(d.data()));calculateMyPoints()})}
+function toggleAuthMode(){isRegisterMode=!isRegisterMode;document.getElementById('name-field-container').style.display=isRegisterMode?'block':'none';document.getElementById('btn-auth-action').innerText=isRegisterMode?'Register':'Login';document.getElementById('toggle-text').innerText=isRegisterMode?'Login':'Create Account'}
+function handleAuth(){ const btn=document.getElementById('btn-auth-action'), n=document.getElementById('uName').value, m=document.getElementById('uMobile').value, p=document.getElementById('uPin').value; if(m.length!==10||p.length!==4)return alert("Check Number/PIN"); btn.innerText="Wait..."; btn.disabled=true; const em=m+SECRET_SUFFIX, pw=p+PIN_SALT; if(isRegisterMode){ if(!n){btn.innerText="Register";btn.disabled=false;return alert("Enter Name");} auth.createUserWithEmailAndPassword(em,pw).then(c=>c.user.updateProfile({displayName:n})).catch(e=>{alert(e.message);btn.innerText="Register";btn.disabled=false}); }else{ auth.signInWithEmailAndPassword(em,pw).catch(e=>{alert(e.message);btn.innerText="Login";btn.disabled=false}); } }
+function logout(){auth.signOut()}
+
+function loadData(){ db.collection(colProspects).orderBy("updatedAt","desc").onSnapshot(s=>{ prospectsData=[]; s.forEach(d=>{ let da=d.data(); da.id=d.id; if(isAdmin){ prospectsData.push(da); } else if(da.addedBy===currentUser.uid) { prospectsData.push(da); } }); if(isAdmin) populateTeamFilter(); loadCampaign(); }); }
+function loadCampaign(){ db.collection(colCampaign).orderBy("timestamp","desc").onSnapshot(s=>{ campaignData=[]; s.forEach(d=>{ let c=d.data(); c.id=d.id; if(isAdmin || c.uid===currentUser.uid) campaignData.push(c); }); calculateMyPoints(); updateWomenAcademyDashboard(); checkBirthdays(); populateCities(); renderList(); }); }
+
+function updateWomenAcademyDashboard(){
+    const totalEl = document.getElementById('wa-total');
+    const todayEl = document.getElementById('wa-today');
+    const boardEl = document.getElementById('wa-leaderboard');
+    const myEl = document.getElementById('wa-my-count');
+    const activeEl = document.getElementById('wa-team-count');
+    if(!totalEl || !todayEl || !boardEl) return;
+
+    const today = new Date().toISOString().split('T')[0];
+    totalEl.innerText = campaignData.length;
+    todayEl.innerText = campaignData.filter(c => c.timestamp && c.timestamp.split('T')[0] === today).length;
+
+    if(myEl && currentUser){
+        myEl.innerText = campaignData.filter(c => c.uid === currentUser.uid).length;
+    }
+
+    let board = {};
+    campaignData.forEach(c=>{
+        let name = c.proposer || "User";
+        if(!board[name]) board[name] = 0;
+        board[name]++;
     });
 
-    function loadBanners() { db.collection(colBanners).onSnapshot(s => { bannerImages=[]; s.forEach(d => { if(d.data().image) bannerImages.push(d.data().image); }); renderSlider(); }); }
-    function renderSlider() {
-        const c=document.getElementById('header-slider'); if(!bannerImages.length){c.innerHTML='';return;}
-        let h=''; bannerImages.forEach((m,i)=>h+=`<img src="${m}" class="slide-img ${i===0?'active':''}" id="slide-${i}">`); c.innerHTML=h;
-        currentSlide=0; if(window.sliderInterval) clearInterval(window.sliderInterval); if(bannerImages.length>1) window.sliderInterval=setInterval(nextSlide,4000);
+    let sorted = Object.keys(board).map(n => ({name:n, count:board[n]})).sort((a,b)=>b.count-a.count);
+    if(activeEl) activeEl.innerText = sorted.length;
+
+    boardEl.innerHTML = sorted.length ? sorted.slice(0,5).map((u,i)=>`
+        <tr>
+            <td>${i+1}</td>
+            <td><b>${u.name}</b>${i===0 ? ' 🥇' : ''}</td>
+            <td><b style="color:#16a34a;">${u.count}</b></td>
+        </tr>
+    `).join('') : `<tr><td colspan="3" style="text-align:center;color:gray;">अजून Registration नाही</td></tr>`;
+}
+
+function populateTeamFilter(){ if(!isAdmin) return; const s = document.getElementById('teamFilter'); const oldVal = s.value; const users = new Set(); prospectsData.forEach(p => { let name = p.addedByName || p.addedByMobile || "Unknown"; if(name) users.add(name); }); let html = '<option value="All">👥 सर्व टीम (All Team)</option>'; users.forEach(u => { html += `<option value="${u}">👤 ${u}</option>`; }); s.innerHTML = html; if([...users].includes(oldVal) || oldVal === 'All') s.value = oldVal; }
+
+function renderList() { const l=document.getElementById('list'), sVal=document.getElementById('search').value.toLowerCase(), cVal=document.getElementById('cityFilter').value, tVal=document.getElementById('teamFilter').value, pVal=document.getElementById('projectFilter').value; l.innerHTML=''; const filteredData = prospectsData.filter(p => { if(cVal !== 'All' && p.city !== cVal) return false; if(isAdmin && tVal !== 'All') { let pName = p.addedByName || p.addedByMobile || "Unknown"; if(pName !== tVal) return false; } if(sVal && !(p.name||'').toLowerCase().includes(sVal) && !(p.mobile||'').includes(sVal)) return false; if(pVal !== 'All' && p.product !== pVal) return false; return true; }); updateDashboard(filteredData); filteredData.forEach((p, i) => { let bd=(isAdmin&&p.addedByName)?`<span class="owner-badge">👤 ${p.addedByName}</span>`:''; let del=isAdmin?`<span onclick="delP('${p.id}')" class="act-btn" style="background:#fee2e2;color:red;">🗑️</span>`:''; let projTag = p.product ? `<br><span class="project-tag">📌 ${p.product}</span>` : ''; l.innerHTML+=`<div class="pro-card" style="border-left:5px solid ${p.status==='Joined'?'#16a34a':'#000080'}"><div class="sr-badge">#${i+1}</div>${bd}<div style="padding-left:30px; display:flex; justify-content:space-between;"><div><div style="font-weight:bold; font-size:18px;">${p.name}</div><div style="font-size:13px; color:gray;">📍 ${p.city||'-'} | 📞 ${p.mobile}</div>${projTag}</div><div><span style="font-size:12px; font-weight:bold; background:#f3f4f6; padding:2px 6px; border-radius:5px;">${p.status}</span></div></div><div class="btn-action-group"><a href="tel:${p.mobile}" class="act-btn" style="background:#e0f2fe; color:#0284c7;">📞</a><a href="https://wa.me/91${p.mobile}" class="act-btn" style="background:#dcfce7; color:#16a34a;">💬</a><span onclick="openModal('${p.id}')" class="act-btn" style="background:#f3f4f6; color:#475569;">✏️</span>${del}</div></div>`; }); }
+function updateDashboard(data) { const t = new Date().toISOString().split('T')[0]; document.getElementById('d-total').innerText = data.length; document.getElementById('d-joined').innerText = data.filter(p => p.status === 'Joined').length; document.getElementById('d-hot').innerText = data.filter(p => p.category === 'Hot').length; document.getElementById('d-due').innerText = data.filter(p => p.nextDate && p.nextDate <= t).length; }
+
+function openAbhiyanModal(){ document.getElementById('abProposer').value=currentUser.displayName||"User"; document.getElementById('abhiyanModal').style.display='flex'; processedCampaignImage=null; document.getElementById('gpsPreview').style.display='none'; document.getElementById('abPhotoInput').value=""; }
+function drawGPSImage(){ const f=document.getElementById('abPhotoInput').files[0];if(!f)return; if(navigator.geolocation){ navigator.geolocation.getCurrentPosition(p=>{ const lat=p.coords.latitude.toFixed(5), long=p.coords.longitude.toFixed(5); fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${long}`).then(r=>r.json()).then(d=>{ const a=d.address || {}, v=a.village||a.town||a.city||"Unknown", s=a.state||""; processCanvas(f,lat,long,`${v}, ${s}`); }).catch(()=>processCanvas(f,lat,long,"Net Err")); },()=>processCanvas(f,"No Loc","No Loc","Denied")); }else processCanvas(f,"No GPS","No GPS","Err"); }
+function processCanvas(f, lat, long, addr) { const r=new FileReader(); r.onload=e=>{ const i=new Image(); i.src=e.target.result; i.onload=()=>{ const c=document.getElementById('gpsCanvas'), x=c.getContext('2d'), mw=900, s=mw/i.width; c.width=mw; c.height=i.height*s; x.drawImage(i,0,0,c.width,c.height); x.fillStyle="rgba(0,0,0,0.62)"; x.fillRect(0,c.height-92,c.width,92); x.fillStyle="white"; x.font="bold 18px sans-serif"; x.fillText(`👩‍🎓 Women’s Academy Registration`, 20, c.height-62); x.font="bold 15px sans-serif"; x.fillText(`🏠 ${addr}`, 20, c.height-38); x.fillText(`📅 ${new Date().toLocaleString()}`, 20, c.height-16); processedCampaignImage=c.toDataURL('image/jpeg',0.78); document.getElementById('gpsPreview').src=processedCampaignImage; document.getElementById('gpsPreview').style.display='block'; } }; r.readAsDataURL(f); }
+function submitAbhiyan(){
+    const name = document.getElementById('abName').value.trim();
+    const mobile = document.getElementById('abMobile').value.trim();
+    if(!name) return alert("Participant नाव टाका");
+    if(mobile && mobile.length !== 10) return alert("मोबाईल नंबर 10 digit असावा");
+    if(!processedCampaignImage) return alert("Registration फोटो अपलोड करा");
+
+    db.collection(colCampaign).add({
+        type:"Women Academy Registration",
+        prospectName:name,
+        mobile:mobile,
+        proposer:document.getElementById('abProposer').value,
+        uid:currentUser.uid,
+        photo:processedCampaignImage,
+        timestamp:new Date().toISOString()
+    }).then(()=>{
+        alert("Women’s Academy Registration Saved! (+5 Pts)");
+        document.getElementById('abhiyanModal').style.display='none';
+        document.getElementById('abName').value='';
+        document.getElementById('abMobile').value='';
+        document.getElementById('gpsPreview').style.display='none';
+        document.getElementById('abPhotoInput').value='';
+        processedCampaignImage=null;
+    });
+}
+
+function delP(id){if(confirm("Delete?"))db.collection(colProspects).doc(id).delete()}
+function calculateMyPoints(){ if(!currentUser) return; let p=0, mp=prospectsData.filter(x=>x.addedBy===currentUser.uid), dc={}; p+=mp.length*2; mp.forEach(x=>{if(x.createdAt){if(!dc[x.createdAt])dc[x.createdAt]=0;dc[x.createdAt]++}}); for(let d in dc)if(dc[d]>=2)p+=5; p+=campaignData.filter(c=>c.uid===currentUser.uid).length*5; p+=loginData.filter(l=>l.uid===currentUser.uid).length; document.getElementById('user-points').innerText=p;}
+function openModal(id=null){document.getElementById('entryModal').style.display='flex';document.getElementById('pName').value='';document.getElementById('pMobile').value='';document.getElementById('pCity').value='';document.getElementById('pOccupation').value='';document.getElementById('pDob').value='';document.getElementById('pNextDate').value='';document.getElementById('pInterests').value='';document.getElementById('pProduct').value=''; if(id){const p=prospectsData.find(x=>x.id===id);if(p){document.getElementById('docId').value=id;document.getElementById('pName').value=p.name||'';document.getElementById('pMobile').value=p.mobile||'';document.getElementById('pCity').value=p.city||'';document.getElementById('pOccupation').value=p.occupation||'';document.getElementById('pDob').value=p.dob||'';document.getElementById('pCategory').value=p.category||'Cold';document.getElementById('pStatus').value=p.status||'New';document.getElementById('pNextDate').value=p.nextDate||'';document.getElementById('pProduct').value=p.product||'';document.getElementById('pInterests').value=p.interests||'';document.getElementById('saveBtn').innerText="Update";}}else{document.getElementById('docId').value='';document.getElementById('saveBtn').innerText="Save";}}
+function closeModal(){document.getElementById('entryModal').style.display='none'}
+function saveData() { const btn=document.getElementById('saveBtn'); btn.innerText="Saving..."; btn.disabled=true; const n=document.getElementById('pName').value, m=document.getElementById('pMobile').value; if(!n){btn.innerText="Save"; btn.disabled=false; return alert("Enter Name");} const d={name:n, mobile:m, city:document.getElementById('pCity').value, occupation:document.getElementById('pOccupation').value, category:document.getElementById('pCategory').value, status:document.getElementById('pStatus').value, nextDate:document.getElementById('pNextDate').value, product:document.getElementById('pProduct').value, interests:document.getElementById('pInterests').value, dob:document.getElementById('pDob').value, updatedAt:new Date().toISOString(), addedBy:currentUser.uid, addedByMobile:currentUser.email.split('@')[0], addedByName:currentUser.displayName}; const id=document.getElementById('docId').value; if(!id)d.createdAt=new Date().toISOString().split('T')[0]; (id?db.collection(colProspects).doc(id).update(d):db.collection(colProspects).add(d)).then(()=>{closeModal();btn.disabled=false;}); }
+
+function openQR(){ document.getElementById('qrModal').style.display='flex'; document.getElementById('qrcode').innerHTML=''; const userName = currentUser.displayName || "User"; const userMobile = currentUser.email.split('@')[0]; const qrText = `MECARD:N:${userName};TEL:${userMobile};;`; new QRCode(document.getElementById('qrcode'), { text: qrText, width: 180, height: 180 }); }
+function saveCore(e){localStorage.setItem('rcm_'+e.id,e.checked)}
+function loadCore(){for(let i=1;i<=4;i++)if(localStorage.getItem('rcm_core'+i)=='true')document.getElementById('core'+i).checked=true}
+function checkBirthdays(){/* Birthday alert future use */}
+function populateCities(){ const s=document.getElementById('cityFilter'); const old=s.value; let html='<option value="All">📍 सर्व शहरे</option>'; [...new Set(prospectsData.map(p=>p.city).filter(c=>c))].sort().forEach(c=>html+=`<option value="${c}">${c}</option>`); s.innerHTML=html; s.value=old || 'All'; }
+function generateAIReport(){alert("Keep Growing!")}
+function exportToExcel(){ const d=new Date().toISOString().slice(0,16).replace('T','_').replace(':','-'); const data = prospectsData.map(p => ({"Name":p.name,"Mobile":p.mobile,"City":p.city,"Status":p.status,"Project":p.product||"-","Added By":p.addedByName||"-"})); const ws = XLSX.utils.json_to_sheet(data); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Data"); XLSX.writeFile(wb, `RCM_List_${d}.xlsx`); }
+function exportToPDF(){ const d=new Date().toISOString().slice(0,16).replace('T','_').replace(':','-'); const {jsPDF}=window.jspdf; const doc=new jsPDF(); doc.text("RCM Prospect List",14,20); const tableData = prospectsData.map((p, i) => [i+1, p.name, p.mobile, p.city, p.status, p.product||"-", p.addedByName||"-"]); doc.autoTable({head:[["#", "Name", "Mobile", "City", "Status", "Project", "Added By"]], body: tableData, startY: 30}); doc.save(`RCM_Report_${d}.pdf`); }
+function downloadTopperPDF(){ const d=new Date().toISOString().slice(0,10); const {jsPDF}=window.jspdf; const doc=new jsPDF(); doc.text("Toppers List",14,20); doc.autoTable({html:'.top-table',startY:30}); doc.save(`Toppers_${d}.pdf`); }
+function downloadAbhiyanPDF() {
+    const d=new Date().toISOString().slice(0,10);
+    if(!campaignData.length) return alert("No Registration Data");
+    const {jsPDF} = window.jspdf;
+    const doc = new jsPDF();
+    doc.setFontSize(15);
+    doc.text("Women Academy Registration Report", 14, 16);
+    doc.setFontSize(10);
+    doc.text(`Total Registration: ${campaignData.length}`, 14, 23);
+
+    doc.autoTable({
+        head: [["#", "Participant", "Mobile", "Registered By", "Date", "Photo"]],
+        body: campaignData.map((c,i) => [
+            i+1,
+            c.prospectName || '-',
+            c.mobile || '-',
+            c.proposer || '-',
+            c.timestamp ? c.timestamp.split('T')[0] : '-',
+            c.photo
+        ]),
+        bodyStyles: { minCellHeight: 30, fontSize: 8 },
+        headStyles: { fillColor: [0,0,128] },
+        didDrawCell: function(data) {
+            if (data.column.index === 5 && data.cell.section === 'body') {
+                var img = data.cell.raw;
+                if (img && img.startsWith('data:image')) {
+                    doc.addImage(img, 'JPEG', data.cell.x + 2, data.cell.y + 2, 26, 26);
+                    data.cell.text = '';
+                }
+            }
+        },
+        startY: 30
+    });
+    doc.save(`Women_Academy_Registration_${d}.pdf`);
+}
+function openNoticeModal(){if(isAdmin)document.getElementById('noticeModal').style.display='flex'}
+function openImageModal(){if(isAdmin)document.getElementById('imageModal').style.display='flex'}
+function saveNotice(){if(!isAdmin)return;db.collection(colNotice).doc('main_notice').set({text:document.getElementById('noticeInput').value},{merge:true}).then(()=>{alert("Posted");document.getElementById('noticeModal').style.display='none'})}
+function processImage(){const f=document.getElementById('imgInput').files[0];if(!f)return;const r=new FileReader();r.onload=e=>{const i=new Image();i.src=e.target.result;i.onload=()=>{const c=document.createElement('canvas'),x=c.getContext('2d'),s=800/i.width;c.width=800;c.height=i.height*s;x.drawImage(i,0,0,c.width,c.height);db.collection(colNotice).doc('main_notice').set({image:c.toDataURL('image/jpeg',0.6),displayType:document.querySelector('input[name="imgDisplay"]:checked').value},{merge:true}).then(()=>{alert("Uploaded");document.getElementById('imageModal').style.display='none'})}};r.readAsDataURL(f)}
+function deleteImage(){db.collection(colNotice).doc('main_notice').update({image:firebase.firestore.FieldValue.delete(),displayType:firebase.firestore.FieldValue.delete()}).then(()=>alert("Deleted"))}
+async function clearAllPoints() { if(!confirm("Are you sure you want to CLEAR ALL POINTS? This cannot be undone.")) return; let pass = prompt("Enter Admin Passcode to confirm:"); if(pass !== "2708") return alert("Wrong Passcode!"); const batch = db.batch(); const snapshot = await db.collection(colLogins).get(); if(snapshot.empty) return alert("No points to clear."); snapshot.docs.forEach((doc) => { batch.delete(doc.ref); }); await batch.commit(); alert("All Login Points have been reset!"); window.location.reload(); }
+function openTopperModal(){ let lb={}; [...prospectsData].forEach(d=>{let n=d.addedByName||"User"; if(!lb[n])lb[n]=0; lb[n]+=2;}); [...campaignData].forEach(d=>{let n=d.proposer||"User"; if(!lb[n])lb[n]=0; lb[n]+=5;}); [...loginData].forEach(d=>{let n=d.name||"User"; if(!lb[n])lb[n]=0; lb[n]+=1;}); let s=Object.keys(lb).map(k=>({n:k,p:lb[k]})).sort((a,b)=>b.p-a.p); document.getElementById('topper-list').innerHTML=s.map((u,i)=>`<tr><td>${i+1}</td><td>${u.n}</td><td>${u.p}</td><td>${u.p>=50?'🎁':''}</td></tr>`).join(''); document.getElementById('topperModal').style.display='flex'; }
+function openAbhiyanAdminModal(){
+    const b=document.getElementById('abhiyan-list-body');
+    b.innerHTML='';
+    if(!campaignData.length){
+        b.innerHTML='<tr><td colspan="3" style="text-align:center;color:gray;">No Registration Data</td></tr>';
     }
-    function nextSlide() { document.getElementById(`slide-${currentSlide}`).classList.remove('active'); currentSlide=(currentSlide+1)%bannerImages.length; document.getElementById(`slide-${currentSlide}`).classList.add('active'); }
-    function openBannerModal(){document.getElementById('bannerModal').style.display='flex'}
-    function uploadBanner(i){
-        const f=document.getElementById(`ban${i}`).files[0]; if(!f)return alert("File Select");
-        const r=new FileReader(); r.onload=e=>{ const im=new Image(); im.src=e.target.result; im.onload=()=>{ const c=document.createElement('canvas'), x=c.getContext('2d'), mw=800, s=mw/im.width; c.width=mw; c.height=im.height*s; x.drawImage(im,0,0,c.width,c.height); db.collection(colBanners).doc(`slide_${i}`).set({image:c.toDataURL('image/jpeg',0.7)}).then(()=>alert("Uploaded!")); } }; r.readAsDataURL(f);
-    }
-    function deleteBanner(i){if(confirm("Delete?"))db.collection(colBanners).doc(`slide_${i}`).delete().then(()=>alert("Deleted"))}
-
-    function loadNotice() { db.collection(colNotice).doc('main_notice').onSnapshot(doc => { if(doc.exists) { const d = doc.data(); document.getElementById('notice-text').innerText = d.text || ""; if (d.image) { if (d.displayType === 'popup') { document.getElementById('promo-area').style.display='none'; openLightbox(d.image); } else { document.getElementById('promo-area').style.display='block'; document.getElementById('promo-img').src=d.image; closeLightbox(); } } else { document.getElementById('promo-area').style.display='none'; } } }); }
-
-    function checkLoginPoint() { const t=new Date().toISOString().split('T')[0], id=currentUser.uid+"_"+t; db.collection(colLogins).doc(id).get().then(d=>{if(!d.exists)db.collection(colLogins).doc(id).set({uid:currentUser.uid,name:currentUser.displayName,date:t})}); }
-    function loadLogins(){db.collection(colLogins).onSnapshot(s=>{loginData=[];s.forEach(d=>loginData.push(d.data()));calculateMyPoints()})}
-    function toggleAuthMode(){isRegisterMode=!isRegisterMode;document.getElementById('name-field-container').style.display=isRegisterMode?'block':'none';document.getElementById('btn-auth-action').innerText=isRegisterMode?'Register':'Login';document.getElementById('toggle-text').innerText=isRegisterMode?'Login':'Create Account'}
-    function handleAuth(){ const btn=document.getElementById('btn-auth-action'), n=document.getElementById('uName').value, m=document.getElementById('uMobile').value, p=document.getElementById('uPin').value; if(m.length!==10||p.length!==4)return alert("Check Number/PIN"); btn.innerText="Wait..."; btn.disabled=true; const em=m+SECRET_SUFFIX, pw=p+PIN_SALT; if(isRegisterMode){ if(!n){btn.innerText="Register";btn.disabled=false;return alert("Enter Name");} auth.createUserWithEmailAndPassword(em,pw).then(c=>c.user.updateProfile({displayName:n})).catch(e=>{alert(e.message);btn.innerText="Register";btn.disabled=false}); }else{ auth.signInWithEmailAndPassword(em,pw).catch(e=>{alert(e.message);btn.innerText="Login";btn.disabled=false}); } }
-    function logout(){auth.signOut()}
-    
-    function loadData(){ db.collection(colProspects).orderBy("updatedAt","desc").onSnapshot(s=>{ prospectsData=[]; s.forEach(d=>{ let da=d.data(); da.id=d.id; if(isAdmin){ prospectsData.push(da); } else if(da.addedBy===currentUser.uid) { prospectsData.push(da); } }); if(isAdmin) populateTeamFilter(); loadCampaign(); }); }
-    function loadCampaign(){ db.collection(colCampaign).orderBy("timestamp","desc").onSnapshot(s=>{ campaignData=[]; s.forEach(d=>{ let c=d.data(); c.id=d.id; if(isAdmin || c.uid===currentUser.uid) campaignData.push(c); }); calculateMyPoints(); checkBirthdays(); populateCities(); renderList(); }); }
-    
-    function populateTeamFilter(){ if(!isAdmin) return; const s = document.getElementById('teamFilter'); const oldVal = s.value; const users = new Set(); prospectsData.forEach(p => { let name = p.addedByName || p.addedByMobile || "Unknown"; if(name) users.add(name); }); let html = '<option value="All">👥 सर्व टीम (All Team)</option>'; users.forEach(u => { html += `<option value="${u}">👤 ${u}</option>`; }); s.innerHTML = html; if([...users].includes(oldVal) || oldVal === 'All') s.value = oldVal; }
-
-    function renderList() {
-        const l=document.getElementById('list'), sVal=document.getElementById('search').value.toLowerCase(), cVal=document.getElementById('cityFilter').value, tVal=document.getElementById('teamFilter').value, pVal=document.getElementById('projectFilter').value;
-        l.innerHTML='';
-        const filteredData = prospectsData.filter(p => { if(cVal !== 'All' && p.city !== cVal) return false; if(isAdmin && tVal !== 'All') { let pName = p.addedByName || p.addedByMobile || "Unknown"; if(pName !== tVal) return false; } if(sVal && !p.name.toLowerCase().includes(sVal) && !p.mobile.includes(sVal)) return false; if(pVal !== 'All' && p.product !== pVal) return false; return true; });
-        updateDashboard(filteredData);
-        filteredData.forEach((p, i) => { let bd=(isAdmin&&p.addedByName)?`<span class="owner-badge">👤 ${p.addedByName}</span>`:''; let del=isAdmin?`<span onclick="delP('${p.id}')" class="act-btn" style="background:#fee2e2;color:red;">🗑️</span>`:''; let projTag = p.product ? `<br><span class="project-tag">📌 ${p.product}</span>` : ''; l.innerHTML+=`<div class="pro-card" style="border-left:5px solid ${p.status==='Joined'?'#16a34a':'#000080'}"><div class="sr-badge">#${i+1}</div>${bd}<div style="padding-left:30px; display:flex; justify-content:space-between;"><div><div style="font-weight:bold; font-size:18px;">${p.name}</div><div style="font-size:13px; color:gray;">📍 ${p.city||'-'} | 📞 ${p.mobile}</div>${projTag}</div><div><span style="font-size:12px; font-weight:bold; background:#f3f4f6; padding:2px 6px; border-radius:5px;">${p.status}</span></div></div><div class="btn-action-group"><a href="tel:${p.mobile}" class="act-btn" style="background:#e0f2fe; color:#0284c7;">📞</a><a href="https://wa.me/91${p.mobile}" class="act-btn" style="background:#dcfce7; color:#16a34a;">💬</a><span onclick="openModal('${p.id}')" class="act-btn" style="background:#f3f4f6; color:#475569;">✏️</span>${del}</div></div>`; });
-    }
-    
-    function updateDashboard(data) { const t = new Date().toISOString().split('T')[0]; document.getElementById('d-total').innerText = data.length; document.getElementById('d-joined').innerText = data.filter(p => p.status === 'Joined').length; document.getElementById('d-hot').innerText = data.filter(p => p.category === 'Hot').length; document.getElementById('d-due').innerText = data.filter(p => p.nextDate && p.nextDate <= t).length; }
-
-    function openAbhiyanModal(){document.getElementById('abProposer').value=currentUser.displayName||"User";document.getElementById('abhiyanModal').style.display='flex';processedCampaignImage=null;document.getElementById('gpsPreview').style.display='none';document.getElementById('abPhotoInput').value=""}
-    function drawGPSImage(){ const f=document.getElementById('abPhotoInput').files[0];if(!f)return; if(navigator.geolocation){ navigator.geolocation.getCurrentPosition(p=>{ const lat=p.coords.latitude.toFixed(5), long=p.coords.longitude.toFixed(5); fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${long}`).then(r=>r.json()).then(d=>{ const a=d.address, v=a.village||a.town||a.city||"Unknown", s=a.state||""; processCanvas(f,lat,long,`${v}, ${s}`); }).catch(()=>processCanvas(f,lat,long,"Net Err")); },()=>processCanvas(f,"No Loc","No Loc","Denied")); }else processCanvas(f,"No GPS","No GPS","Err"); }
-    function processCanvas(f, lat, long, addr) { const r=new FileReader(); r.onload=e=>{ const i=new Image(); i.src=e.target.result; i.onload=()=>{ const c=document.getElementById('gpsCanvas'), x=c.getContext('2d'), mw=800, s=mw/i.width; c.width=mw; c.height=i.height*s; x.drawImage(i,0,0,c.width,c.height); x.fillStyle="rgba(0,0,0,0.6)"; x.fillRect(0,c.height-80,c.width,80); x.fillStyle="white"; x.font="bold 16px sans-serif"; x.fillText(`🏠 ${addr}`, 20, c.height-50); x.fillText(`📅 ${new Date().toLocaleString()}`, 20, c.height-25); processedCampaignImage=c.toDataURL('image/jpeg',0.7); document.getElementById('gpsPreview').src=processedCampaignImage; document.getElementById('gpsPreview').style.display='block'; } }; r.readAsDataURL(f); }
-    function submitAbhiyan(){ if(!document.getElementById('abName').value)return alert("Enter Name");if(!processedCampaignImage)return alert("Take Photo"); db.collection(colCampaign).add({prospectName:document.getElementById('abName').value,mobile:document.getElementById('abMobile').value,proposer:document.getElementById('abProposer').value,uid:currentUser.uid,photo:processedCampaignImage,timestamp:new Date().toISOString()}).then(()=>{alert("Saved! (+5 Pts)");document.getElementById('abhiyanModal').style.display='none'}); }
-    function delP(id){if(confirm("Delete?"))db.collection(colProspects).doc(id).delete()}
-    function calculateMyPoints(){let p=0, mp=prospectsData.filter(x=>x.addedBy===currentUser.uid), dc={}; p+=mp.length*2; mp.forEach(x=>{if(x.createdAt){if(!dc[x.createdAt])dc[x.createdAt]=0;dc[x.createdAt]++}}); for(let d in dc)if(dc[d]>=2)p+=5; p+=campaignData.filter(c=>c.uid===currentUser.uid).length*5; p+=loginData.filter(l=>l.uid===currentUser.uid).length; document.getElementById('user-points').innerText=p;}
-    function openModal(id=null){document.getElementById('entryModal').style.display='flex';document.getElementById('pName').value='';document.getElementById('pMobile').value='';document.getElementById('pCity').value='';if(id){const p=prospectsData.find(x=>x.id===id);if(p){document.getElementById('docId').value=id;document.getElementById('pName').value=p.name;document.getElementById('pMobile').value=p.mobile;document.getElementById('pCity').value=p.city;document.getElementById('pOccupation').value=p.occupation;document.getElementById('pDob').value=p.dob;document.getElementById('pCategory').value=p.category;document.getElementById('pStatus').value=p.status;document.getElementById('pNextDate').value=p.nextDate;document.getElementById('pProduct').value=p.product;document.getElementById('pInterests').value=p.interests;document.getElementById('saveBtn').innerText="Update";}}else{document.getElementById('docId').value='';document.getElementById('saveBtn').innerText="Save";}}
-    function closeModal(){document.getElementById('entryModal').style.display='none'}
-    function saveData() { const btn=document.getElementById('saveBtn'); btn.innerText="Saving..."; btn.disabled=true; const n=document.getElementById('pName').value, m=document.getElementById('pMobile').value; if(!n){btn.innerText="Save"; btn.disabled=false; return alert("Enter Name");} const d={name:n, mobile:m, city:document.getElementById('pCity').value, occupation:document.getElementById('pOccupation').value, category:document.getElementById('pCategory').value, status:document.getElementById('pStatus').value, nextDate:document.getElementById('pNextDate').value, product:document.getElementById('pProduct').value, interests:document.getElementById('pInterests').value, dob:document.getElementById('pDob').value, updatedAt:new Date().toISOString(), addedBy:currentUser.uid, addedByMobile:currentUser.email.split('@')[0], addedByName:currentUser.displayName}; const id=document.getElementById('docId').value; if(!id)d.createdAt=new Date().toISOString().split('T')[0]; (id?db.collection(colProspects).doc(id).update(d):db.collection(colProspects).add(d)).then(()=>{closeModal();btn.disabled=false;}); }
-    
-    function openQR(){
-        document.getElementById('qrModal').style.display='flex';
-        document.getElementById('qrcode').innerHTML='';
-        const userName = currentUser.displayName || "User";
-        const userMobile = currentUser.email.split('@')[0];
-        const qrText = `MECARD:N:${userName};TEL:${userMobile};;`;
-        new QRCode(document.getElementById('qrcode'), { text: qrText, width: 180, height: 180 });
-    }
-
-    function saveCore(e){localStorage.setItem('rcm_'+e.id,e.checked)}
-    function loadCore(){for(let i=1;i<=4;i++)if(localStorage.getItem('rcm_core'+i)=='true')document.getElementById('core'+i).checked=true}
-    function checkBirthdays(){/*...*/}
-    function populateCities(){const s=document.getElementById('cityFilter');[...new Set(prospectsData.map(p=>p.city).filter(c=>c))].forEach(c=>s.innerHTML+=`<option value="${c}">${c}</option>`)}
-    function generateAIReport(){alert("Keep Growing!")}
-    function exportToExcel(){ const d=new Date().toISOString().slice(0,16).replace('T','_').replace(':','-'); const data = prospectsData.map(p => ({"Name":p.name,"Mobile":p.mobile,"City":p.city,"Status":p.status,"Project":p.product||"-","Added By":p.addedByName||"-"})); const ws = XLSX.utils.json_to_sheet(data); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Data"); XLSX.writeFile(wb, `RCM_List_${d}.xlsx`); }
-    function exportToPDF(){ const d=new Date().toISOString().slice(0,16).replace('T','_').replace(':','-'); const {jsPDF}=window.jspdf; const doc=new jsPDF(); doc.text("RCM Prospect List",14,20); const tableData = prospectsData.map((p, i) => [i+1, p.name, p.mobile, p.city, p.status, p.product||"-", p.addedByName||"-"]); doc.autoTable({head:[["#", "Name", "Mobile", "City", "Status", "Project", "Added By"]], body: tableData, startY: 30}); doc.save(`RCM_Report_${d}.pdf`); }
-    function downloadTopperPDF(){ const d=new Date().toISOString().slice(0,10); const {jsPDF}=window.jspdf; const doc=new jsPDF(); doc.text("Toppers List",14,20); doc.autoTable({html:'.top-table',startY:30}); doc.save(`Toppers_${d}.pdf`); }
-    function downloadAbhiyanPDF() { const d=new Date().toISOString().slice(0,10); if(!campaignData.length) return alert("No Data"); const {jsPDF} = window.jspdf; const doc = new jsPDF(); doc.text("Abhiyan Report", 14, 20); doc.autoTable({ head: [["Name", "By", "Photo"]], body: campaignData.map(c => [c.prospectName, c.proposer, c.photo]), bodyStyles: { minCellHeight: 25 }, didDrawCell: function(data) { if (data.column.index === 2 && data.cell.section === 'body') { var img = data.cell.raw; if (img && img.startsWith('data:image')) { doc.addImage(img, 'JPEG', data.cell.x + 2, data.cell.y + 2, 20, 20); data.cell.text = ''; } } }, startY: 30 }); doc.save(`Abhiyan_Report_${d}.pdf`); }
-    function openNoticeModal(){if(isAdmin)document.getElementById('noticeModal').style.display='flex'}
-    function openImageModal(){if(isAdmin)document.getElementById('imageModal').style.display='flex'}
-    function saveNotice(){if(!isAdmin)return;db.collection(colNotice).doc('main_notice').set({text:document.getElementById('noticeInput').value},{merge:true}).then(()=>{alert("Posted");document.getElementById('noticeModal').style.display='none'})}
-    function processImage(){const f=document.getElementById('imgInput').files[0];if(!f)return;const r=new FileReader();r.onload=e=>{const i=new Image();i.src=e.target.result;i.onload=()=>{const c=document.createElement('canvas'),x=c.getContext('2d'),s=800/i.width;c.width=800;c.height=i.height*s;x.drawImage(i,0,0,c.width,c.height);db.collection(colNotice).doc('main_notice').set({image:c.toDataURL('image/jpeg',0.6),displayType:document.querySelector('input[name="imgDisplay"]:checked').value},{merge:true}).then(()=>{alert("Uploaded");document.getElementById('imageModal').style.display='none'})}};r.readAsDataURL(f)}
-    function deleteImage(){db.collection(colNotice).doc('main_notice').update({image:firebase.firestore.FieldValue.delete(),displayType:firebase.firestore.FieldValue.delete()}).then(()=>alert("Deleted"))}
-    async function clearAllPoints() { if(!confirm("Are you sure you want to CLEAR ALL POINTS? This cannot be undone.")) return; let pass = prompt("Enter Admin Passcode to confirm:"); if(pass !== "2708") return alert("Wrong Passcode!"); const batch = db.batch(); const snapshot = await db.collection(colLogins).get(); if(snapshot.empty) return alert("No points to clear."); snapshot.docs.forEach((doc) => { batch.delete(doc.ref); }); await batch.commit(); alert("All Login Points have been reset!"); window.location.reload(); }
-    function openTopperModal(){ let lb={}; [...prospectsData].forEach(d=>{let n=d.addedByName||"User"; if(!lb[n])lb[n]=0; lb[n]+=2;}); [...campaignData].forEach(d=>{let n=d.proposer||"User"; if(!lb[n])lb[n]=0; lb[n]+=5;}); [...loginData].forEach(d=>{let n=d.name||"User"; if(!lb[n])lb[n]=0; lb[n]+=1;}); let s=Object.keys(lb).map(k=>({n:k,p:lb[k]})).sort((a,b)=>b.p-a.p); document.getElementById('topper-list').innerHTML=s.map((u,i)=>`<tr><td>${i+1}</td><td>${u.n}</td><td>${u.p}</td><td>${u.p>=50?'🎁':''}</td></tr>`).join(''); document.getElementById('topperModal').style.display='flex'; }
-    function openAbhiyanAdminModal(){const b=document.getElementById('abhiyan-list-body');b.innerHTML='';campaignData.forEach(c=>{let a=c.mobile?`<a href="tel:${c.mobile}" class="act-btn-sm">📞</a>`:'-';b.innerHTML+=`<tr><td>${c.prospectName}<br><small>${c.mobile||''}</small></td><td>${c.proposer}</td><td><img src="${c.photo}" style="width:40px;height:40px;border-radius:5px;" onclick="openLightbox(this.src)"></td></tr>`});document.getElementById('abhiyanAdminModal').style.display='flex'}
-    function openLightbox(s){document.getElementById('lightbox-img').src=s;document.getElementById('lightbox').style.display='flex'}
-    function closeLightbox(){document.getElementById('lightbox').style.display='none'}
-    async function pickContact(){try{const c=await navigator.contacts.select(['name','tel'],{multiple:false});if(c.length){document.getElementById('pName').value=c[0].name[0];document.getElementById('pMobile').value=c[0].tel[0].replace(/\D/g,'')}}catch(e){}}
-</script>
-</body>
+    campaignData.forEach((c,i)=>{
+        const dateTxt = c.timestamp ? new Date(c.timestamp).toLocaleDateString('en-IN') : '';
+        b.innerHTML+=`
+            <tr>
+                <td>
+                    <b>${i+1}. ${c.prospectName||'-'}</b><br>
+                    <small>📞 ${c.mobile||'-'} | 📅 ${dateTxt}</small>
+                </td>
+                <td>
+                    <b>${c.proposer||'-'}</b><br>
+                    <small>${c.type || 'Women Academy Registration'}</small>
+                </td>
+                <td>${c.photo ? `<img src="${c.photo}" class="wa-admin-img" onclick="openLightbox(this.src)">` : '-'}</td>
+            </tr>`;
+    });
+    document.getElementById('abhiyanAdminModal').style.display='flex';
+}
+function openLightbox(s){document.getElementById('lightbox-img').src=s;document.getElementById('lightbox').style.display='flex'}
+function closeLightbox(){document.getElementById('lightbox').style.display='none'}
+async function pickContact(){try{const c=await navigator.contacts.select(['name','tel'],{multiple:false});if(c.length){document.getElementById('pName').value=c[0].name[0];document.getElementById('pMobile').value=c[0].tel[0].replace(/\D/g,'')}}catch(e){}}
+</script></body>
 </html>
